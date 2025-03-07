@@ -1,8 +1,11 @@
-﻿namespace Backend.Services.PlayerServices.Interfaces
+﻿using Backend.Domains.PieceDomain;
+using Backend.Domains.PlayerDomain;
+
+namespace Backend.Services.PlayerServices.Interfaces
 {
     public interface IPlayerService
     {
-        Task<Piece> SelectPiece(int pieceId);
-        Task<Piece> GetBasePiece();
+        Player SelectPiece(int pieceId);
+        Player GetBasePiece();
     }
 }

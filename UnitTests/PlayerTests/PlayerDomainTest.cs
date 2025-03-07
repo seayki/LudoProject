@@ -9,15 +9,50 @@ namespace UnitTests.PlayerTests
 {
     public class PlayerDomainTest
     {
-        [Fact]
-        public void SelectPiece_ReturnTrue()
+        [Theory]
+        [InlineData(0, ColourEnum.None, null, false, false, false)]
+        [InlineData(1, ColourEnum.Red, null, false, false, true)]
+        [InlineData(2, ColourEnum.Blue, null, false, false, true)]
+        [InlineData(3, ColourEnum.Green, null, false, false, true)]
+        [InlineData(4, ColourEnum.Yellow, null, false, false, true)]
+
+        public void TestPlayerConstructor(
+            int id,
+            ColourEnum colour,
+            List<Piece> pieces,
+            bool expectedIsTurn,
+            PosIndex? expectedStartTile,
+            bool shouldPass)
         {
-            int pieceId = 1;
-            if (pieceId > 0 && < 5)
+            // Arrange
+            Player? player = null;
+            Exception? caughtException = null;
+            // Act
+            try
             {
-                Assert.True(true);
+                player = new Player(id, colour, pieces);
             }
-                Assert.True(result);
+            catch (Exception ex)
+            {
+                caughtException = ex;
+            }
+            // Assert
+            if (shouldPass)
+            {
+                Assert.NotNull(player);
+                Assert.Null(caughtException);
+                Assert.Equal(id, player.Id);
+                Assert.Equal(colour, player.Colour);
+                Assert.Equal(pieces, player.Pieces);
+                Assert.Equal(expectedIsTurn, player.IsTurn);
+                Assert.Equal(expectedStartTile, player.StartTile);
+            }
+            else
+            {
+                Assert.Null(player);
+                Assert.NotNull(caughtException);
+                Assert.IsType<Exception>(caughtException);
+            }
         }
     }
 }

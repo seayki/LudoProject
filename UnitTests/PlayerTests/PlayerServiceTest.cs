@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace UnitTests.PlayerTests
 {
-    internal class PlayerServiceTest
+    public class PlayerServiceTest
     {
+        
     }
 }
