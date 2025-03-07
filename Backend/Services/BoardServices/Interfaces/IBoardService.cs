@@ -1,6 +1,5 @@
 ﻿using Common.DTOs;
 using Common.Enums;
-using System.Drawing;
 
 namespace Backend.Services.BoardServices.Interfaces
 {
