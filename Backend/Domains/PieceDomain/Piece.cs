@@ -7,6 +7,10 @@ namespace Backend.Domains.PieceDomain
 	{
 		public Piece(int id, ColourEnum colour)
 		{
+			if (colour == ColourEnum.None)
+			{
+				throw new Exception("The pieces must have a colour");
+			}
 			ID = id;
 			Colour = colour;
 			PosIndex = null;
@@ -14,10 +18,10 @@ namespace Backend.Domains.PieceDomain
 			IsFinished = false;
 		}
 
-		int ID { get; }
-		ColourEnum Colour { get; }
-		PosIndex? PosIndex { get; set; }
-		bool IsInPlay { get; set; }
-		bool IsFinished { get; set; }
+		public int ID { get; }
+		public ColourEnum Colour { get; }
+		public PosIndex? PosIndex { get; set; }
+		public bool IsInPlay { get; set; }
+		public bool IsFinished { get; set; }
 	}
 }
