@@ -13,10 +13,11 @@ namespace UnitTests.PlayerTests
         public void SelectPiece_ReturnTrue()
         {
             int pieceId = 1;
-            bool result = 
-
-            Assert.True(result);
-
+            if (pieceId > 0 && < 5)
+            {
+                Assert.True(true);
+            }
+                Assert.True(result);
         }
     }
 }
