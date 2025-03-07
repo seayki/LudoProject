@@ -1,6 +1,6 @@
 ﻿namespace UnitTests.BoardTests
 {
-    public class BoardDoaminTests
+    public class BoardDomainTests
     {
         [Fact]
         public void test()
