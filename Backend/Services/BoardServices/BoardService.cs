@@ -1,6 +1,8 @@
-﻿namespace Backend.Services.BoardServices
+﻿using Backend.Services.BoardServices.Interfaces;
+
+namespace Backend.Services.BoardServices
 {
-    public class BoardService
+    public class BoardService : IBoardService
     {
     }
 }
