@@ -1,16 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace UnitTests.TileTests
+﻿namespace UnitTests.TileTests
 {
-    [TestClass]
     public class TileDomainTests
     {
 
-        [TestMethod]
+        [Fact]
         public void TestCheckNextTileReturnsAHigherPositionValue()
         {
             //Arrange
