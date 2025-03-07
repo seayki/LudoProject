@@ -7,5 +7,15 @@ namespace UnitTests
         {
 
         }
+
+        [Theory]
+        // svare til int x = 1,2,3
+        [InlineData(1)]
+        [InlineData(2)]
+        [InlineData(3)]
+        public void Test2(int x)
+        {
+
+        }
     }
 }
