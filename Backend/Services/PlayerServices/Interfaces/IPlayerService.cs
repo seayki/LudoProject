@@ -5,7 +5,8 @@ namespace Backend.Services.PlayerServices.Interfaces
 {
     public interface IPlayerService
     {
-        Player SelectPiece(int pieceId);
+        //Player SelectPiece(int pieceId);
+        Piece? SelectPiece(Player player, int pieceId);
         Player GetBasePiece();
     }
 }

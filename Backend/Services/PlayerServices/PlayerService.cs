@@ -1,4 +1,5 @@
-﻿using Backend.Domains.PlayerDomain;
+﻿using Backend.Domains.PieceDomain;
+using Backend.Domains.PlayerDomain;
 using Backend.Services.PlayerServices.Interfaces;
 
 namespace Backend.Services.PlayerServices
@@ -11,9 +12,14 @@ namespace Backend.Services.PlayerServices
             throw new NotImplementedException();
         }
 
-        Player IPlayerService.SelectPiece(int pieceId)
+        //Player IPlayerService.SelectPiece(int pieceId)
+        //{
+        //    throw new NotImplementedException();
+        //}
+
+        public Piece SelectPiece(Player player, int pieceId)
         {
-            throw new NotImplementedException();
+            return player.Pieces.FirstOrDefault(p => p.ID == pieceId);
         }
     }
 }
