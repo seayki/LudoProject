@@ -8,6 +8,7 @@ namespace UnitTests.PlayerTests
 {
     public class PlayerDomainTest
     {
+
         [Theory]
         [InlineData(0, ColourEnum.None, false, null, false)]
         [InlineData(1, ColourEnum.Red, false, null, true)]
@@ -73,7 +74,7 @@ namespace UnitTests.PlayerTests
 
             var moveablePieces = player.Pieces.Where(p => !p.IsInPlay).ToList();
 
-            Assert.Equal(2, moveablePieces.Count); //Burde give 3
+            Assert.Equal(3, moveablePieces.Count);
         }
 
         // Test at ingen brikker kan flyttes ud, hvis de er i spil.

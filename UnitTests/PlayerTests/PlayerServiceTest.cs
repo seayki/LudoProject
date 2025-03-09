@@ -21,6 +21,7 @@ namespace UnitTests.PlayerTests
             _playerService = new PlayerService();
         }
 
+        // Test om den korrekte brik returneres, når der vælges en brik
         [Fact]
         public void TestSelectPiece_ReturnsCorrectPiece()
         {
@@ -29,7 +30,8 @@ namespace UnitTests.PlayerTests
         {
             new Piece(1, ColourEnum.Red),
             new Piece(2, ColourEnum.Red),
-            new Piece(3, ColourEnum.Red)
+            new Piece(3, ColourEnum.Red),
+            new Piece(4, ColourEnum.Red)
         });
 
             // Act
@@ -38,6 +40,26 @@ namespace UnitTests.PlayerTests
             // Assert
             Assert.NotNull(selectedPiece);
             Assert.Equal(2, selectedPiece.ID);
+        }
+
+        // Test om der retuneres null, hvis der vælges en brik, der ikke findes
+        [Fact]
+        public void TestSelectPiece_ReturnsNullForInvalidPieceId()
+        {
+            // Arrange
+            var player = new Player(1, ColourEnum.Red, new List<Piece>
+            {
+                new Piece(1, ColourEnum.Red),
+                new Piece(2, ColourEnum.Red),
+                new Piece(3, ColourEnum.Red),
+                new Piece(4, ColourEnum.Red)
+            });
+
+            // Act
+            var selectedPiece = _playerService.SelectPiece(player, 999);
+
+            // Assert
+            Assert.Null(selectedPiece);
         }
 
     }
