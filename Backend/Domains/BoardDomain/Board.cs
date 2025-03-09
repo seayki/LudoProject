@@ -10,8 +10,8 @@ namespace Backend.Domains.Board
             
         }
 
-        public required List<TileDomain.TileDomain> Tiles { get; init; }
-        public required Dictionary<ColourEnum, List<TileDomain.ColourTileDomain>> ColourTiles { get; init; }
+        public List<TileDomain.TileDomain> Tiles { get; init; }
+        public Dictionary<ColourEnum, List<TileDomain.ColourTileDomain>> ColourTiles { get; init; }
 
 
     }
