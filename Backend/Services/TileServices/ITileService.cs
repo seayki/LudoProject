@@ -5,7 +5,7 @@ namespace Backend.Services.TileServices
 {
     public interface ITileService
     {
-        Task<PosIndex> CheckNextTile(PosIndex currentPosIndex, ColourEnum pieceColor);
+        Task<PosIndex> CheckNextTile(PosIndex currentPosIndex, ColourEnum pieceColor, Dictionary<DirectionEnum, PosIndex> directions, DirectionEnum direction);
         
 
     }

@@ -8,12 +8,13 @@ namespace Backend.Domains.TileDomain
     {
         public PosIndex posIndex;
         public Dictionary<DirectionEnum, PosIndex> directions = new Dictionary<DirectionEnum, PosIndex>();
-        private readonly ITileService tileService;
+        public readonly ITileService tileService;
 
-        public Tile(ITileService tileService)
+        public Tile(ITileService tileService,PosIndex posIndex, Dictionary<DirectionEnum, PosIndex> directions)
         {
             this.tileService = tileService;
-
+            this.posIndex = posIndex;
+            this.directions = directions;
         }
         
     }
