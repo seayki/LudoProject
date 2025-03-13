@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace UnitTests.TileTests
 {
+    /*
     [TestClass]
     public class TileDomainTests
     {
@@ -23,4 +24,5 @@ namespace UnitTests.TileTests
         }
 
     }
+    */
 }

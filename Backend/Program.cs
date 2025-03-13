@@ -15,7 +15,7 @@ public class Program
         builder.Services.AddSwaggerGen();
 
         //Services
-        builder.Services.AddScoped<IBoardService, BoardService>();
+        //builder.Services.AddScoped<IBoardService, BoardService>();
 
         var app = builder.Build();
 

@@ -2,7 +2,7 @@
 
 namespace Backend.Services.BoardServices
 {
-    public class BoardService : IBoardService
+    public class BoardService //: IBoardService
     {
     }
 }

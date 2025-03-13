@@ -3,6 +3,7 @@ using Backend.Services.PieceService;
 using Backend.Services.PieceService.Interfaces;
 using Common.DTOs;
 using Common.Enums;
+using FluentAssertions;
 
 namespace UnitTests.PieceTests
 {
@@ -28,15 +29,18 @@ namespace UnitTests.PieceTests
 			piece = pieceService.MovePiece(piece, posIndex);
 
 			// Assert
-			Assert.NotNull(piece.PosIndex);
-			Assert.Equal(posIndexIndex, piece.PosIndex.Index);
-			Assert.Equal(posIndexColour, piece.PosIndex.Colour);
+			piece.PosIndex.Should().NotBeNull();
+			piece.PosIndex.Index.Should().Be(posIndexIndex);
+			piece.PosIndex.Colour.Should().Be(posIndexColour);
 		}
 
 		[Theory]
-		[InlineData("IsInPlay", false, typeof(Exception), "Piece is in base, not on board")]
-		[InlineData("IsFinished", true, typeof(Exception), "Piece is in goal, and can't be moved anymore")]
-		public void TestInvalidMovePieceMethod(string parameterCausingInvalidOperation, bool invalidValue, Type expectedExceptionType, string expectedMessage)
+		[InlineData("IsInPlay", false, "Piece is in base, not on board")]
+		[InlineData("IsFinished", true, "Piece is in goal, and can't be moved anymore")]
+		public void TestInvalidMovePieceMethod(
+			string parameterCausingInvalidOperation, 
+			bool invalidValue, 
+			string expectedMessage)
 		{
 			// Arrange
 			var piece = new Piece(1, ColourEnum.Yellow);
@@ -58,23 +62,24 @@ namespace UnitTests.PieceTests
 			}
 
 			// Act
-			var exception = Record.Exception(() => pieceService.MovePiece(piece, posIndex));
+			Action act = () => pieceService.MovePiece(piece, posIndex);
 
 			// Assert
-			Assert.NotNull(exception);
-			Assert.IsType(expectedExceptionType, exception);
-			Assert.Equal(expectedMessage, exception.Message);
+			act.Should().Throw<Exception>().WithMessage(expectedMessage);
 		}
 
-		[Fact]
-		public void TestSuccessfulMovePieceOut()
+		[Theory]
+		[InlineData(ColourEnum.Yellow, 1)]
+		[InlineData(ColourEnum.None, 52)]
+		[InlineData(ColourEnum.None, 891283)]
+		public void TestSuccessfulMovePieceOut(ColourEnum posIndexColour, int posIndexIndex)
 		{
 			// Arrange
 			var piece = new Piece(1, ColourEnum.Yellow);
 			var posIndex = new PosIndex
 			{
-				Colour = ColourEnum.Yellow,
-				Index = 1
+				Colour = posIndexColour,
+				Index = posIndexIndex
 			};
 
 			IPieceService pieceService = new PieceService();
@@ -83,9 +88,65 @@ namespace UnitTests.PieceTests
 			piece = pieceService.MovePieceOut(piece, posIndex);
 
 			// Assert
-			Assert.NotNull(piece.PosIndex);
-			Assert.Equal(posIndex, piece.PosIndex);
-			Assert.True(piece.IsInPlay);
+			piece.PosIndex.Should().BeEquivalentTo(posIndex);
+			piece.IsInPlay.Should().BeTrue();
+		}
+
+		[Fact]
+		public void MovePieceOut_PieceAlreadyOnBoard_ExceptionThrown()
+		{
+			// Arrange
+			var piece = new Piece(1, ColourEnum.Yellow);
+			piece.IsInPlay = true;
+			var posIndex = new PosIndex
+			{
+				Colour = ColourEnum.None,
+				Index = 4
+			};
+
+			IPieceService pieceService = new PieceService();
+
+			// Act
+			Action act = () => piece = pieceService.MovePieceOut(piece, posIndex);
+
+			// Assert
+			act.Should().Throw<Exception>().WithMessage("*Piece is already in play*");
+			piece.PosIndex.Should().BeNull();
+		}
+
+		[Fact]
+		public void ReturnPieceToBase_PieceIsOnBoard_PieceNoLongerInPlay()
+		{
+			// Arrange
+			var piece = new Piece(1, ColourEnum.Yellow);
+			piece.IsInPlay = true;
+
+			IPieceService pieceService = new PieceService();
+
+			// Act
+			piece = pieceService.ReturnPieceToBase(piece);
+
+			// Assert
+			piece.IsInPlay.Should().BeFalse();
+			piece.PosIndex.Should().BeNull();
+		}
+
+		[Fact]
+		public void ReturnPieceToBase_PieceIsNotOnBoard_ExceptionThrown()
+		{
+			// Arrange
+			var piece = new Piece(1, ColourEnum.Yellow);
+			piece.IsInPlay = false;
+
+			IPieceService pieceService = new PieceService();
+
+			// Act
+			Action act = () => piece = pieceService.ReturnPieceToBase(piece);
+
+			// Assert
+			act.Should().Throw<Exception>().WithMessage("*Piece is already in base*");
+			piece.IsInPlay.Should().BeFalse();
+			piece.PosIndex.Should().BeNull();
 		}
 	}
 }
