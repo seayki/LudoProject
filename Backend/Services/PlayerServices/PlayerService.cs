@@ -19,7 +19,9 @@ namespace Backend.Services.PlayerServices
 
         public Piece SelectPiece(Player player, int pieceId)
         {
-            return player.Pieces.FirstOrDefault(p => p.ID == pieceId);
+            var selectedPiece = player.Pieces.FirstOrDefault(p => p.ID == pieceId);
+
+            return selectedPiece;
         }
     }
 }

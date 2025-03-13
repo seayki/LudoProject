@@ -9,6 +9,7 @@ using Backend.Services.PlayerServices;
 using Backend.Services.PlayerServices.Interfaces;
 using Common.Enums;
 using Xunit;
+using FluentAssertions;
 
 namespace UnitTests.PlayerTests
 {
@@ -38,8 +39,8 @@ namespace UnitTests.PlayerTests
             var selectedPiece = _playerService.SelectPiece(player, 2);
 
             // Assert
-            Assert.NotNull(selectedPiece);
-            Assert.Equal(2, selectedPiece.ID);
+            selectedPiece.Should().NotBeNull();
+            selectedPiece.ID.Should().Be(2);
         }
 
         // Test om der retuneres null, hvis der vælges en brik, der ikke findes
@@ -59,7 +60,7 @@ namespace UnitTests.PlayerTests
             var selectedPiece = _playerService.SelectPiece(player, 999);
 
             // Assert
-            Assert.Null(selectedPiece);
+            selectedPiece.Should().BeNull();
         }
 
     }
