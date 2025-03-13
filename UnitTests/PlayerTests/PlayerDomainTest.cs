@@ -6,42 +6,52 @@ using System.Security.Cryptography;
 
 namespace UnitTests.PlayerTests
 {
+
     public class PlayerDomainTest
     {
+        public static IEnumerable<object[]> PlayerConstructorTestData()
+        {
+            yield return new object[] { 1, ColourEnum.Red, new List<Piece> {
+                new Piece(1, ColourEnum.Red),
+                new Piece(2, ColourEnum.Red),
+                new Piece(3, ColourEnum.Red),
+                new Piece(4, ColourEnum.Red)
+            }, false, null, true };
+            yield return new object[] { 2, ColourEnum.Blue, new List<Piece> {
+                new Piece(1, ColourEnum.Blue),
+                new Piece(2, ColourEnum.Blue),
+                new Piece(3, ColourEnum.Blue),
+                new Piece(4, ColourEnum.Blue)
+            }, false, null, true };
+            yield return new object[] { 3, ColourEnum.Green, new List<Piece> {
+                new Piece(1, ColourEnum.Green),
+                new Piece(2, ColourEnum.Green),
+                new Piece(3, ColourEnum.Green),
+                new Piece(4, ColourEnum.Green)
+            }, false, null, true };
+            yield return new object[] { 4, ColourEnum.Yellow, new List<Piece> {
+                new Piece(1, ColourEnum.Yellow),
+                new Piece(2, ColourEnum.Yellow),
+                new Piece(3, ColourEnum.Yellow),
+                new Piece(4, ColourEnum.Yellow),
+            }, false, null, true };
+        }
 
         [Theory]
-        [InlineData(0, ColourEnum.None, false, null, false)]
-        [InlineData(1, ColourEnum.Red, false, null, true)]
-        [InlineData(2, ColourEnum.Blue, false, null, true)]
-        [InlineData(3, ColourEnum.Green, false, null, true)]
-        [InlineData(4, ColourEnum.Yellow, false, null, true)]
-
+        [MemberData(nameof(PlayerConstructorTestData))]
         public void TestPlayerConstructor(
             int id,
             ColourEnum colour,
-            //List<Piece> pieces,
+            List<Piece> pieces,
             bool expectedIsTurn,
             PosIndex? expectedStartTile,
             bool shouldPass)
         {
-            // Arrange
-            var pieces = new List<Piece>();
-            Player? player = null;
-            Exception? caughtException = null;
-            // Act
-            try
-            {
-                player = new Player(id, colour, pieces);
-            }
-            catch (Exception ex)
-            {
-                caughtException = ex;
-            }
             // Assert
             if (shouldPass)
             {
+                var player = new Player(id, colour, pieces);
                 Assert.NotNull(player);
-                Assert.Null(caughtException);
                 Assert.Equal(id, player.Id);
                 Assert.Equal(colour, player.Colour);
                 Assert.Equal(pieces, player.Pieces);
@@ -50,10 +60,31 @@ namespace UnitTests.PlayerTests
             }
             else
             {
-                Assert.Null(player);
-                Assert.NotNull(caughtException);
-                Assert.IsType<Exception>(caughtException);
+                var ex = Assert.Throws<ArgumentException>(() => new Player(id, colour, pieces));
+                Assert.Contains("A player must", ex.Message);
             }
+        }
+        [Fact]
+        public void TestPlayer_InvalidColour()
+        {
+            // Arrange
+            var pieces = new List<Piece>();
+
+            // Act & Assert
+            var exception = Assert.Throws<Exception>(() => new Player(0, ColourEnum.None, pieces));
+            Assert.Equal("A player must have a valid colour", exception.Message);
+        }
+
+        // Test om der er minimum 4 brikker for for en spiller
+        [Fact]
+        public void TestPlayer_InvalidNumberOfPieces()
+        {
+            var pieces = new List<Piece> { new Piece(1, ColourEnum.Red) };
+
+            var exception = Assert.Throws<Exception>(() => new Player(1, ColourEnum.Red, pieces));
+            Assert.Equal("A player must have 4 pieces", exception.Message);
+
+
         }
 
         // Test om brikker kan flyttes ud

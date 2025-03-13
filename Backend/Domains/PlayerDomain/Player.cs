@@ -15,6 +15,15 @@ namespace Backend.Domains.PlayerDomain
 
         public Player(int id, ColourEnum colour, List<Piece> pieces)
         {
+            if (colour == ColourEnum.None)
+            {
+                throw new Exception("A player must have a valid colour");
+            }
+            if (pieces.Count != 4)
+            {
+                throw new Exception("A player must have 4 pieces");
+            }
+
             Id = id;
             Colour = colour;
             Pieces = pieces;
