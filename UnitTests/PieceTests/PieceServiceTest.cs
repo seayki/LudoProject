@@ -17,6 +17,7 @@ namespace UnitTests.PieceTests
 		{
 			// Arrange
 			var piece = new Piece(1, ColourEnum.Yellow);
+			piece.IsInPlay = true;
 			var posIndex = new PosIndex
 			{
 				Colour = posIndexColour,
@@ -44,6 +45,7 @@ namespace UnitTests.PieceTests
 		{
 			// Arrange
 			var piece = new Piece(1, ColourEnum.Yellow);
+			piece.IsInPlay = true;
 			var posIndex = new PosIndex
 			{
 				Colour = ColourEnum.None,
