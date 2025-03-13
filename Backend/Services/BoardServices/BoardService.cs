@@ -13,17 +13,17 @@ namespace Backend.Services.BoardServices
             throw new NotImplementedException();
         }
 
-        Task<bool> IBoardService.GetGoalTilePieces(List<ColourTileDomain> colourTilesOnBoard, ColourEnum colour, int pieceId)
+        Task<bool> IBoardService.GetGoalTilePieces(List<ColourTile> colourTilesOnBoard, ColourEnum colour, int pieceId)
         {
             throw new NotImplementedException();
         }
 
-        Task<PosIndex> IBoardService.GetStartTilePos(List<ColourTileDomain> tilesOnBoard, ColourEnum colour)
+        Task<PosIndex> IBoardService.GetStartTilePos(List<ColourTile> tilesOnBoard, ColourEnum colour)
         {
             throw new NotImplementedException();
         }
 
-        Task<PosIndex> IBoardService.GetTileEndPos(List<TileDomain> tilesOnBoard, PosIndex piecePosIndex, ColourEnum pieceColour, int diceRoll)
+        Task<PosIndex> IBoardService.GetTileEndPos(List<Tile> tilesOnBoard, PosIndex piecePosIndex, ColourEnum pieceColour, int diceRoll)
         {
             throw new NotImplementedException();
         }
