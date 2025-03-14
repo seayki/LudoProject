@@ -10,6 +10,8 @@ namespace Common.Enums
     {
         Forward=0,
         Backward=1,
+        GoToColourTiles=2,
+
 
     }
 }
