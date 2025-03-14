@@ -7,6 +7,6 @@ namespace Backend.Services.PlayerServices.Interfaces
     {
         //Player SelectPiece(int pieceId);
         Piece? SelectPiece(Player player, int pieceId);
-        Player GetBasePiece();
+        Piece GetBasePiece();
     }
 }
