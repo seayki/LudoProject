@@ -42,7 +42,7 @@ namespace UnitTests.GameSetupTest
 
 			// Assert
 			result.Should().HaveCount(4);
-			result.Select(p => p.Id).Should().Equal(4, 2, 3, 1);
+			result.Select(p => p.Id).Should().Equal(4, 1, 2, 3);
 		}
 
 		[Fact]
@@ -87,18 +87,20 @@ namespace UnitTests.GameSetupTest
 
 			// Assert
 			result.Should().HaveCount(4);
-			result.Select(p => p.Id).Should().Equal(2, 4, 3, 1);
+			result.Select(p => p.Id).Should().Equal(2, 3, 4, 1);
 		}
 
 		private Player CreateTestPlayer(int id, ColourEnum colour)
 		{
-			var player = new Player(id, colour, new List<Piece>());
+			var pieces = new List<Piece>();
 
 			// Add 4 Pieces to the player's list
 			for (int i = 0; i < 4; i++)
 			{
-				player.Pieces.Add(new Piece(i, colour));
+				pieces.Add(new Piece(i, colour));
 			}
+
+			var player = new Player(id, colour, pieces);
 
 			return player;
 		}
