@@ -16,6 +16,5 @@ namespace Backend.Domains.TileDomain
             this.posIndex = posIndex;
             this.directions = directions;
         }
-        
     }
 }

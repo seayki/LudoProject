@@ -13,6 +13,7 @@
   <ItemGroup>
     <Folder Include="Domains\BoardDomain\Interfaces\" />
     <Folder Include="Services\BoardServices\Interfaces\" />
+    <Folder Include="Services\GameManagerServices\" />
   </ItemGroup>
 
   <ItemGroup>
