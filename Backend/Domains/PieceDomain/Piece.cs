@@ -18,7 +18,12 @@ namespace Backend.Domains.PieceDomain
 			IsFinished = false;
 		}
 
-		public int ID { get; }
+        public Piece()
+        {
+            
+        }
+
+        public int ID { get; }
 		public ColourEnum Colour { get; }
 		public PosIndex? PosIndex { get; set; }
 		public bool IsInPlay { get; set; }
