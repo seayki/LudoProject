@@ -18,7 +18,7 @@ namespace Backend.Services.BoardServices
             throw new NotImplementedException();
         }
 
-        Task<PosIndex> IBoardService.GetStartTilePos(List<ColourTile> tilesOnBoard, ColourEnum colour)
+        Task<PosIndex> IBoardService.GetStartTilePos(List<Tile> tilesOnBoard, ColourEnum colour)
         {
             throw new NotImplementedException();
         }

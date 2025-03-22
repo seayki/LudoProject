@@ -6,16 +6,16 @@ namespace Backend.Domains.TileDomain
 {
     public class ColourTile : Tile
     {
-        public ColourEnum colour;
-        public bool isGoalTile;
-        public bool isStartTile;
+        public ColourEnum Colour { get; init; }
+        public bool IsGoalTile { get; set; }
+        public bool IsStartTile { get; set; }
         private readonly IColourTileService colourTileService;
 
-        public ColourTile(ITileService tileService, PosIndex posIndex, Dictionary<DirectionEnum, PosIndex> directions, IColourTileService colourTileService) : base(tileService, posIndex, directions)
+        public ColourTile(ColourEnum colour, bool isGoalTile, bool isStartTile, PosIndex posIndex, Dictionary<DirectionEnum, PosIndex> directions) : base(isStartTile = false, posIndex, directions)
         {
-            this.colourTileService = colourTileService;
+            this.Colour = colour;
+            this.IsGoalTile = isGoalTile;
+            this.colourTileService = new ColourTileService();
         }
-
-
     }
 }

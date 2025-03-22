@@ -6,15 +6,17 @@ namespace Backend.Domains.TileDomain
 {
     public class Tile
     {
-        public PosIndex posIndex;
-        public Dictionary<DirectionEnum, PosIndex> directions = new Dictionary<DirectionEnum, PosIndex>();
+        public PosIndex PosIndex { get; init; }
+        public Dictionary<DirectionEnum, PosIndex> Directions { get; init; }
+        public bool IsStartTile { get; set; }
         public readonly ITileService tileService;
 
-        public Tile(ITileService tileService, PosIndex posIndex, Dictionary<DirectionEnum, PosIndex> directions)
+        public Tile(bool isStartTile, PosIndex posIndex, Dictionary<DirectionEnum, PosIndex> directions)
         {
-            this.tileService = tileService;
-            this.posIndex = posIndex;
-            this.directions = directions;
+            this.tileService = new TileService();
+            this.PosIndex = posIndex;
+            this.Directions = directions;
+            this.IsStartTile = isStartTile;
         }
 
     }
