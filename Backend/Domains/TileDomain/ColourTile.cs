@@ -8,10 +8,9 @@ namespace Backend.Domains.TileDomain
     {
         public ColourEnum Colour { get; init; }
         public bool IsGoalTile { get; set; }
-        public bool IsStartTile { get; set; }
         private readonly IColourTileService colourTileService;
 
-        public ColourTile(ColourEnum colour, bool isGoalTile, bool isStartTile, PosIndex posIndex, Dictionary<DirectionEnum, PosIndex> directions) : base(isStartTile = false, posIndex, directions)
+        public ColourTile(ColourEnum colour, bool isGoalTile, bool isStartTile, PosIndex posIndex, Dictionary<DirectionEnum, PosIndex> directions) : base(posIndex, directions)
         {
             this.Colour = colour;
             this.IsGoalTile = isGoalTile;

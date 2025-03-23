@@ -17,11 +17,11 @@ namespace UnitTests.BoardTests
             var result = new Board(length, zoneLength, players);
 
             //Assert
-            Assert.Equal(length, result.Tiles.Count);
-            Assert.Equal(players.Count, result.Tiles.Where(x => x.IsStartTile == true).Count());
+            Assert.Equal(length - players.Count, result.Tiles.Count);
             Assert.Equal(players.Count, result.ColourTiles.Count);
             Assert.True(result.ColourTiles.Values.All(x => x.Count == zoneLength));
             Assert.True(result.ColourTiles.Values.All(x => x.Last().IsGoalTile == true));
+            Assert.True(result.StartTiles.All(x => players.Contains(x.Colour)));
         }
 
     }

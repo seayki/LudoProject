@@ -12,11 +12,11 @@ namespace Backend.Domains.Board
 
         public Board(int numberOfTiles, int lengthOfColourZone, List<ColourEnum> playerColours)
         {
-            for (int i = 0; i < numberOfTiles - playerColours.Count; i++)
+            for (int i = 0; i < numberOfTiles; i++)
             {
                 var index = new PosIndex(i, ColourEnum.None);
 
-                Tiles.Add(new Tile(false, index, new Dictionary<DirectionEnum, PosIndex>()));
+                Tiles.Add(new Tile(index, new Dictionary<DirectionEnum, PosIndex>()));
             }
 
             for (int i = 0; i < Tiles.Count; i++)
@@ -29,13 +29,6 @@ namespace Backend.Domains.Board
                 {
                     Tiles.ElementAt(i).Directions.Add(DirectionEnum.Forward, Tiles.ElementAt(i + 1).PosIndex);
                 }
-            }
-
-            int lengthBetweenStartTiles = numberOfTiles / playerColours.Count;
-
-            for (int i = 0; i < playerColours.Count; i++)
-            {
-                Tiles.ElementAt(lengthBetweenStartTiles * i).IsStartTile = true;
             }
 
             foreach (var playerColour in playerColours)
@@ -67,6 +60,17 @@ namespace Backend.Domains.Board
                 }
 
                 ColourTiles.Add(playerColour, colourTiles);
+            }
+
+            int lengthBetweenStartTiles = numberOfTiles / playerColours.Count;
+
+            for (int i = 0; i < playerColours.Count; i++)
+            {
+                var result = ColourTiles.TryGetValue(playerColours.ElementAt(i), out var colourZone);
+                var tile = Tiles.ElementAt(lengthBetweenStartTiles * i);
+                tile.Directions.Add(DirectionEnum.ToColourZone, colourZone!.First().PosIndex);
+                StartTiles.Add(new ColourTile(playerColours.ElementAt(i), false, true, tile.PosIndex, tile.Directions));
+                Tiles.RemoveAt(i);
             }
         }
     }

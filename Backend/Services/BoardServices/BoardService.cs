@@ -18,9 +18,15 @@ namespace Backend.Services.BoardServices
             throw new NotImplementedException();
         }
 
-        Task<PosIndex> IBoardService.GetStartTilePos(List<Tile> tilesOnBoard, ColourEnum colour)
+        Task<PosIndex> IBoardService.GetStartTilePos(List<ColourTile> startTiles, ColourEnum colour)
         {
-            throw new NotImplementedException();
+
+            var startTile = startTiles.Find(x => x.Colour == colour);
+            if (startTile is null)
+                throw new Exception($"Could not find startTile for player: {colour.ToString()}");
+
+            var startPosIndex = startTile.PosIndex;
+            return Task.FromResult(startPosIndex);
         }
 
         Task<PosIndex> IBoardService.GetTileEndPos(List<Tile> tilesOnBoard, PosIndex piecePosIndex, ColourEnum pieceColour, int diceRoll)
