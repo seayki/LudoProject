@@ -12,6 +12,7 @@ namespace Backend.Domains.PlayerDomain
         public List<Piece> Pieces { get; init; }
         public bool IsTurn { get; set; }
         public PosIndex? StartTile { get; set; }
+        public int LastRoll { get; set; }
 
         public Player(int id, ColourEnum colour, List<Piece> pieces)
         {

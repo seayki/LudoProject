@@ -6,23 +6,20 @@ namespace Backend.Domains.GameManagerDomain
 {
     public class GameManager
     {
-        public Guid GameId { get; set; }  = new Guid();
         public Board Board { get; set; }
         public List<Player> Players { get; set; } = new List<Player>();
         public Player CurrentPlayer { get; set; }
-        public Dice Dice { get; set; } = new();
 
         public GameManager()
         {
 
         }
-
         
         public void CreateNewGame(int playerCount, int boardSize)
         {
             this.Board = new Board(boardSize);
             this.AddPlayers(playerCount);   
-        }   
+        }
 
         public void AddPlayers(int playerCount)
         {
@@ -32,25 +29,39 @@ namespace Backend.Domains.GameManagerDomain
             }
         }
 
-        public void StartGame()
-        {
-            this.CurrentPlayer = this.Players[0];
-        }
-
         public void RollForPlayerOrder()
         {
             Players.ForEach(player => player.LastRoll = Dice.Roll());
+            Players.Sort((a, b) => a.LastRoll.CompareTo(b.LastRoll));
 
-            Players.Sort(a => a.LastRoll);
-            if (Players[0].LastRoll == Players[1].LastRoll)
+            while (true)
             {
-                RollForPlayerOrder();
+                int highestRoll = Players[^1].LastRoll;
+                var tiedPlayers = Players.Where(p => p.LastRoll == highestRoll).ToList();
+
+                if (tiedPlayers.Count == 1)
+                    break;
+
+                tiedPlayers.ForEach(player => player.LastRoll = Dice.Roll());
+                Players.Sort((a, b) => a.LastRoll.CompareTo(b.LastRoll)); 
             }
-            StartGame();
+            this.CurrentPlayer = this.Players[^1]; 
+        }
+
+        public void TakeTurn(int roll, Guid pieceId)
+        {
+            this.CurrentPlayer.IsTurn = true;
+            this.CurrentPlayer.LastRoll = roll;
+
+            // Board service gave all possible moves and player selected one    
+            // Move said piece 
+            EndTurn();
         }
 
         public void EndTurn()
         {
+            this.CurrentPlayer.IsTurn = false;
+            this.CurrentPlayer.LastRoll = 0;
             int index = Players.IndexOf(CurrentPlayer);
             if (index == Players.Count - 1)
             {
@@ -60,24 +71,20 @@ namespace Backend.Domains.GameManagerDomain
             {
                 CurrentPlayer = Players[index + 1];
             }
-            if (CurrentPlayer.IsFinished)
+            if (CurrentPlayer.HasFinished)
             {
                 EndTurn();
             }
-        }
-
-        public void TakeTurn(int diceRoll)
-        {
-            
+            TakeTurn();
         }
 
     }
 
-    public class Dice
+    public static class Dice
     {
         private static Random random = new Random();
 
-        public int Roll()
+        public static int Roll()
         {
             return random.Next(1, 7);
         }
