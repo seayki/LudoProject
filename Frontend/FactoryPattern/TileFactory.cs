@@ -53,6 +53,10 @@ namespace Frontend.FactoryPattern
                     sr.SetSprite("Box", 0, tileScale, Color.Red,content);
                     break;
 
+                case TileColor.Yellow:
+                    sr.SetSprite("Box", 0, tileScale, Color.Yellow, content);
+                    break;
+
                 case TileColor.None:
                     sr.SetSprite("Box", 0, tileScale, Color.White,content);
                     break;

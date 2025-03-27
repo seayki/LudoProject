@@ -50,7 +50,15 @@ namespace Frontend
 
                     foreach (var go in GameWorld.Instance.tiles)
                     {
-                        go.Value.Start();
+                        go.Start();
+                    }
+
+                    foreach (var go in GameWorld.Instance.colorTiles)
+                    {
+                        foreach (var item in go.Value)
+                        {
+                            item.Start();
+                        } 
                     }
                     break;
 
@@ -70,7 +78,15 @@ namespace Frontend
 
                     foreach (var go in GameWorld.Instance.tiles)
                     {
-                        go.Value.Update(gameTime);
+                        go.Update(gameTime);
+                    }
+
+                    foreach (var go in GameWorld.Instance.colorTiles)
+                    {
+                        foreach (var item in go.Value)
+                        {
+                            item.Update(gameTime);
+                        }
                     }
                     break;
 
@@ -94,10 +110,18 @@ namespace Frontend
 
                     foreach (var go in GameWorld.Instance.tiles)
                     {
-                        go.Value.Draw(spriteBatch);
+                        go.Draw(spriteBatch);
                     }
 
-                break;
+                    foreach (var go in GameWorld.Instance.colorTiles)
+                    {
+                        foreach (var item in go.Value)
+                        {
+                            item.Draw(spriteBatch);
+                        }
+                    }
+
+                    break;
 
             }
         }

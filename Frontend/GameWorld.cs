@@ -17,7 +17,7 @@ namespace Frontend
         public Vector2 screenSize;
 
         public List<GameObject> gameObjects;
-        public Dictionary<int, GameObject> tiles = new Dictionary<int, GameObject>();
+        public List <GameObject> tiles = new List<GameObject>();
         private GameStateManager stateManager;
 
 
@@ -25,6 +25,10 @@ namespace Frontend
         private int currentTilesCount;
 
         private int tileSpacing = 70;
+
+        private List<TileColor> playerColors;
+
+        public Dictionary<TileColor, List<GameObject>> colorTiles;
 
         public static GameWorld Instance
         {
@@ -55,6 +59,10 @@ namespace Frontend
             stateManager = new GameStateManager();
 
             gameObjects = new List<GameObject>();
+
+            colorTiles = new Dictionary<TileColor, List<GameObject>>();
+
+            playerColors = new List<TileColor>() {TileColor.Green, TileColor.Yellow, TileColor.Blue ,TileColor.Red};
 
            
         }
@@ -128,7 +136,7 @@ namespace Frontend
 
             // FOR SHOWCASE USE ONLY
 
-            _spriteBatch.Draw(box, tiles[5].Transform.Position, null, Color.Green, 0, new Vector2(box.Width / 2, box.Height / 2), new Vector2(0.1f, 0.1f), SpriteEffects.None, 0);
+            _spriteBatch.Draw(box, tiles[46].Transform.Position, null, Color.Green, 0, new Vector2(box.Width / 2, box.Height / 2), new Vector2(0.1f, 0.1f), SpriteEffects.None, 0);
 
 
             //_spriteBatch.Draw(box, new Vector2(500, 500), null, Color.Red, 0, new Vector2(0, 0), new Vector2(0.2f, 0.2f), SpriteEffects.None, 0);
@@ -143,12 +151,12 @@ namespace Frontend
 
         void MakeClassicTileMap()
         {
-            for (int i = 0; i < 5; i++)
+            for (int i = 0; i < 4; i++)
             {
                 GameObject go = TileFactory.Instance.Create(TileColor.None, Content);
-                go.Transform.Position = new Vector2(50 + i * tileSpacing, 450);
+                go.Transform.Position = new Vector2(50+tileSpacing + i * tileSpacing, 450);
 
-                tiles.Add(i, go);
+                tiles.Add(go);
             }
           
             Vector2 pos1 = tiles[tiles.Count-1].Transform.Position; 
@@ -158,7 +166,7 @@ namespace Frontend
                 GameObject go = TileFactory.Instance.Create(TileColor.None, Content);
                 go.Transform.Position = new Vector2(pos1.X+tileSpacing, pos1.Y - tileSpacing * i);
 
-                tiles.Add(tiles.Count, go);
+                tiles.Add(go);
 
             }
 
@@ -169,7 +177,7 @@ namespace Frontend
                 GameObject go = TileFactory.Instance.Create(TileColor.None, Content);
                 go.Transform.Position = new Vector2(pos2.X+tileSpacing*i, pos2.Y-tileSpacing);
 
-                tiles.Add(tiles.Count, go);
+                tiles.Add(go);
             }
 
 
@@ -181,7 +189,7 @@ namespace Frontend
                 GameObject go = TileFactory.Instance.Create(TileColor.None, Content);
                 go.Transform.Position = new Vector2(pos3.X+tileSpacing, pos3.Y + tileSpacing * i);
 
-                tiles.Add(tiles.Count, go);
+                tiles.Add(go);
 
             }
 
@@ -192,7 +200,7 @@ namespace Frontend
                 GameObject go = TileFactory.Instance.Create(TileColor.None, Content);
                 go.Transform.Position = new Vector2(pos4.X + i * tileSpacing, pos4.Y+tileSpacing);
 
-                tiles.Add(tiles.Count, go);
+                tiles.Add(go);
             }
 
 
@@ -203,7 +211,7 @@ namespace Frontend
                 GameObject go = TileFactory.Instance.Create(TileColor.None, Content);
                 go.Transform.Position = new Vector2(pos5.X + tileSpacing, pos5.Y + tileSpacing * i);
 
-                tiles.Add(tiles.Count, go);
+                tiles.Add(go);
 
             }
 
@@ -214,7 +222,7 @@ namespace Frontend
                 GameObject go = TileFactory.Instance.Create(TileColor.None, Content);
                 go.Transform.Position = new Vector2(pos6.X- i * tileSpacing, pos6.Y+tileSpacing);
 
-                tiles.Add(tiles.Count, go);
+                tiles.Add(go);
             }
 
             Vector2 pos7 = tiles[tiles.Count - 1].Transform.Position;
@@ -224,7 +232,7 @@ namespace Frontend
                 GameObject go = TileFactory.Instance.Create(TileColor.None, Content);
                 go.Transform.Position = new Vector2(pos7.X-tileSpacing, pos7.Y + i* tileSpacing);
 
-                tiles.Add(tiles.Count, go);
+                tiles.Add(go);
             }
 
             Vector2 pos8 = tiles[tiles.Count - 1].Transform.Position;
@@ -234,7 +242,7 @@ namespace Frontend
                 GameObject go = TileFactory.Instance.Create(TileColor.None, Content);
                 go.Transform.Position = new Vector2(pos8.X -tileSpacing*i, pos8.Y+tileSpacing);
 
-                tiles.Add(tiles.Count, go);
+                tiles.Add(go);
 
             }
 
@@ -245,7 +253,7 @@ namespace Frontend
                 GameObject go = TileFactory.Instance.Create(TileColor.None, Content);
                 go.Transform.Position = new Vector2(pos9.X-tileSpacing, pos9.Y - i * tileSpacing);
 
-                tiles.Add(tiles.Count, go);
+                tiles.Add(go);
             }
 
             Vector2 pos10 = tiles[tiles.Count - 1].Transform.Position;
@@ -255,22 +263,96 @@ namespace Frontend
                 GameObject go = TileFactory.Instance.Create(TileColor.None, Content);
                 go.Transform.Position = new Vector2(pos10.X - i * tileSpacing, pos10.Y - tileSpacing);
 
-                tiles.Add(tiles.Count, go);
+                tiles.Add(go);
             }
 
             Vector2 pos11 = tiles[tiles.Count - 1].Transform.Position;
 
-            for (int i = 0; i < 2; i++)
+            for (int i = 0; i < 3; i++)
             {
                 GameObject go = TileFactory.Instance.Create(TileColor.None, Content);
                 go.Transform.Position = new Vector2(pos11.X- tileSpacing, pos11.Y - tileSpacing * i);
 
-                tiles.Add(tiles.Count, go);
+                tiles.Add(go);
 
             }
 
+           SpriteRenderer startTile1= (SpriteRenderer)tiles[0].GetComponent<SpriteRenderer>();
 
-         
+            startTile1.Color = Color.Red;
+
+
+            SpriteRenderer startTile2 = (SpriteRenderer)tiles[12].GetComponent<SpriteRenderer>();
+
+            startTile2.Color = Color.Green;
+
+            SpriteRenderer startTile3 = (SpriteRenderer)tiles[24].GetComponent<SpriteRenderer>();
+
+            startTile3.Color = Color.Yellow;
+
+
+            SpriteRenderer startTile4 = (SpriteRenderer)tiles[36].GetComponent<SpriteRenderer>();
+
+            startTile4.Color = Color.Blue;
+
+
+            CreateColorTiles(playerColors);
+
+
         }
+
+
+
+        private void CreateColorTiles(List<TileColor> tileColors)
+        {
+            for (int i = 0; i < tileColors.Count; i++)
+            {
+
+
+                List<GameObject> colorTileGameObjects = new List<GameObject>();
+                Vector2 startColorPos = tiles[10+i*12].Transform.Position;
+                for (int j = 0; j < 5; j++)
+                {
+                    GameObject go = TileFactory.Instance.Create(tileColors[i], Content);
+
+                    switch (i)
+                    {
+                       case 0:
+                            go.Transform.Position = new Vector2(startColorPos.X, startColorPos.Y + tileSpacing + tileSpacing * j);
+                            break;
+
+                       case 1:
+                            go.Transform.Position = new Vector2(startColorPos.X - tileSpacing - tileSpacing * j, startColorPos.Y);
+                            break;
+                       case 2:
+                            go.Transform.Position = new Vector2(startColorPos.X, startColorPos.Y - tileSpacing - tileSpacing * j);
+                            break;
+                       case 3:
+                            go.Transform.Position = new Vector2(startColorPos.X + tileSpacing + tileSpacing * j, startColorPos.Y);
+                            break;
+
+
+
+                        default:
+                            break;
+                    }
+                    
+                    
+
+
+                    colorTileGameObjects.Add(go);
+
+                }
+
+                colorTiles.Add(tileColors[i], colorTileGameObjects);
+
+            }
+            
+
+           
+        }
+
+
+
     }
 }
