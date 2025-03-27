@@ -26,7 +26,7 @@ namespace Frontend
         // constructoren der initializer stadiet som spillet starter i.
         public GameStateManager()
         {
-            currentState = GameState.Playing;
+            currentState = GameState.Start;
         }
 
         //ChangeGameState tillader at man kan ændre på stadiet fx Menu til Playing, eller omvendt.
@@ -39,11 +39,39 @@ namespace Frontend
         {
             switch (currentState)
             {
+
+                case GameState.Start:
+
+                    foreach (var go in GameWorld.Instance.gameObjects_MainMenu)
+                    {
+                        go.Start();
+                    }
+                    foreach (var item in GameWorld.Instance.buttons_MainMenu)
+                    {
+                        item.LoadContent();
+                    }
+                    break;
+
+                case GameState.ChooseColor:
+
+                    foreach (var go in GameWorld.Instance.gameObjects_ChooseColor)
+                    {
+                        go.Start();
+                    }
+
+
+                    foreach (var item in GameWorld.Instance.buttons_ColorSelection)
+                    {
+                        item.LoadContent();
+                    }
+
+                    break;
+
                 case GameState.Playing:
 
                  
 
-                    foreach (GameObject go in GameWorld.Instance.gameObjects)
+                    foreach (GameObject go in GameWorld.Instance.gameObjects_Playing)
                     {
                         go.Start();
                     }
@@ -60,6 +88,11 @@ namespace Frontend
                             item.Start();
                         } 
                     }
+
+                    foreach(var item in GameWorld.Instance.buttons_Playing)
+                    {
+                        item.LoadContent();
+                    }
                     break;
 
             }
@@ -69,11 +102,39 @@ namespace Frontend
         {
             switch (currentState)
             {
+                case GameState.Start:
+
+                    foreach (var go in GameWorld.Instance.gameObjects_MainMenu)
+                    {
+                        go.Update(gameTime);
+                    }
+
+                    foreach (var item in GameWorld.Instance.buttons_MainMenu)
+                    {
+                        item.Update();
+                    }
+                    break;
+
+
+                case GameState.ChooseColor:
+
+                    foreach (var go in GameWorld.Instance.gameObjects_ChooseColor)
+                    {
+                        go.Update(gameTime);
+                    }
+
+
+                    foreach (var item in GameWorld.Instance.buttons_ColorSelection)
+                    {
+                        item.Update();
+                    }
+
+                    break;
 
                 case GameState.Playing:
-                    for (int i = 0; i < GameWorld.Instance.gameObjects.Count; i++)
+                    for (int i = 0; i < GameWorld.Instance.gameObjects_Playing.Count; i++)
                     {
-                        GameWorld.Instance.gameObjects[i].Update(gameTime);
+                        GameWorld.Instance.gameObjects_Playing[i].Update(gameTime);
                     }
 
                     foreach (var go in GameWorld.Instance.tiles)
@@ -88,6 +149,11 @@ namespace Frontend
                             item.Update(gameTime);
                         }
                     }
+
+                    foreach(var item in GameWorld.Instance.buttons_Playing)
+                    {
+                        item.Update();
+                    }    
                     break;
 
             }
@@ -99,11 +165,50 @@ namespace Frontend
             switch (currentState)
             {
 
+                case GameState.Start:
+
+                    foreach (var go in GameWorld.Instance.gameObjects_MainMenu)
+                    {
+                        go.Draw(spriteBatch);
+                    }
+
+
+                    foreach (var item in GameWorld.Instance.buttons_MainMenu)
+                    {
+                        item.Draw(spriteBatch);
+                    }
+                    break;
+
+
+
+                case GameState.ChooseColor:
+
+                    foreach (var go in GameWorld.Instance.gameObjects_ChooseColor)
+                    {
+                        go.Draw(spriteBatch);
+                    }
+
+                    foreach (var item in GameWorld.Instance.buttons_ColorSelection)
+                    {
+                        item.Draw(spriteBatch);
+                    }
+
+                    break;
                 // Alt draw kode skal ind her
                 case GameState.Playing:
+                    spriteBatch.Draw(GameWorld.Instance.box, new Vector2(20, 130), null, Color.Red, 0, new Vector2(0, 0), new Vector2(0.8f, 0.8f), SpriteEffects.None, 0);
 
 
-                    foreach (GameObject go in GameWorld.Instance.gameObjects)
+                    spriteBatch.Draw(GameWorld.Instance.box, new Vector2(20, 655), null, Color.Blue, 0, new Vector2(0, 0), new Vector2(0.8f, 0.8f), SpriteEffects.None, 0);
+
+
+                    spriteBatch.Draw(GameWorld.Instance.box, new Vector2(665, 130), null, Color.Green, 0, new Vector2(0, 0), new Vector2(0.8f, 0.8f), SpriteEffects.None, 0);
+
+                    spriteBatch.Draw(GameWorld.Instance.box, new Vector2(665, 655), null, Color.Yellow, 0, new Vector2(0, 0), new Vector2(0.8f, 0.8f), SpriteEffects.None, 0);
+
+
+
+                    foreach (GameObject go in GameWorld.Instance.gameObjects_Playing)
                     {
                         go.Draw(spriteBatch);
                     }
@@ -119,6 +224,11 @@ namespace Frontend
                         {
                             item.Draw(spriteBatch);
                         }
+                    }
+
+                    foreach (var item in GameWorld.Instance.buttons_Playing)
+                    {
+                        item.Draw(spriteBatch);
                     }
 
                     break;

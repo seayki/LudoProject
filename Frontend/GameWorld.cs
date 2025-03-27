@@ -1,4 +1,5 @@
-﻿using Frontend.FactoryPattern;
+﻿using Frontend.ControllerPattern;
+using Frontend.FactoryPattern;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -13,12 +14,18 @@ namespace Frontend
         private GraphicsDeviceManager _graphics;
         public SpriteBatch _spriteBatch;
         private Texture2D board;
-        private Texture2D box;
+        public Texture2D box;
         public Vector2 screenSize;
 
-        public List<GameObject> gameObjects;
+        public List<GameObject> gameObjects_Playing;
+        public List<GameObject> gameObjects_ChooseColor;
+        public List<GameObject> gameObjects_MainMenu;
+        public List<Button> buttons_MainMenu;
+        public List<Button> buttons_ColorSelection;
+        public List<Button> buttons_Playing;
+
         public List <GameObject> tiles = new List<GameObject>();
-        private GameStateManager stateManager;
+        public GameStateManager stateManager;
 
 
         private static GameWorld instance;
@@ -58,12 +65,17 @@ namespace Frontend
 
             stateManager = new GameStateManager();
 
-            gameObjects = new List<GameObject>();
+            gameObjects_MainMenu = new List<GameObject>();
+
+            gameObjects_Playing = new List<GameObject>();
 
             colorTiles = new Dictionary<TileColor, List<GameObject>>();
 
             playerColors = new List<TileColor>() {TileColor.Green, TileColor.Yellow, TileColor.Blue ,TileColor.Red};
 
+            buttons_MainMenu = new List<Button>();
+            buttons_Playing = new List<Button>();
+            buttons_ColorSelection = new List<Button>();
            
         }
 
@@ -71,10 +83,10 @@ namespace Frontend
         {
             // TODO: Add your initialization logic here
 
-
+            buttons_MainMenu.Add(new Button("Box", new StartGameButton(), new Vector2(400, 400),new Vector2(0.4f,0.2f)));
           
 
-            foreach (GameObject go in gameObjects)
+            foreach (GameObject go in gameObjects_Playing)
             {
                 go.Awake();
             }
@@ -95,7 +107,7 @@ namespace Frontend
 
             MakeClassicTileMap();
 
-            Debug.WriteLine(tiles.Count);
+           
             stateManager.Loadcontent();
             // TODO: use this.Content to load your game content here
         }
@@ -119,24 +131,14 @@ namespace Frontend
             GraphicsDevice.Clear(Color.Black);
 
             _spriteBatch.Begin(samplerState: SamplerState.PointClamp);
-            _spriteBatch.Draw(box, new Vector2(20, 130), null, Color.Red, 0, new Vector2(0, 0), new Vector2(0.8f, 0.8f), SpriteEffects.None, 0);
-
-
-            _spriteBatch.Draw(box, new Vector2(20, 655), null, Color.Blue, 0, new Vector2(0, 0), new Vector2(0.8f, 0.8f), SpriteEffects.None, 0);
-
-
-            _spriteBatch.Draw(box, new Vector2(665, 130), null, Color.Green, 0, new Vector2(0, 0), new Vector2(0.8f, 0.8f), SpriteEffects.None, 0);
-
-            _spriteBatch.Draw(box, new Vector2(665, 655), null, Color.Yellow, 0, new Vector2(0, 0), new Vector2(0.8f, 0.8f), SpriteEffects.None, 0);
-
-
+         
             
 
             stateManager.Draw(_spriteBatch);
 
             // FOR SHOWCASE USE ONLY
 
-            _spriteBatch.Draw(box, tiles[46].Transform.Position, null, Color.Green, 0, new Vector2(box.Width / 2, box.Height / 2), new Vector2(0.1f, 0.1f), SpriteEffects.None, 0);
+           // _spriteBatch.Draw(box, tiles[46].Transform.Position, null, Color.Green, 0, new Vector2(box.Width / 2, box.Height / 2), new Vector2(0.1f, 0.1f), SpriteEffects.None, 0);
 
 
             //_spriteBatch.Draw(box, new Vector2(500, 500), null, Color.Red, 0, new Vector2(0, 0), new Vector2(0.2f, 0.2f), SpriteEffects.None, 0);
