@@ -12,7 +12,7 @@ namespace Frontend.ControllerPattern
 
         public void DoAction()
         {
-            GameWorld.Instance.stateManager.ChangeGameState(GameState.Playing);
+            GameWorld.Instance.stateManager.ChangeGameState(GameState.ChooseColor);
         }
     }
 }

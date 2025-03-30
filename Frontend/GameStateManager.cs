@@ -33,6 +33,7 @@ namespace Frontend
         public void ChangeGameState(GameState newState)
         {
             currentState = newState;
+            Loadcontent();
         }
 
         public void Loadcontent()
@@ -53,7 +54,7 @@ namespace Frontend
                     break;
 
                 case GameState.ChooseColor:
-
+                    
                     foreach (var go in GameWorld.Instance.gameObjects_ChooseColor)
                     {
                         go.Start();

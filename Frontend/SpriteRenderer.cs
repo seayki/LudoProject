@@ -25,7 +25,7 @@ namespace Frontend
 
         public override void Start()
         {
-            Origin = new Vector2(Sprite.Width / 2, Sprite.Height / 2);
+            Origin = new Vector2(Sprite.Width*Scale / 2, Sprite.Height*Scale / 2);
         }
 
         public void SetSprite(string spriteName, float rotate, float scale,Color color,ContentManager content)

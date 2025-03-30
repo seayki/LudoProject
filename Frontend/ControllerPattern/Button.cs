@@ -57,8 +57,10 @@ namespace Frontend.ControllerPattern
         {
             sprite = GameWorld.Instance.Content.Load<Texture2D>(spriteName);
             
-            rectangle = new Rectangle((int)position.X, (int)position.Y, (int)(sprite.Width*Scale.X), (int)(sprite.Height*Scale.Y));
+            rectangle = new Rectangle((int)(position.X - sprite.Width / 2), (int)(position.Y - sprite.Height / 2), (int)(sprite.Width*Scale.X), (int)(sprite.Height*Scale.Y));
             origin = new Vector2(sprite.Width*Scale.X / 2, sprite.Height*Scale.Y / 2);
+
+            Debug.WriteLine("width:"+(int)(sprite.Width*Scale.X) + "height:" + (int)(sprite.Height*Scale.Y));
 
         }
 

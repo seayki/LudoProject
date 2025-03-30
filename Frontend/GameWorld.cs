@@ -1,4 +1,5 @@
-﻿using Frontend.ControllerPattern;
+﻿using Frontend.BuilderPattern;
+using Frontend.ControllerPattern;
 using Frontend.FactoryPattern;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -67,6 +68,8 @@ namespace Frontend
 
             gameObjects_MainMenu = new List<GameObject>();
 
+            gameObjects_ChooseColor = new List<GameObject>();
+
             gameObjects_Playing = new List<GameObject>();
 
             colorTiles = new Dictionary<TileColor, List<GameObject>>();
@@ -83,8 +86,9 @@ namespace Frontend
         {
             // TODO: Add your initialization logic here
 
-            buttons_MainMenu.Add(new Button("Box", new StartGameButton(), new Vector2(400, 400),new Vector2(0.4f,0.2f)));
-          
+            buttons_MainMenu.Add(new Button("NewGame", new StartGameButton(), new Vector2(screenSize.X/2, screenSize.Y/2),new Vector2(1,1)));
+
+        
 
             foreach (GameObject go in gameObjects_Playing)
             {
@@ -107,8 +111,13 @@ namespace Frontend
 
             MakeClassicTileMap();
 
-           
-            stateManager.Loadcontent();
+            NonInteractableGOBuilder SelectAmountOfPlayersSign = new NonInteractableGOBuilder("SelectAmountOfPlayers",1,new Vector2(screenSize.X / 2, screenSize.Y / 2));
+
+
+
+            gameObjects_ChooseColor.Add(SelectAmountOfPlayersSign.BuildGameObject());
+
+         stateManager.Loadcontent();
             // TODO: use this.Content to load your game content here
         }
 
