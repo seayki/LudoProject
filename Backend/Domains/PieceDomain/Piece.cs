@@ -9,7 +9,7 @@ namespace Backend.Domains.PieceDomain
 		{
 			if (colour == ColourEnum.None)
 			{
-				throw new Exception("The pieces must have a colour");
+				throw new Exception("The piece must have a colour");
 			}
 			ID = id;
 			Colour = colour;
