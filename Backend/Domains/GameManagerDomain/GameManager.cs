@@ -1,5 +1,6 @@
 ﻿using Backend.Domains.PieceDomain;
 using Backend.Domains.PlayerDomain;
+using Common.DTOs;
 using Common.Enums;
 
 namespace Backend.Domains.GameManagerDomain
@@ -48,17 +49,26 @@ namespace Backend.Domains.GameManagerDomain
             this.CurrentPlayer = this.Players[^1]; 
         }
 
-        public void TakeTurn(int roll, Guid pieceId)
+
+
+        public void Roll(int roll)
         {
             this.CurrentPlayer.IsTurn = true;
             this.CurrentPlayer.LastRoll = roll;
-
-            // Board service gave all possible moves and player selected one    
-            // Move said piece 
-            EndTurn();
         }
 
-        public void EndTurn()
+        public List<Piece> GetPossibleMoves(int roll, Guid pieceId)
+        {
+            var availablePieces = Board.GetPossibleMoves(this.CurrentPlayer.GetPiecesInPlay());
+            return availablePieces;
+        }
+        public PosIndex MovePiece(int pieceId)
+        {
+            var piece = CurrentPlayer.Pieces.FirstOrDefault(p => p.ID == pieceId);
+            Board.MovePiece(piece, CurrentPlayer.LastRoll);
+            return piece.PosIndex;
+        }
+        public void NextTurn()
         {
             this.CurrentPlayer.IsTurn = false;
             this.CurrentPlayer.LastRoll = 0;
@@ -71,13 +81,11 @@ namespace Backend.Domains.GameManagerDomain
             {
                 CurrentPlayer = Players[index + 1];
             }
-            if (CurrentPlayer.HasFinished)
+            if (CurrentPlayer.HasFinished())
             {
-                EndTurn();
+                NextTurn();
             }
-            TakeTurn();
         }
-
     }
 
     public static class Dice

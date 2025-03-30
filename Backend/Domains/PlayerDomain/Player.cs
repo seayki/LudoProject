@@ -16,6 +16,7 @@ namespace Backend.Domains.PlayerDomain
 
         public Player(int id, ColourEnum colour, List<Piece> pieces)
         {
+            pieces.AddRange(new Piece[] { new Piece(0, colour), new Piece(1, colour), new Piece(2, colour), new Piece(3, colour) });
             if (colour == ColourEnum.None)
             {
                 throw new Exception("A player must have a valid colour");
@@ -24,12 +25,29 @@ namespace Backend.Domains.PlayerDomain
             {
                 throw new Exception("A player must have 4 pieces");
             }
-
             Id = id;
             Colour = colour;
             Pieces = pieces;
             IsTurn = false;
             StartTile = null;
+        }
+
+        public List<Piece> GetPiecesInPlay()
+        {
+            var pieces = Pieces.Where(p => p.IsInPlay).ToList();
+            return pieces;
+        }
+
+        public bool HasFinished()
+        {
+            return Pieces.All(p => p.IsFinished);
+        }
+
+        public void ReturnPieceHome(int pieceId)
+        {
+            var piece = Pieces.Find(p => p.ID == pieceId);
+            piece!.PosIndex = StartTile;
+            piece.IsInPlay = false;
         }
     }
 }
