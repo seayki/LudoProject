@@ -1,5 +1,4 @@
-﻿using Backend.Services.TileServices;
-using Common.DTOs;
+﻿using Common.DTOs;
 using Common.Enums;
 
 namespace Backend.Domains.TileDomain
@@ -7,14 +6,18 @@ namespace Backend.Domains.TileDomain
     public class Tile
     {
         public PosIndex PosIndex { get; init; }
+        public ColourEnum Colour { get; set; }
         public Dictionary<DirectionEnum, PosIndex> Directions { get; init; }
-        public readonly ITileService tileService;
+        public bool IsGoalTile { get; set; }
+        public bool IsStartTile { get; set; }
 
-        public Tile(PosIndex posIndex, Dictionary<DirectionEnum, PosIndex> directions)
+        public Tile(PosIndex posIndex, ColourEnum colour, Dictionary<DirectionEnum, PosIndex> directions, bool isGoalTile, bool isStartTile)
         {
-            this.tileService = new TileService();
-            this.PosIndex = posIndex;
-            this.Directions = directions;
+            PosIndex = posIndex;
+            Colour = colour;
+            Directions = directions;
+            IsGoalTile = isGoalTile;
+            IsStartTile = isStartTile;
         }
         
     }

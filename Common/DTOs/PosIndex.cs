@@ -4,8 +4,8 @@ namespace Common.DTOs
 {
     public class PosIndex
     {
-        private int Index { get; init; }
-        private ColourEnum? Colour { get; init; }
+        public int Index { get; init; }
+        public ColourEnum? Colour { get; init; }
 
         public PosIndex(int index, ColourEnum? colour)
         {

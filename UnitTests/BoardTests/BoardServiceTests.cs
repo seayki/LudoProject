@@ -20,10 +20,10 @@ namespace UnitTests.BoardTests
             IBoardService boardService = new BoardService();
 
             //Act
-            var result = await boardService.GetStartTilePos(board.StartTiles, colour);
+            var result = await boardService.GetStartTilePos(board.Tiles, colour);
 
             //Assert
-            Assert.True(result == board.StartTiles.Find(x => x.Colour == colour)!.PosIndex);
+            Assert.True(result == board.Tiles.Find(x => x.Colour == colour)!.PosIndex);
         }
     }
 }
