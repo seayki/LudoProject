@@ -10,46 +10,29 @@ namespace Backend.Domains.GameManagerDomain
         public Board Board { get; set; }
         public List<Player> Players { get; set; } = new List<Player>();
         public Player CurrentPlayer { get; set; }
+        public IGameSetupService GameSetupService { get; set; }
+        
 
-        public GameManager()
+        public GameManager(IGameSetupService gameSetupService)
         {
-
+            GameSetupService = gameSetupService;
         }
         
-        public void CreateNewGame(int playerCount, int boardSize)
+        public void CreateNewGame(int playerCount, int boardSize, int colorZoneLength)
         {
-            this.Board = new Board(boardSize);
-            this.AddPlayers(playerCount);   
+            this.AddPlayers(playerCount);
+            var playerColours = Players.Select(p => p.Colour).ToList();
+            this.Board = new Board(boardSize, colorZoneLength, playerColours);        
+            Players = GameSetupService.RollForPlayerOrder(Players);
         }
 
         public void AddPlayers(int playerCount)
         {
             for (int i = 0; i < playerCount; i++)
             {
-                this.Players.Add(new Player(i, (ColourEnum)((i % Enum.GetValues(typeof(ColourEnum)).Length) + 1), new List<Piece>()));
+                this.Players.Add(new Player(i, (ColourEnum)((i % Enum.GetValues(typeof(ColourEnum)).Length) + 1)));
             }
         }
-
-        public void RollForPlayerOrder()
-        {
-            Players.ForEach(player => player.LastRoll = Dice.Roll());
-            Players.Sort((a, b) => a.LastRoll.CompareTo(b.LastRoll));
-
-            while (true)
-            {
-                int highestRoll = Players[^1].LastRoll;
-                var tiedPlayers = Players.Where(p => p.LastRoll == highestRoll).ToList();
-
-                if (tiedPlayers.Count == 1)
-                    break;
-
-                tiedPlayers.ForEach(player => player.LastRoll = Dice.Roll());
-                Players.Sort((a, b) => a.LastRoll.CompareTo(b.LastRoll)); 
-            }
-            this.CurrentPlayer = this.Players[^1]; 
-        }
-
-
 
         public void Roll(int roll)
         {
@@ -59,14 +42,13 @@ namespace Backend.Domains.GameManagerDomain
 
         public List<Piece> GetPossibleMoves(int roll, Guid pieceId)
         {
-            var availablePieces = Board.GetPossibleMoves(this.CurrentPlayer.GetPiecesInPlay());
+            var availablePieces = Board.FindValidPiecesToMove(this.CurrentPlayer.GetPiecesInPlay());
             return availablePieces;
         }
-        public PosIndex MovePiece(int pieceId)
+        public Piece MovePiece(int pieceId)
         {
             var piece = CurrentPlayer.Pieces.FirstOrDefault(p => p.ID == pieceId);
-            Board.MovePiece(piece, CurrentPlayer.LastRoll);
-            return piece.PosIndex;
+            return Board.MovePiece(piece, CurrentPlayer.LastRoll);
         }
         public void NextTurn()
         {
@@ -85,16 +67,6 @@ namespace Backend.Domains.GameManagerDomain
             {
                 NextTurn();
             }
-        }
-    }
-
-    public static class Dice
-    {
-        private static Random random = new Random();
-
-        public static int Roll()
-        {
-            return random.Next(1, 7);
         }
     }
 
