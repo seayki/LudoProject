@@ -1,29 +1,36 @@
 ﻿using Backend.Domains.PieceDomain;
 using Backend.Domains.PlayerDomain;
+using Backend.Services.BoardServices.Interfaces;
+using Backend.Services.GameManagerServices;
 using Common.DTOs;
 using Common.Enums;
 
 namespace Backend.Domains.GameManagerDomain
 {
-    public class GameManager
+    public class GameManager : IGameManagerService
     {
         public Board Board { get; set; }
         public List<Player> Players { get; set; } = new List<Player>();
         public Player CurrentPlayer { get; set; }
-        public IGameSetupService GameSetupService { get; set; }
-        
+        private readonly IBoardService boardService;
+        private readonly IGameSetupService gameSetupService;
+        private readonly IDiceService diceService;
 
-        public GameManager(IGameSetupService gameSetupService)
+
+        public GameManager(IBoardService boardService, IGameSetupService gameSetupService, IDiceService diceService)
         {
-            GameSetupService = gameSetupService;
+            this.boardService = boardService;
+            this.gameSetupService = gameSetupService;
+            this.diceService = diceService;
         }
-        
-        public void CreateNewGame(int playerCount, int boardSize, int colorZoneLength)
+
+        // Step 1 Create board
+        public (Board Board, List<Player> Players) CreateNewGame(int playerCount, int boardSize, int lengthOfColourZone)
         {
             this.AddPlayers(playerCount);
-            var playerColours = Players.Select(p => p.Colour).ToList();
-            this.Board = new Board(boardSize, colorZoneLength, playerColours);        
-            Players = GameSetupService.RollForPlayerOrder(Players);
+            var colours = Players.Select(p => p.Colour).ToList();
+            this.Board = new Board(boardSize, lengthOfColourZone, colours);          
+            return (this.Board, this.Players);
         }
 
         public void AddPlayers(int playerCount)
@@ -34,22 +41,36 @@ namespace Backend.Domains.GameManagerDomain
             }
         }
 
+        // Step 2 Roll for player order
+        public int RollForPlayerOrder()
+        {
+            var playerOrder = gameSetupService.RollForPlayerOrder(Players);
+            this.CurrentPlayer = Players[0];
+            return CurrentPlayer.Id;
+        }
+
+        // Step 3 Player rolls dice
         public void Roll(int roll)
         {
             this.CurrentPlayer.IsTurn = true;
             this.CurrentPlayer.LastRoll = roll;
         }
 
-        public List<Piece> GetPossibleMoves(int roll, Guid pieceId)
+        // Step 4 Return possible moves
+        public List<int> GetPossibleMoves()
         {
-            var availablePieces = Board.FindValidPiecesToMove(this.CurrentPlayer.GetPiecesInPlay());
-            return availablePieces;
+            var availablePieces = Board.GetPossibleMoves(this.CurrentPlayer.GetPiecesInPlay());
+            return availablePieces.Select(p => p.ID).ToList();
         }
-        public Piece MovePiece(int pieceId)
+
+        // Step 6 Move piece
+        public List<Piece> MovePiece(int pieceId)
         {
-            var piece = CurrentPlayer.Pieces.FirstOrDefault(p => p.ID == pieceId);
-            return Board.MovePiece(piece, CurrentPlayer.LastRoll);
+            var affectedPieces = Board.MovePiece(pieceId, CurrentPlayer.LastRoll);
+            return affectedPieces;
         }
+
+        // Step 7 End turn
         public void NextTurn()
         {
             this.CurrentPlayer.IsTurn = false;
@@ -68,15 +89,5 @@ namespace Backend.Domains.GameManagerDomain
                 NextTurn();
             }
         }
-    }
-
-    public class Board
-    {
-        public Board(int boardsize)
-        {
-
-        }
-    }
-
-    
+    } 
 }
