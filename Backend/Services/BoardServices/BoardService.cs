@@ -1,5 +1,4 @@
-﻿using Backend.Domains.Board;
-using Backend.Domains.PieceDomain;
+﻿using Backend.Domains.PieceDomain;
 using Backend.Domains.TileDomain;
 using Backend.Services.BoardServices.Interfaces;
 using Common.DTOs;
@@ -23,55 +22,7 @@ namespace Backend.Services.BoardServices
 
             foreach (var piece in colourPieces)
             {
-                var piecePosIndex = piece.PosIndex;
-                var directions = tiles.ElementAt(piecePosIndex.Index).Directions;
-                var tilesToCross = new List<PosIndex>();
-                bool movingBackwards = false;
-
-                for (int i = 0; i < diceRoll; i++)
-                {
-                    if (movingBackwards && directions.TryGetValue(DirectionEnum.Backward, out var movingBackwardsPos))
-                    {
-                        var playerTile = playerZone.Find(x => x.PosIndex == movingBackwardsPos);
-                        tilesToCross.Add(playerTile.PosIndex);
-                        directions = playerTile.Directions;
-                        continue;
-                    }
-
-                    if (directions.TryGetValue(DirectionEnum.ToColourZone, out var colourZonePos) && colourZonePos.Colour == colour)
-                    {
-                        var playerTile = playerZone.Find(x => x.PosIndex == colourZonePos);
-                        tilesToCross.Add(playerTile.PosIndex);
-                        directions = playerTile.Directions;
-                        continue;
-                    }
-
-                    if (directions.TryGetValue(DirectionEnum.Backward, out var backwardPos) && backwardPos.Index == playerZone.Count - 1)
-                    {
-                        var playerTile = playerZone.Find(x => x.PosIndex == backwardPos);
-                        tilesToCross.Add(playerTile.PosIndex);
-                        directions = playerTile.Directions;
-                        movingBackwards = true;
-                        continue;
-                    }
-
-                    if (directions.TryGetValue(DirectionEnum.Forward, out var forwardPos))
-                    {
-                        if (forwardPos.Colour != ColourEnum.None)
-                        {
-                            var playerTile = playerZone.Find(x => x.PosIndex == forwardPos);
-                            tilesToCross.Add(playerTile.PosIndex);
-                            directions = playerTile.Directions;
-                        }
-                        else
-                        {
-                            var tile = tiles.Find(x => x.PosIndex == forwardPos);
-                            tilesToCross.Add(tile.PosIndex);
-                            directions = tile.Directions;
-                        }
-                        continue;
-                    }
-                }
+                var tilesToCross = GetTilesToCross(piece, colour, diceRoll, tiles, playerZone);
 
                 if (colourPieces.Any(x => tilesToCross.Contains(x.PosIndex) && x.ID != piece.ID))
                     validPieces.Add(piece);
@@ -100,9 +51,81 @@ namespace Backend.Services.BoardServices
             throw new NotImplementedException();
         }
 
-        Task<Piece> IBoardService.MovePiece(Piece piece)
+        Task<bool> IBoardService.MovePiece(Piece piece, ColourEnum colour, int diceRoll, List<Tile> tiles, List<Tile> playerZone)
+        {
+            var tilesToCross = GetTilesToCross(piece, colour, diceRoll, tiles, playerZone);
+            
+            var temp = CheckForOtherPieceOnTile
+            
+            piece.PosIndex = tilesToCross.Last();
+            
+            
+        }
+
+        Piece IBoardService.SendPieceHome(Piece piece)
         {
             throw new NotImplementedException();
+        }
+
+        private Piece CheckForOtherPieceOnTile(List<Piece> pieces, PosIndex posIndex)
+        {
+            throw new NotImplementedException();
+        }
+
+
+
+        private List<PosIndex> GetTilesToCross(Piece piece, ColourEnum colour, int diceRoll, List<Tile> tiles, List<Tile> playerZone)
+        {
+            var piecePosIndex = piece.PosIndex;
+            var directions = tiles.ElementAt(piecePosIndex.Index).Directions;
+            var tilesToCross = new List<PosIndex>();
+            bool movingBackwards = false;
+
+            for (int i = 0; i < diceRoll; i++)
+            {
+                if (movingBackwards && directions.TryGetValue(DirectionEnum.Backward, out var movingBackwardsPos))
+                {
+                    var playerTile = playerZone.Find(x => x.PosIndex == movingBackwardsPos);
+                    tilesToCross.Add(playerTile.PosIndex);
+                    directions = playerTile.Directions;
+                    continue;
+                }
+
+                if (directions.TryGetValue(DirectionEnum.ToColourZone, out var colourZonePos) && colourZonePos.Colour == colour)
+                {
+                    var playerTile = playerZone.Find(x => x.PosIndex == colourZonePos);
+                    tilesToCross.Add(playerTile.PosIndex);
+                    directions = playerTile.Directions;
+                    continue;
+                }
+
+                if (directions.TryGetValue(DirectionEnum.Backward, out var backwardPos) && backwardPos.Index == playerZone.Count - 1)
+                {
+                    var playerTile = playerZone.Find(x => x.PosIndex == backwardPos);
+                    tilesToCross.Add(playerTile.PosIndex);
+                    directions = playerTile.Directions;
+                    movingBackwards = true;
+                    continue;
+                }
+
+                if (directions.TryGetValue(DirectionEnum.Forward, out var forwardPos))
+                {
+                    if (forwardPos.Colour != ColourEnum.None)
+                    {
+                        var playerTile = playerZone.Find(x => x.PosIndex == forwardPos);
+                        tilesToCross.Add(playerTile.PosIndex);
+                        directions = playerTile.Directions;
+                    }
+                    else
+                    {
+                        var tile = tiles.Find(x => x.PosIndex == forwardPos);
+                        tilesToCross.Add(tile.PosIndex);
+                        directions = tile.Directions;
+                    }
+                    continue;
+                }
+            }
+            return tilesToCross;
         }
     }
 }

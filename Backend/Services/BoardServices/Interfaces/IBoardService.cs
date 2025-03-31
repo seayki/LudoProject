@@ -12,6 +12,8 @@ namespace Backend.Services.BoardServices.Interfaces
         Task<PosIndex> GetStartTilePos(List<Tile> tiles, ColourEnum colour);
         Task<bool> GetPiecesInGoal(List<Tile> tiles, ColourEnum colour, int pieceId);
         Task<List<Piece>> FindValidPicesToMove(List<Piece> pieces, ColourEnum colour, int diceRoll, List<Tile> tiles, List<Tile> playerZone);
-        Task<Piece> MovePiece(Piece piece);
+        Task<Piece> MovePiece(Piece piece, ColourEnum colour, int diceRoll, List<Tile> tiles, List<Tile> playerZone);
+        Piece SendPieceHome(Piece piece);
+        Piece CheckForOtherPieceOnTile(List<Piece> pieces, PosIndex posIndex);
     }
 }
