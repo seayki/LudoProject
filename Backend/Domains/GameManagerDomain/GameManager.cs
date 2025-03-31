@@ -57,16 +57,16 @@ namespace Backend.Domains.GameManagerDomain
         }
 
         // Step 4 Return possible moves
-        public List<int> GetPossibleMoves()
+        public List<int>? GetPossibleMoves()
         {
-            var availablePieces = Board.GetPossibleMoves(this.CurrentPlayer.GetPiecesInPlay());
+            var availablePieces = boardService.GetPossibleMoves(this.CurrentPlayer.GetPiecesInPlay());
             return availablePieces.Select(p => p.ID).ToList();
         }
 
         // Step 6 Move piece
         public List<Piece> MovePiece(int pieceId)
         {
-            var affectedPieces = Board.MovePiece(pieceId, CurrentPlayer.LastRoll);
+            var affectedPieces = boardService.MovePiece(pieceId, CurrentPlayer.LastRoll);
             return affectedPieces;
         }
 

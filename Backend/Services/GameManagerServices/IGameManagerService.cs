@@ -10,7 +10,7 @@ namespace Backend.Services.GameManagerServices
         void AddPlayers(int playerCount);
         int RollForPlayerOrder();
         void Roll(int roll);
-        List<int> GetPossibleMoves();
+        List<int>? GetPossibleMoves();
         List<Piece> MovePiece(int pieceId);
         void NextTurn();
     }
