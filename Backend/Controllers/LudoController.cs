@@ -7,7 +7,7 @@ namespace Backend.Controllers
 {
 	[Route("api/[controller]")]
 	[ApiController]
-	public class LudoController : ControllerBase
+	public class LudoController(/*GameManager gameManager, */ILogger<LudoController> logger) : ControllerBase
 	{
 		public async Task<IActionResult> FindValidMoves(int diceroll)
 		{
