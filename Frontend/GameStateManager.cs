@@ -26,7 +26,7 @@ namespace Frontend
         // constructoren der initializer stadiet som spillet starter i.
         public GameStateManager()
         {
-            currentState = GameState.Start;
+            currentState = GameState.Playing;
         }
 
         //ChangeGameState tillader at man kan ændre på stadiet fx Menu til Playing, eller omvendt.
