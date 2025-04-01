@@ -4,6 +4,7 @@ using Backend.Services.BoardServices;
 using Backend.Services.BoardServices.Interfaces;
 using Common.DTOs;
 using Common.Enums;
+using System.Drawing;
 
 namespace Backend.Domains.Board
 {
@@ -98,14 +99,29 @@ namespace Backend.Domains.Board
             }
         }
 
-        public async Task<PosIndex> GetStartTile(ColourEnum colour)
+        public PosIndex GetStartTile(ColourEnum colour)
         {
-            var result = await BoardService.GetStartTilePos(Tiles, colour);
+            var result = BoardService.GetStartTilePos(Tiles, colour);
             return result;
         }
 
+        public List<Piece> FindValidPicesToMove(ColourEnum colour, int diceRoll)
+        {
+            PlayerZones.TryGetValue(colour, out var playerZone);
+            var result = BoardService.FindValidPicesToMove(Pieces, colour, diceRoll, Tiles, playerZone);
+            return result;
+        }
 
+        public bool MovePiece(Piece piece, ColourEnum colour, int diceRoll)
+        {
+            PlayerZones.TryGetValue(colour, out var playerZone);
+            var result = BoardService.MovePiece(Pieces, piece, colour, diceRoll, Tiles, playerZone);
+            return result;
+        }
 
-
+        public void SendPieceHome(Piece piece)
+        {
+            BoardService.SendPieceHome(piece);
+        }
     }
 }

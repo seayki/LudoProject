@@ -8,71 +8,90 @@ namespace Backend.Services.BoardServices
 {
     public class BoardService : IBoardService
     {
-        Task<List<Piece>> IBoardService.FindValidPicesToMove(List<Piece> pieces, ColourEnum colour, int diceRoll, List<Tile> tiles, List<Tile> playerZone)
+        PosIndex IBoardService.GetStartTilePos(List<Tile> tiles, ColourEnum colour)
         {
-            var colourPieces = pieces.Where(x => x.Colour == colour).ToList();
-
-            var validPieces = new List<Piece>();
-
-            if (colourPieces is null)
-                return Task.FromResult(validPieces);
-
-            if (colourPieces.Count == 1)
-                return Task.FromResult(colourPieces);
-
-            foreach (var piece in colourPieces)
-            {
-                var tilesToCross = GetTilesToCross(piece, colour, diceRoll, tiles, playerZone);
-
-                if (colourPieces.Any(x => tilesToCross.Contains(x.PosIndex) && x.ID != piece.ID))
-                    validPieces.Add(piece);
-            }
-            return Task.FromResult(validPieces);
-        }
-
-        Task<bool> IBoardService.GetPiecesInGoal(List<Tile> tiles, ColourEnum colour, int pieceId)
-        {
-            throw new NotImplementedException();
-        }
-
-        Task<PosIndex> IBoardService.GetStartTilePos(List<Tile> tiles, ColourEnum colour)
-        {
-
             var startTile = tiles.Find(x => x.Colour == colour && x.IsStartTile == true);
             if (startTile is null)
                 throw new Exception($"Could not find startTile for player: {colour.ToString()}");
 
             var startPosIndex = startTile.PosIndex;
-            return Task.FromResult(startPosIndex);
+            return startPosIndex;
         }
 
-        Task<PosIndex> IBoardService.GetTileEndPos(List<Tile> tiles, PosIndex piecePosIndex, ColourEnum pieceColour, int diceRoll)
+        List<Piece> IBoardService.FindValidPicesToMove(List<Piece> pieces, ColourEnum colour, int diceRoll, List<Tile> tiles, List<Tile> playerZone)
         {
-            throw new NotImplementedException();
+            var colourPieces = pieces.Where(x => x.Colour == colour && x.IsInPlay == true && x.IsFinished == false).ToList();
+
+            var validPieces = new List<Piece>();
+
+            if (colourPieces is null)
+                return validPieces;
+
+            if (colourPieces.Count == 1)
+                return colourPieces;
+
+            foreach (var piece in colourPieces)
+            {
+                var tilesToCross = GetTilesToCross(piece, colour, diceRoll, tiles, playerZone);
+                tilesToCross.RemoveAt(tilesToCross.Count - 1);
+
+                if (colourPieces.Any(x => tilesToCross.Contains(x.PosIndex) && x.ID != piece.ID))
+                    validPieces.Add(piece);
+            }
+            return validPieces;
         }
 
-        Task<bool> IBoardService.MovePiece(Piece piece, ColourEnum colour, int diceRoll, List<Tile> tiles, List<Tile> playerZone)
+        bool IBoardService.MovePiece(List<Piece> pieces, Piece piece, ColourEnum colour, int diceRoll, List<Tile> tiles, List<Tile> playerZone)
         {
             var tilesToCross = GetTilesToCross(piece, colour, diceRoll, tiles, playerZone);
-            
-            var temp = CheckForOtherPieceOnTile
-            
-            piece.PosIndex = tilesToCross.Last();
-            
-            
+
+            var tileToMoveTo = tilesToCross.Last();
+
+            var pieceToSendHome = CheckTileForPieceToSendHome(pieces, piece, tileToMoveTo);
+
+            if (pieceToSendHome is not null)
+                SendPieceHome(pieceToSendHome);
+
+            if (pieceToSendHome is not null && pieceToSendHome.ID == piece.ID)
+                return false;
+
+            if (tileToMoveTo == playerZone.Last().PosIndex)
+            {
+                piece.PosIndex = tileToMoveTo;
+                piece.IsFinished = true;
+                return true;
+            }
+
+            piece.PosIndex = tileToMoveTo;
+            return true;
         }
 
-        Piece IBoardService.SendPieceHome(Piece piece)
+        void IBoardService.SendPieceHome(Piece piece)
         {
-            throw new NotImplementedException();
+            SendPieceHome(piece);
         }
 
-        private Piece CheckForOtherPieceOnTile(List<Piece> pieces, PosIndex posIndex)
+        private Piece? CheckTileForPieceToSendHome(List<Piece> pieces, Piece piece, PosIndex posIndex)
         {
-            throw new NotImplementedException();
+            var piecesOnTile = pieces.Where(x => x.PosIndex == posIndex && x.IsInPlay == true && x.IsFinished == false).ToList();
+
+            if (piecesOnTile is null || piecesOnTile.Count < 1 || piecesOnTile.First().Colour == piece.Colour)
+                return null;
+
+            if (piecesOnTile.First().Colour != piece.Colour && piecesOnTile.Count > 1)
+                return piece;
+
+            if (piecesOnTile.First().Colour != piece.Colour && piecesOnTile.Count == 1)
+                return piecesOnTile.First();
+
+            return null;
         }
 
-
+        private void SendPieceHome(Piece piece)
+        {
+            piece.IsInPlay = false;
+            piece.PosIndex = null;
+        }
 
         private List<PosIndex> GetTilesToCross(Piece piece, ColourEnum colour, int diceRoll, List<Tile> tiles, List<Tile> playerZone)
         {

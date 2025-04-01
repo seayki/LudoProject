@@ -8,12 +8,9 @@ namespace Backend.Services.BoardServices.Interfaces
 {
     public interface IBoardService
     {
-        Task<PosIndex> GetTileEndPos(List<Tile> tiles, PosIndex piecePosIndex, ColourEnum pieceColour, int diceRoll);
-        Task<PosIndex> GetStartTilePos(List<Tile> tiles, ColourEnum colour);
-        Task<bool> GetPiecesInGoal(List<Tile> tiles, ColourEnum colour, int pieceId);
-        Task<List<Piece>> FindValidPicesToMove(List<Piece> pieces, ColourEnum colour, int diceRoll, List<Tile> tiles, List<Tile> playerZone);
-        Task<Piece> MovePiece(Piece piece, ColourEnum colour, int diceRoll, List<Tile> tiles, List<Tile> playerZone);
-        Piece SendPieceHome(Piece piece);
-        Piece CheckForOtherPieceOnTile(List<Piece> pieces, PosIndex posIndex);
+        PosIndex GetStartTilePos(List<Tile> tiles, ColourEnum colour);
+        List<Piece>? FindValidPicesToMove(List<Piece> pieces, ColourEnum colour, int diceRoll, List<Tile> tiles, List<Tile> playerZone);
+        bool MovePiece(List<Piece> pieces, Piece piece, ColourEnum colour, int diceRoll, List<Tile> tiles, List<Tile> playerZone);
+        void SendPieceHome(Piece piece);
     }
 }
