@@ -13,20 +13,20 @@ namespace Frontend
     {
         Playing,
         Start,
-        ChooseColor,
+        SetupGame,
     }
 
     public class GameStateManager
     {
         // currentState gemmer spillets nuværende stadie.
-        private GameState currentState;
+        public GameState currentState;
 
         //public SpriteFont spriteFont { get; private set; }
 
         // constructoren der initializer stadiet som spillet starter i.
         public GameStateManager()
         {
-            currentState = GameState.Playing;
+            currentState = GameState.Start;
         }
 
         //ChangeGameState tillader at man kan ændre på stadiet fx Menu til Playing, eller omvendt.
@@ -53,15 +53,15 @@ namespace Frontend
                     }
                     break;
 
-                case GameState.ChooseColor:
+                case GameState.SetupGame:
                     
-                    foreach (var go in GameWorld.Instance.gameObjects_ChooseColor)
+                    foreach (var go in GameWorld.Instance.gameObjects_SetupGame)
                     {
                         go.Start();
                     }
 
 
-                    foreach (var item in GameWorld.Instance.buttons_ColorSelection)
+                    foreach (var item in GameWorld.Instance.buttons_SetupGame)
                     {
                         item.LoadContent();
                     }
@@ -117,15 +117,15 @@ namespace Frontend
                     break;
 
 
-                case GameState.ChooseColor:
+                case GameState.SetupGame:
 
-                    foreach (var go in GameWorld.Instance.gameObjects_ChooseColor)
+                    foreach (var go in GameWorld.Instance.gameObjects_SetupGame)
                     {
                         go.Update(gameTime);
                     }
 
 
-                    foreach (var item in GameWorld.Instance.buttons_ColorSelection)
+                    foreach (var item in GameWorld.Instance.buttons_SetupGame)
                     {
                         item.Update();
                     }
@@ -158,6 +158,7 @@ namespace Frontend
                     break;
 
             }
+            GameWorld.Instance.Cleanup();
         }
 
         // Draw metoden Draw alt der skal ind i det nuværende stadie
@@ -182,14 +183,14 @@ namespace Frontend
 
 
 
-                case GameState.ChooseColor:
+                case GameState.SetupGame:
 
-                    foreach (var go in GameWorld.Instance.gameObjects_ChooseColor)
+                    foreach (var go in GameWorld.Instance.gameObjects_SetupGame)
                     {
                         go.Draw(spriteBatch);
                     }
 
-                    foreach (var item in GameWorld.Instance.buttons_ColorSelection)
+                    foreach (var item in GameWorld.Instance.buttons_SetupGame)
                     {
                         item.Draw(spriteBatch);
                     }

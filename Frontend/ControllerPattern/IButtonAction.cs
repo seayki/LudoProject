@@ -6,8 +6,10 @@ using System.Threading.Tasks;
 
 namespace Frontend.ControllerPattern
 {
-    public interface IButton
+    public interface IButtonAction
     {
+        Button ButtonObject { get; set; }
+
         public void DoAction();
 
     }

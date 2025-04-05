@@ -14,19 +14,20 @@ namespace Frontend.BuilderPattern
         string spriteName;
         float scale;
         Vector2 pos;
-        public NonInteractableGOBuilder(string spriteName,float scale,Vector2 position)
+        Color color;
+        public NonInteractableGOBuilder(string spriteName,float scale,Vector2 position,Color color)
         {
             this.spriteName = spriteName;
             this.scale = scale;
             this.pos = position;
-
+            this.color = color;
         }
         public GameObject BuildGameObject()
         {
             GameObject GO = new GameObject();
 
             SpriteRenderer sr=(SpriteRenderer)GO.AddComponent(new SpriteRenderer());
-            sr.SetSprite(spriteName,0,scale,Color.White,GameWorld.Instance.Content);
+            sr.SetSprite(spriteName,0,scale,color,GameWorld.Instance.Content);
 
             GO.Transform.Position = pos;
             return GO;

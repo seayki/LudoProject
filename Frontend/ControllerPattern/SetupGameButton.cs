@@ -6,13 +6,14 @@ using System.Threading.Tasks;
 
 namespace Frontend.ControllerPattern
 {
-    internal class StartGameButton : IButtonAction
+    internal class SetupGameButton : IButtonAction
     {
         public Button ButtonObject { get; set; }
 
         public void DoAction()
         {
-            GameWorld.Instance.stateManager.ChangeGameState(GameState.Playing);
+          
+            GameWorld.Instance.stateManager.ChangeGameState(GameState.SetupGame);
         }
     }
 }
