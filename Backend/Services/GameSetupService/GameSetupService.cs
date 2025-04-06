@@ -1,5 +1,5 @@
 ﻿using Backend.Domains.PlayerDomain;
-using Backend.Services.DiceService.Interfaces;
+using Backend.Services.DiceServices.Interfaces;
 using Backend.Services.GameSetupService.Interfaces;
 
 namespace Backend.Services.GameSetupService
