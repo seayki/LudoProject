@@ -1,6 +1,6 @@
 ﻿using Backend.Domains.PieceDomain;
 using Backend.Domains.PlayerDomain;
-using Backend.Services.DiceService.Interfaces;
+using Backend.Services.DiceServices.Interfaces;
 using Backend.Services.GameSetupService;
 using Backend.Services.GameSetupService.Interfaces;
 using Backend.Services.PieceService;
