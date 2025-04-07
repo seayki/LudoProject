@@ -7,6 +7,6 @@ namespace Common.DTOs
         public ActionTypeEnum ActionTypeEnum { get; init; }
         public int? DiceValue { get; init; }
         public int PlayerId { get; init; }
-        public int? PieceId { get; init; }
+        public Guid? PieceId { get; init; }
     }
 }
