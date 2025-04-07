@@ -25,7 +25,7 @@ namespace Backend.Services.PieceService
 		{
 			if (piece.IsInPlay)
 			{
-				throw new Exception("Piece is already in play, pleace select a different piece");
+				throw new Exception("Piece is already in play, please select a different piece");
 			}
 
 			piece.PosIndex = posIndex;

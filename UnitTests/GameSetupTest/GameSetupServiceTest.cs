@@ -69,7 +69,7 @@ namespace UnitTests.GameSetupTest
 			// Add 4 Pieces to the player's list
 			for (int i = 0; i < 4; i++)
 			{
-				pieces.Add(new Piece(i, colour));
+				pieces.Add(new Piece(colour));
 			}
 
 			var player = new Player(id, colour, pieces);

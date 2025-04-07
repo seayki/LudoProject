@@ -8,6 +8,6 @@ namespace Backend.Services.BoardServices.Interfaces
     {
         Task<PosIndex> GetTileEndPos(PosIndex piecePosIndex, ColourEnum pieceColour, int diceRoll);
         Task<PosIndex> GetStartTilePos(ColourEnum colour);
-        Task<bool> GetGoalTilePieces(ColourEnum colour, int pieceId);
+        Task<bool> GetGoalTilePieces(ColourEnum colour, Guid pieceId);
     }
 }

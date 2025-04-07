@@ -12,5 +12,6 @@ namespace Common.DTOs
 		public int id { get; init; }
 		public ColourEnum colour { get; init; }
 		public PosIndex startTile { get; init; }
+		public List<PieceDTO> pieces { get; init; }
 	}
 }
