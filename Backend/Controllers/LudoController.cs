@@ -14,6 +14,7 @@ namespace Backend.Controllers
 		{
 			try
 			{
+				gameManager.Roll(diceroll);
 				var resultValue = gameManager.GetPossibleMoves();
 
 				return new OkObjectResult(resultValue);
@@ -27,25 +28,56 @@ namespace Backend.Controllers
 
 		public async Task<IActionResult> MoveSelectedPiece(Guid pieceID, PosIndex posIndex)
 		{
-			throw new NotImplementedException();
+			try
+			{
+				var affectedPieces = gameManager.MovePiece(pieceID);
+				return new OkObjectResult(affectedPieces);
+			}
+			catch (Exception ex)
+			{
+				logger.LogError(ex, "Error");
+				return new BadRequestObjectResult("An exception occurred, please check logs");
+			}
 		}
 
 		public async Task<IActionResult> StartGame(int PlayerNumber, int BoardSize)
 		{
 			try
 			{
-				var NewGameData = gameManager.CreateNewGame(PlayerNumber, BoardSize, 6);
-				gameManager.RollForPlayerOrder();
+				gameManager.CreateNewGame(PlayerNumber, BoardSize, 6);
+				var playersInOrder = gameManager.RollForPlayerOrder();
 
-				var resultValue = from p in NewGameData.Players
+				var resultValue = from p in playersInOrder
 								  select new PlayerDTO()
 								  {
 									  id = p.Id,
 									  colour = p.Colour,
-									  startTile = p.StartTile
+									  startTile = p.StartTile,
+									  pieces = (List<PieceDTO>)(from piece in p.Pieces
+											   select new PieceDTO()
+											   {
+												   ID = piece.ID,
+												   PosIndex = piece.PosIndex,
+												   IsInPlay = piece.IsInPlay,
+												   IsFinished = piece.IsFinished
+											   })
 								  };
 
 				return new OkObjectResult(resultValue);
+			}
+			catch (Exception ex)
+			{
+				logger.LogError(ex, "Error");
+				return new BadRequestObjectResult("An exception occurred, please check logs");
+			}
+		}
+
+		public async Task<IActionResult> NextTurn()
+		{
+			try
+			{
+				var nextPlayer = gameManager.NextTurn();
+				return new OkObjectResult(nextPlayer);
 			}
 			catch (Exception ex)
 			{

@@ -36,7 +36,7 @@ namespace UnitTests.ControllerTest
 		public void FindValidMoves_ValidInput_ReturnListOfPlayerIDs(int diceValue)
 		{
 			// arrange
-			var validPieces = new List<int> { 1, 2, 3, 4 };
+			var validPieces = new List<Guid> { Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid() };
 			_GameManagerMock.Setup(gm => gm.GetPossibleMoves()).Returns(validPieces);
 
 			// act
@@ -49,13 +49,14 @@ namespace UnitTests.ControllerTest
 					StatusCode = 200,
 					Value = validPieces
 				}, options => options.ExcludingMissingMembers());
+			_GameManagerMock.Verify(s => s.Roll(It.IsAny<int>()), Times.Once);
+			_GameManagerMock.Verify(s => s.GetPossibleMoves(), Times.Once);
 		}
 
 		[Fact]
 		public void FindValidMoves_GameManagerReturnsException_ErrorMessageReturned()
 		{
 			// arrange
-			var validPieces = new List<int> { 1, 2, 3, 4 };
 			_GameManagerMock.Setup(gm => gm.GetPossibleMoves()).Throws(new Exception());
 
 			// act
@@ -72,7 +73,7 @@ namespace UnitTests.ControllerTest
 		{
 			// arrange
 			var playerPieces = GetTestPieces(piece.Colour);
-			playerPieces[playerPieces.FindIndex(p => p.ID == piece.ID)] = piece;
+			playerPieces[new Random().Next(4)] = piece;
 
 			_GameManagerMock.Setup(gm => gm.MovePiece(piece.ID)).Returns(() =>
 			{
@@ -89,31 +90,29 @@ namespace UnitTests.ControllerTest
 			});
 
 			// act
+			var result = _sut.MoveSelectedPiece(piece.ID, posIndex).Result;
 
 			// assert
-
-		}
-
-		[Fact]
-		public void MoveSelectedPiece_ChosenPieceDoesntExist_ReturnErrorMessage()
-		{
-			// arrange
-
-			// act
-
-			// assert
-
+			result.Should().BeOfType<OkObjectResult>()
+				.And.BeEquivalentTo(new
+				{
+					StatusCode = 200
+				}, options => options.ExcludingMissingMembers());
+			_GameManagerMock.Verify(s => s.MovePiece(It.IsAny<Guid>()), Times.Once);
 		}
 
 		[Fact]
 		public void moveSelectedPiece_GameManagerReturnsException_ErrorMessageReturned()
 		{
 			// arrange
+			_GameManagerMock.Setup(gm => gm.MovePiece(It.IsAny<Guid>())).Throws(new Exception());
 
 			// act
+			var result = _sut.MoveSelectedPiece(Guid.NewGuid(), new PosIndex()).Result;
 
 			// assert
-
+			result.Should().BeOfType<BadRequestObjectResult>()
+				.Which.StatusCode.Should().Be(400);
 		}
 
 		[Fact]
@@ -125,7 +124,7 @@ namespace UnitTests.ControllerTest
 			testPlayers.Add(CreateTestPlayer(2, ColourEnum.Yellow));
 			_GameManagerMock.Setup(gm => gm.CreateNewGame(2, It.IsAny<int>(), It.IsAny<int>()))
 				.Returns((new Board(), testPlayers));
-			_GameManagerMock.Setup(gm => gm.RollForPlayerOrder()).Returns(1);
+			_GameManagerMock.Setup(gm => gm.RollForPlayerOrder()).Returns(testPlayers);
 
 			// act
 			var result = _sut.StartGame(2, 4).Result;
@@ -152,6 +151,35 @@ namespace UnitTests.ControllerTest
 				.Which.StatusCode.Should().Be(400);
 		}
 
+		[Fact]
+		public void NextTurn_NoExceptionOccoured_ReturnNextPlayerID()
+		{
+			// arrange
+			_GameManagerMock.Setup(gm => gm.NextTurn()).Returns(Guid.NewGuid());
+
+			// act
+			var result = _sut.NextTurn().Result;
+
+			// assert
+			result.Should().BeOfType<OkObjectResult>()
+				.Which.StatusCode.Should().Be(200);
+			_GameManagerMock.Verify(s => s.NextTurn(), Times.Once);
+		}
+
+		[Fact]
+		public void NextTurn_ExceptionOccoured_ReturnErrorMessage()
+		{
+			// arrange
+			_GameManagerMock.Setup(gm => gm.NextTurn()).Throws(new Exception());
+
+			// act
+			var result = _sut.NextTurn().Result;
+
+			// assert
+			result.Should().BeOfType<BadRequestObjectResult>()
+				.Which.StatusCode.Should().Be(400);
+		}
+
 		private List<Piece> GetTestPieces(ColourEnum colour)
 		{
 			var pieces = new List<Piece>();
@@ -159,7 +187,7 @@ namespace UnitTests.ControllerTest
 			// Add 4 Pieces to the player's list
 			for (int i = 0; i < 4; i++)
 			{
-				pieces.Add(new Piece(i, colour));
+				pieces.Add(new Piece(colour));
 			}
 
 			return pieces;
@@ -184,9 +212,9 @@ namespace UnitTests.ControllerTest
 		public static IEnumerable<object[]> PieceAndPosIndexTestCases =>
 		new List<object[]>
 		{
-			new object[] { new Piece(1, ColourEnum.Yellow), new PosIndex { Index = 1, Colour = ColourEnum.Yellow } },
-			new object[] { new Piece(4, ColourEnum.Green), new PosIndex { Index = 2214, Colour = ColourEnum.Green } },
-			new object[] { new Piece(3, ColourEnum.Yellow), new PosIndex { Index = 120, Colour = ColourEnum.None } },
+			new object[] { new Piece(ColourEnum.Yellow), new PosIndex { Index = 1, Colour = ColourEnum.Yellow } },
+			new object[] { new Piece(ColourEnum.Green), new PosIndex { Index = 2214, Colour = ColourEnum.Green } },
+			new object[] { new Piece(ColourEnum.Yellow), new PosIndex { Index = 120, Colour = ColourEnum.None } },
 		};
 	}
 }

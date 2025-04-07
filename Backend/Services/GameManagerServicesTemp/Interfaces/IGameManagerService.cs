@@ -8,10 +8,10 @@ namespace Backend.Services.GameManagerServicesTemp.Interfaces
 	{
 		(Board Board, List<Player> Players) CreateNewGame(int playerCount, int boardSize, int lengthOfColourZone);
 		void AddPlayers(int playerCount);
-		int RollForPlayerOrder();
+		List<Player> RollForPlayerOrder();
 		void Roll(int roll);
-		List<int>? GetPossibleMoves();
-		List<Piece> MovePiece(int pieceId);
-		void NextTurn();
+		List<Guid>? GetPossibleMoves();
+		List<Piece> MovePiece(Guid pieceId);
+		Guid NextTurn();
 	}
 }
