@@ -15,6 +15,7 @@ namespace Backend.Domains.GameManagerDomain
         private readonly IBoardService boardService;
         private readonly IGameSetupService gameSetupService;
         private readonly IDiceService diceService;
+        private int rollsTaken = 0;
 
 
         public GameManager(IBoardService boardService, IGameSetupService gameSetupService, IDiceService diceService)
@@ -33,7 +34,7 @@ namespace Backend.Domains.GameManagerDomain
             return (this.Board, this.Players);
         }
 
-        public void AddPlayers(int playerCount)
+        private void AddPlayers(int playerCount)
         {
             for (int i = 0; i < playerCount; i++)
             {
@@ -42,22 +43,22 @@ namespace Backend.Domains.GameManagerDomain
         }
 
         // Step 2 Roll for player order
-        public int RollForPlayerOrder()
+        public List<Player> RollForPlayerOrder()
         {
             var playerOrder = gameSetupService.RollForPlayerOrder(Players);
             this.CurrentPlayer = Players[0];
-            return CurrentPlayer.Id;
+            return playerOrder;
         }
 
         // Step 3 Player rolls dice
         public void Roll(int roll)
         {
-            this.CurrentPlayer.IsTurn = true;
             this.CurrentPlayer.LastRoll = roll;
+            this.rollsTaken++;
         }
 
         // Step 4 Return possible moves
-        public List<int>? GetPossibleMoves()
+        public List<int>? GetMovablePieces()
         {
             var availablePieces = boardService.GetPossibleMoves(this.CurrentPlayer.GetPiecesInPlay());
             return availablePieces.Select(p => p.ID).ToList();
@@ -66,28 +67,36 @@ namespace Backend.Domains.GameManagerDomain
         // Step 6 Move piece
         public List<Piece> MovePiece(int pieceId)
         {
-            var affectedPieces = boardService.MovePiece(pieceId, CurrentPlayer.LastRoll);
-            return affectedPieces;
+            return boardService.MovePiece(pieceId, CurrentPlayer.LastRoll);
+        }
+
+        // Check if current player can roll again due to 6'er rule or no pieces in play rule
+        public bool CanRollAgain()
+        {
+            if (CurrentPlayer.LastRoll == 6)
+                return true;
+
+            if (!CurrentPlayer.AnyPiecesInPlay() && rollsTaken < 3)
+                return true;
+
+            return false;
         }
 
         // Step 7 End turn
-        public void NextTurn()
+        public int NextTurn()
         {
-            this.CurrentPlayer.IsTurn = false;
-            this.CurrentPlayer.LastRoll = 0;
+            // Move on to the next player and reset the roll
             int index = Players.IndexOf(CurrentPlayer);
-            if (index == Players.Count - 1)
+            do
             {
-                CurrentPlayer = Players[0];
-            }
-            else
-            {
-                CurrentPlayer = Players[index + 1];
-            }
-            if (CurrentPlayer.HasFinished())
-            {
-                NextTurn();
-            }
+                index = (index + 1) % Players.Count;
+                CurrentPlayer = Players[index];
+            } while (CurrentPlayer.HasFinished());
+
+            rollsTaken = 0;
+            this.CurrentPlayer.LastRoll = 0;
+
+            return CurrentPlayer.Id;
         }
     } 
 }

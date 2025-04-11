@@ -13,7 +13,6 @@ namespace Backend.Domains.PlayerDomain
         public bool IsTurn { get; set; }
         public PosIndex? StartTile { get; set; }
         public int LastRoll { get; set; }
-
         public Player(int id, ColourEnum colour)
         {
             Pieces.AddRange(new Piece[] { new Piece(0, colour), new Piece(1, colour), new Piece(2, colour), new Piece(3, colour) });
@@ -35,6 +34,12 @@ namespace Backend.Domains.PlayerDomain
         {
             var pieces = Pieces.Where(p => p.IsInPlay).ToList();
             return pieces;
+        }
+
+        public bool AnyPiecesInPlay()
+        {
+            var pieces = Pieces.Where(p => p.IsInPlay).ToList();
+            return pieces.Any();
         }
 
         public bool HasFinished()
