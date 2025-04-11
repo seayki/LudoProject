@@ -64,13 +64,13 @@ namespace Backend.Domains.GameManagerDomain
             return availablePieces.Select(p => p.ID).ToList();
         }
 
-        // Step 6 Move piece
+        // Step 5 Move piece
         public List<Piece> MovePiece(int pieceId)
         {
             return boardService.MovePiece(pieceId, CurrentPlayer.LastRoll);
         }
 
-        // Check if current player can roll again due to 6'er rule or no pieces in play rule
+        // Step 6 Check if current player can roll again due to 6'er rule or no pieces in play rule
         public bool CanRollAgain()
         {
             if (CurrentPlayer.LastRoll == 6)
