@@ -41,6 +41,7 @@ namespace Frontend
         private List<TileColor> playerColors;
 
         public Dictionary<TileColor, List<GameObject>> colorTiles;
+        public Dictionary<TileColor, List<GameObject>> homeTiles;
         private List<GameObject> newGameObjects;
         private List<GameObject> destroyedGameObjects;
 
@@ -87,10 +88,12 @@ namespace Frontend
             destroyedGameObjects = new List<GameObject>();
 
             colorTiles = new Dictionary<TileColor, List<GameObject>>();
+            homeTiles = new Dictionary<TileColor, List<GameObject>>();
 
             playerColors = new List<TileColor>() { TileColor.Green, TileColor.Yellow, TileColor.Blue, TileColor.Red };
+           
 
-            buttons_MainMenu = new List<Button>();
+        buttons_MainMenu = new List<Button>();
             buttons_Playing = new List<Button>();
             buttons_SetupGame = new List<Button>();
 
@@ -156,8 +159,9 @@ namespace Frontend
 
             // FOR SHOWCASE USE ONLY
 
-            // _spriteBatch.Draw(box, tiles[46].Transform.Position, null, Color.Green, 0, new Vector2(box.Width / 2, box.Height / 2), new Vector2(0.1f, 0.1f), SpriteEffects.None, 0);
+             _spriteBatch.Draw(box, homeTiles[TileColor.Blue][2].Transform.Position, null, Color.Green, 0, new Vector2(box.Width/2, box.Height/ 2), new Vector2(0.1f, 0.1f), SpriteEffects.None, 0);
 
+            _spriteBatch.Draw(box, tiles[2].Transform.Position, null, Color.Green, 0, new Vector2(box.Width / 2, box.Height / 2), new Vector2(0.1f, 0.1f), SpriteEffects.None, 0);
 
             //_spriteBatch.Draw(box, new Vector2(500, 500), null, Color.Red, 0, new Vector2(0, 0), new Vector2(0.2f, 0.2f), SpriteEffects.None, 0);
 
@@ -317,6 +321,7 @@ namespace Frontend
 
 
             CreateColorTiles(playerColors);
+            CreateHomeTiles(playerColors);
 
 
         }
@@ -365,10 +370,57 @@ namespace Frontend
                 }
 
                 colorTiles.Add(tileColors[i], colorTileGameObjects);
-
+                
             }
 
 
+
+        }
+
+        private void CreateHomeTiles(List<TileColor> tileColors)
+        {
+            List<Vector2> startpositions = new List<Vector2>() {new Vector2(112,225),new Vector2(760,225),new Vector2(112,740),new Vector2(760,740) };
+
+
+            Debug.Write(tileColors.Count);
+            for (int i = 0; i < tileColors.Count; i++)
+            {
+                
+
+                List<GameObject> tiles = new List<GameObject>();
+                for (int j = 0; j < 4; j++)
+                {
+                    GameObject go = TileFactory.Instance.Create(TileColor.None, Content);
+
+                    switch (j)
+                    {
+                        case 0:
+                            go.Transform.Position = new Vector2(startpositions[i].X, startpositions[i].Y);
+                            break;
+
+                        case 1:
+                            go.Transform.Position = new Vector2(startpositions[i].X+ tileSpacing, startpositions[i].Y);
+                            break;
+                        case 2:
+                            go.Transform.Position = new Vector2(startpositions[i].X, startpositions[i].Y+ tileSpacing);
+                            break;
+                        case 3:
+                            go.Transform.Position = new Vector2(startpositions[i].X + tileSpacing, startpositions[i].Y+tileSpacing);
+                            break;
+
+
+
+                        default:
+                            break;
+                    }
+                    tiles.Add(go);
+
+                }
+
+                homeTiles.Add(tileColors[i], tiles);
+
+
+            }
 
         }
 

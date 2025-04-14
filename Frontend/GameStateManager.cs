@@ -26,7 +26,7 @@ namespace Frontend
         // constructoren der initializer stadiet som spillet starter i.
         public GameStateManager()
         {
-            currentState = GameState.Start;
+            currentState = GameState.Playing;
         }
 
         //ChangeGameState tillader at man kan ændre på stadiet fx Menu til Playing, eller omvendt.
@@ -90,7 +90,15 @@ namespace Frontend
                         } 
                     }
 
-                    foreach(var item in GameWorld.Instance.buttons_Playing)
+                    foreach (var go in GameWorld.Instance.homeTiles)
+                    {
+                        foreach (var item in go.Value)
+                        {
+                            item.Start();
+                        }
+                    }
+
+                    foreach (var item in GameWorld.Instance.buttons_Playing)
                     {
                         item.LoadContent();
                     }
@@ -151,7 +159,15 @@ namespace Frontend
                         }
                     }
 
-                    foreach(var item in GameWorld.Instance.buttons_Playing)
+                    foreach (var go in GameWorld.Instance.homeTiles)
+                    {
+                        foreach (var item in go.Value)
+                        {
+                            item.Update(gameTime);
+                        }
+                    }
+
+                    foreach (var item in GameWorld.Instance.buttons_Playing)
                     {
                         item.Update();
                     }    
@@ -227,6 +243,15 @@ namespace Frontend
                             item.Draw(spriteBatch);
                         }
                     }
+
+                    foreach (var go in GameWorld.Instance.homeTiles)
+                    {
+                        foreach (var item in go.Value)
+                        {
+                            item.Draw(spriteBatch);
+                        }
+                    }
+
 
                     foreach (var item in GameWorld.Instance.buttons_Playing)
                     {
