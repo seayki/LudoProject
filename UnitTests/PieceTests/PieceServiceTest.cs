@@ -16,7 +16,7 @@ namespace UnitTests.PieceTests
 		public void TestSuccessfulMovePieceMethod(ColourEnum posIndexColour, int posIndexIndex)
 		{
 			// Arrange
-			var piece = new Piece(1, ColourEnum.Yellow);
+			var piece = new Piece(ColourEnum.Yellow);
 			piece.IsInPlay = true;
 			var posIndex = new PosIndex
 			{
@@ -44,7 +44,7 @@ namespace UnitTests.PieceTests
 			string expectedMessage)
 		{
 			// Arrange
-			var piece = new Piece(1, ColourEnum.Yellow);
+			var piece = new Piece(ColourEnum.Yellow);
 			piece.IsInPlay = true;
 			var posIndex = new PosIndex
 			{
@@ -77,7 +77,7 @@ namespace UnitTests.PieceTests
 		public void TestSuccessfulMovePieceOut(ColourEnum posIndexColour, int posIndexIndex)
 		{
 			// Arrange
-			var piece = new Piece(1, ColourEnum.Yellow);
+			var piece = new Piece(ColourEnum.Yellow);
 			var posIndex = new PosIndex
 			{
 				Colour = posIndexColour,
@@ -98,7 +98,7 @@ namespace UnitTests.PieceTests
 		public void MovePieceOut_PieceAlreadyOnBoard_ExceptionThrown()
 		{
 			// Arrange
-			var piece = new Piece(1, ColourEnum.Yellow);
+			var piece = new Piece(ColourEnum.Yellow);
 			piece.IsInPlay = true;
 			var posIndex = new PosIndex
 			{
@@ -120,7 +120,7 @@ namespace UnitTests.PieceTests
 		public void ReturnPieceToBase_PieceIsOnBoard_PieceNoLongerInPlay()
 		{
 			// Arrange
-			var piece = new Piece(1, ColourEnum.Yellow);
+			var piece = new Piece(ColourEnum.Yellow);
 			piece.IsInPlay = true;
 
 			IPieceService pieceService = new PieceService();
@@ -137,7 +137,7 @@ namespace UnitTests.PieceTests
 		public void ReturnPieceToBase_PieceIsNotOnBoard_ExceptionThrown()
 		{
 			// Arrange
-			var piece = new Piece(1, ColourEnum.Yellow);
+			var piece = new Piece(ColourEnum.Yellow);
 			piece.IsInPlay = false;
 
 			IPieceService pieceService = new PieceService();
