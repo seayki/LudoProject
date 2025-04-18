@@ -1,4 +1,5 @@
-﻿using Frontend.BuilderPattern;
+﻿using Common.DTOs;
+using Frontend.BuilderPattern;
 using Frontend.ComponentPattern;
 using Frontend.ControllerPattern;
 using Frontend.FactoryPattern;
@@ -42,6 +43,9 @@ namespace Frontend
 
         public Dictionary<TileColor, List<GameObject>> colorTiles;
         public Dictionary<TileColor, List<GameObject>> homeTiles;
+
+        public Dictionary<TileColor, List<GameObject>> playerPieces;
+
         private List<GameObject> newGameObjects;
         private List<GameObject> destroyedGameObjects;
 
@@ -93,7 +97,7 @@ namespace Frontend
             playerColors = new List<TileColor>() { TileColor.Green, TileColor.Yellow, TileColor.Blue, TileColor.Red };
            
 
-        buttons_MainMenu = new List<Button>();
+            buttons_MainMenu = new List<Button>();
             buttons_Playing = new List<Button>();
             buttons_SetupGame = new List<Button>();
 
@@ -118,6 +122,7 @@ namespace Frontend
 
             base.Initialize();
         }
+
 
         protected override void LoadContent()
         {
@@ -161,7 +166,7 @@ namespace Frontend
 
              _spriteBatch.Draw(box, homeTiles[TileColor.Blue][2].Transform.Position, null, Color.Green, 0, new Vector2(box.Width/2, box.Height/ 2), new Vector2(0.1f, 0.1f), SpriteEffects.None, 0);
 
-            _spriteBatch.Draw(box, tiles[2].Transform.Position, null, Color.Green, 0, new Vector2(box.Width / 2, box.Height / 2), new Vector2(0.1f, 0.1f), SpriteEffects.None, 0);
+            _spriteBatch.Draw(box, tiles[0].Transform.Position, null, Color.Green, 0, new Vector2(box.Width / 2, box.Height / 2), new Vector2(0.1f, 0.1f), SpriteEffects.None, 0);
 
             //_spriteBatch.Draw(box, new Vector2(500, 500), null, Color.Red, 0, new Vector2(0, 0), new Vector2(0.2f, 0.2f), SpriteEffects.None, 0);
 
@@ -471,6 +476,17 @@ namespace Frontend
             gameObjects_Playing.Add(diceGO);
             
 
+
+        }
+
+
+        public void StartGame(int numberOfPlayers)
+        {
+            // Send numberOfPlayers to backend and return a list of players in an order
+
+            List<PlayerActionDTO> backendPlayerOrder = new List<PlayerActionDTO>();
+
+            
 
         }
 

@@ -74,7 +74,7 @@ namespace Frontend.ComponentPattern
             {
                 animator.PlayAnimation("RollDice");
                 animationStarted = true;
-                // SEND RAND0M NUMBER TO BACKEND
+             
                 //Debug.Write("down");
                 
                 down = false;
@@ -87,6 +87,8 @@ namespace Frontend.ComponentPattern
                 if(timeElapsed>=rollTime)
                 {
                     int randNumber = random.Next(0, numberSpriteNames.Count);
+
+                    // SEND RAND0M NUMBER TO BACKEND
 
                     animator.StopAnimationAndSetSprite(numberSprites[randNumber]);
 

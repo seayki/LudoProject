@@ -16,7 +16,7 @@ namespace Frontend.ControllerPattern
     {
         public IButtonAction buttonAction;
         private string spriteName;
-        private Vector2 position;
+        public Vector2 position;
         private Texture2D sprite;
         private Texture2D pixel;
         private Rectangle rectangle;
