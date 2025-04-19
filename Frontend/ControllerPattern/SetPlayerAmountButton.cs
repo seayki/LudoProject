@@ -19,7 +19,9 @@ namespace Frontend.ControllerPattern
 
         public void DoAction()
         {
-            // Send player amount to backend.
+            // Send player amount to gameworld which uses that amount when pressing on the roll for playerorder button. 
+
+            GameWorld.Instance.playerAmount = playerAmount;
             ButtonObject.DeSelectLinkedButtons();
             ButtonObject.selected = true;
           

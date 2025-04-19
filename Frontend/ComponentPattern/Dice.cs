@@ -1,4 +1,5 @@
-﻿using Frontend.ControllerPattern;
+﻿using Common.Enums;
+using Frontend.ControllerPattern;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -89,6 +90,16 @@ namespace Frontend.ComponentPattern
                     int randNumber = random.Next(0, numberSpriteNames.Count);
 
                     // SEND RAND0M NUMBER TO BACKEND
+
+                    //TEMPORARY GET back a list of moveable pieces
+                    List<Guid> moveAblePieces = new List<Guid>();
+                    moveAblePieces = GameWorld.Instance.playerPieces[ColourEnum.Green].Select(go => {
+                        PlayerPiece piece = (PlayerPiece)go.GetComponent<PlayerPiece>();
+                        return piece.pieceID;
+                    }).ToList();
+                    //TEMPORARY
+
+                    GameWorld.Instance.MakePiecesMoveable(moveAblePieces);
 
                     animator.StopAnimationAndSetSprite(numberSprites[randNumber]);
 

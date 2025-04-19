@@ -15,6 +15,9 @@ namespace Frontend.ControllerPattern
         public void DoAction()
         {
             // request backend to roll for playerorder
+            GameWorld.Instance.StartGame();
+
+
 
             List<NonInteractableGOBuilder> playerColorBoxes=new List<NonInteractableGOBuilder>();
 

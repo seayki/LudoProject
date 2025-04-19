@@ -1,4 +1,5 @@
 ﻿using Common.DTOs;
+using Common.Enums;
 using Frontend.BuilderPattern;
 using Frontend.ComponentPattern;
 using Frontend.ControllerPattern;
@@ -9,6 +10,7 @@ using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 
 namespace Frontend
 {
@@ -39,12 +41,12 @@ namespace Frontend
 
         private int tileSpacing = 70;
 
-        private List<TileColor> playerColors;
+        public Dictionary<Guid,ColourEnum> playerColors;
 
-        public Dictionary<TileColor, List<GameObject>> colorTiles;
-        public Dictionary<TileColor, List<GameObject>> homeTiles;
+        public Dictionary<ColourEnum, List<GameObject>> colorTiles;
+        public Dictionary<ColourEnum, List<GameObject>> homeTiles;
 
-        public Dictionary<TileColor, List<GameObject>> playerPieces;
+        public Dictionary<ColourEnum, List<GameObject>> playerPieces;
 
         private List<GameObject> newGameObjects;
         private List<GameObject> destroyedGameObjects;
@@ -53,6 +55,9 @@ namespace Frontend
         public float deltaTime;
 
         public float FPS;
+
+        public int playerAmount;
+        private List<PlayerDTO> playerOrder;
 
         public static GameWorld Instance
         {
@@ -91,10 +96,11 @@ namespace Frontend
             newGameObjects = new List<GameObject>();
             destroyedGameObjects = new List<GameObject>();
 
-            colorTiles = new Dictionary<TileColor, List<GameObject>>();
-            homeTiles = new Dictionary<TileColor, List<GameObject>>();
+            colorTiles = new Dictionary<ColourEnum, List<GameObject>>();
+            homeTiles = new Dictionary<ColourEnum, List<GameObject>>();
+            playerPieces=new Dictionary<ColourEnum, List<GameObject>>();
 
-            playerColors = new List<TileColor>() { TileColor.Green, TileColor.Yellow, TileColor.Blue, TileColor.Red };
+            playerColors = new Dictionary<Guid, ColourEnum>();
            
 
             buttons_MainMenu = new List<Button>();
@@ -130,7 +136,7 @@ namespace Frontend
             // board=Content.Load<Texture2D>("LudoBoard");
             box = Content.Load<Texture2D>("Box");
             pixel = Content.Load<Texture2D>("pixel");
-            MakeClassicTileMap();
+            
 
             CreateDice();
             stateManager.Loadcontent();
@@ -164,9 +170,9 @@ namespace Frontend
 
             // FOR SHOWCASE USE ONLY
 
-             _spriteBatch.Draw(box, homeTiles[TileColor.Blue][2].Transform.Position, null, Color.Green, 0, new Vector2(box.Width/2, box.Height/ 2), new Vector2(0.1f, 0.1f), SpriteEffects.None, 0);
+            // _spriteBatch.Draw(box, homeTiles[ColourEnum.Blue][2].Transform.Position, null, Color.Green, 0, new Vector2(box.Width/2, box.Height/ 2), new Vector2(0.1f, 0.1f), SpriteEffects.None, 0);
 
-            _spriteBatch.Draw(box, tiles[0].Transform.Position, null, Color.Green, 0, new Vector2(box.Width / 2, box.Height / 2), new Vector2(0.1f, 0.1f), SpriteEffects.None, 0);
+           // _spriteBatch.Draw(box, tiles[0].Transform.Position, null, Color.Green, 0, new Vector2(box.Width / 2, box.Height / 2), new Vector2(0.1f, 0.1f), SpriteEffects.None, 0);
 
             //_spriteBatch.Draw(box, new Vector2(500, 500), null, Color.Red, 0, new Vector2(0, 0), new Vector2(0.2f, 0.2f), SpriteEffects.None, 0);
 
@@ -178,11 +184,11 @@ namespace Frontend
         }
 
 
-        private void MakeClassicTileMap()
+        public void MakeClassicTileMap()
         {
             for (int i = 0; i < 4; i++)
             {
-                GameObject go = TileFactory.Instance.Create(TileColor.None, Content);
+                GameObject go = TileFactory.Instance.Create(ColourEnum.None, Content);
                 go.Transform.Position = new Vector2(50 + tileSpacing + i * tileSpacing, 450);
 
                 tiles.Add(go);
@@ -192,7 +198,7 @@ namespace Frontend
 
             for (int i = 0; i < 5; i++)
             {
-                GameObject go = TileFactory.Instance.Create(TileColor.None, Content);
+                GameObject go = TileFactory.Instance.Create(ColourEnum.None, Content);
                 go.Transform.Position = new Vector2(pos1.X + tileSpacing, pos1.Y - tileSpacing * i);
 
                 tiles.Add(go);
@@ -203,7 +209,7 @@ namespace Frontend
 
             for (int i = 0; i < 2; i++)
             {
-                GameObject go = TileFactory.Instance.Create(TileColor.None, Content);
+                GameObject go = TileFactory.Instance.Create(ColourEnum.None, Content);
                 go.Transform.Position = new Vector2(pos2.X + tileSpacing * i, pos2.Y - tileSpacing);
 
                 tiles.Add(go);
@@ -215,7 +221,7 @@ namespace Frontend
 
             for (int i = 0; i < 5; i++)
             {
-                GameObject go = TileFactory.Instance.Create(TileColor.None, Content);
+                GameObject go = TileFactory.Instance.Create(ColourEnum.None, Content);
                 go.Transform.Position = new Vector2(pos3.X + tileSpacing, pos3.Y + tileSpacing * i);
 
                 tiles.Add(go);
@@ -226,7 +232,7 @@ namespace Frontend
 
             for (int i = 0; i < 5; i++)
             {
-                GameObject go = TileFactory.Instance.Create(TileColor.None, Content);
+                GameObject go = TileFactory.Instance.Create(ColourEnum.None, Content);
                 go.Transform.Position = new Vector2(pos4.X + i * tileSpacing, pos4.Y + tileSpacing);
 
                 tiles.Add(go);
@@ -237,7 +243,7 @@ namespace Frontend
 
             for (int i = 0; i < 2; i++)
             {
-                GameObject go = TileFactory.Instance.Create(TileColor.None, Content);
+                GameObject go = TileFactory.Instance.Create(ColourEnum.None, Content);
                 go.Transform.Position = new Vector2(pos5.X + tileSpacing, pos5.Y + tileSpacing * i);
 
                 tiles.Add(go);
@@ -248,7 +254,7 @@ namespace Frontend
 
             for (int i = 0; i < 5; i++)
             {
-                GameObject go = TileFactory.Instance.Create(TileColor.None, Content);
+                GameObject go = TileFactory.Instance.Create(ColourEnum.None, Content);
                 go.Transform.Position = new Vector2(pos6.X - i * tileSpacing, pos6.Y + tileSpacing);
 
                 tiles.Add(go);
@@ -258,7 +264,7 @@ namespace Frontend
 
             for (int i = 0; i < 5; i++)
             {
-                GameObject go = TileFactory.Instance.Create(TileColor.None, Content);
+                GameObject go = TileFactory.Instance.Create(ColourEnum.None, Content);
                 go.Transform.Position = new Vector2(pos7.X - tileSpacing, pos7.Y + i * tileSpacing);
 
                 tiles.Add(go);
@@ -268,7 +274,7 @@ namespace Frontend
 
             for (int i = 0; i < 2; i++)
             {
-                GameObject go = TileFactory.Instance.Create(TileColor.None, Content);
+                GameObject go = TileFactory.Instance.Create(ColourEnum.None, Content);
                 go.Transform.Position = new Vector2(pos8.X - tileSpacing * i, pos8.Y + tileSpacing);
 
                 tiles.Add(go);
@@ -279,7 +285,7 @@ namespace Frontend
 
             for (int i = 0; i < 5; i++)
             {
-                GameObject go = TileFactory.Instance.Create(TileColor.None, Content);
+                GameObject go = TileFactory.Instance.Create(ColourEnum.None, Content);
                 go.Transform.Position = new Vector2(pos9.X - tileSpacing, pos9.Y - i * tileSpacing);
 
                 tiles.Add(go);
@@ -289,7 +295,7 @@ namespace Frontend
 
             for (int i = 0; i < 5; i++)
             {
-                GameObject go = TileFactory.Instance.Create(TileColor.None, Content);
+                GameObject go = TileFactory.Instance.Create(ColourEnum.None, Content);
                 go.Transform.Position = new Vector2(pos10.X - i * tileSpacing, pos10.Y - tileSpacing);
 
                 tiles.Add(go);
@@ -299,7 +305,7 @@ namespace Frontend
 
             for (int i = 0; i < 3; i++)
             {
-                GameObject go = TileFactory.Instance.Create(TileColor.None, Content);
+                GameObject go = TileFactory.Instance.Create(ColourEnum.None, Content);
                 go.Transform.Position = new Vector2(pos11.X - tileSpacing, pos11.Y - tileSpacing * i);
 
                 tiles.Add(go);
@@ -325,39 +331,47 @@ namespace Frontend
             startTile4.Color = Color.Blue;
 
 
-            CreateColorTiles(playerColors);
-            CreateHomeTiles(playerColors);
+            CreateColorTiles(playerColors.Values.ToList());
+            CreateHomeTiles(playerColors.Values.ToList());
 
 
         }
 
 
 
-        private void CreateColorTiles(List<TileColor> tileColors)
+        private void CreateColorTiles(List<ColourEnum> ColourEnums)
         {
-            for (int i = 0; i < tileColors.Count; i++)
+            for (int i = 0; i < ColourEnums.Count; i++)
             {
 
 
                 List<GameObject> colorTileGameObjects = new List<GameObject>();
                 Vector2 startColorPos = tiles[10 + i * 12].Transform.Position;
+                GameObject go=new GameObject();
+                // Colors are set in terms of going around the clock instead of left to right which is how the colorEnums list is set.
+                // Therefore indexes are set accordingly. 
+
                 for (int j = 0; j < 5; j++)
                 {
-                    GameObject go = TileFactory.Instance.Create(tileColors[i], Content);
+                 
 
                     switch (i)
                     {
                         case 0:
+                            go = TileFactory.Instance.Create(ColourEnums[1], Content);
                             go.Transform.Position = new Vector2(startColorPos.X, startColorPos.Y + tileSpacing + tileSpacing * j);
                             break;
 
                         case 1:
+                            go = TileFactory.Instance.Create(ColourEnums[3], Content);
                             go.Transform.Position = new Vector2(startColorPos.X - tileSpacing - tileSpacing * j, startColorPos.Y);
                             break;
                         case 2:
+                            go = TileFactory.Instance.Create(ColourEnums[2], Content);
                             go.Transform.Position = new Vector2(startColorPos.X, startColorPos.Y - tileSpacing - tileSpacing * j);
                             break;
                         case 3:
+                            go = TileFactory.Instance.Create(ColourEnums[0], Content);
                             go.Transform.Position = new Vector2(startColorPos.X + tileSpacing + tileSpacing * j, startColorPos.Y);
                             break;
 
@@ -374,7 +388,7 @@ namespace Frontend
 
                 }
 
-                colorTiles.Add(tileColors[i], colorTileGameObjects);
+                colorTiles.Add(ColourEnums[i], colorTileGameObjects);
                 
             }
 
@@ -382,20 +396,20 @@ namespace Frontend
 
         }
 
-        private void CreateHomeTiles(List<TileColor> tileColors)
+        private void CreateHomeTiles(List<ColourEnum> ColourEnums)
         {
             List<Vector2> startpositions = new List<Vector2>() {new Vector2(112,225),new Vector2(760,225),new Vector2(112,740),new Vector2(760,740) };
 
 
-            Debug.Write(tileColors.Count);
-            for (int i = 0; i < tileColors.Count; i++)
+            Debug.Write(ColourEnums.Count);
+            for (int i = 0; i < ColourEnums.Count; i++)
             {
                 
 
                 List<GameObject> tiles = new List<GameObject>();
                 for (int j = 0; j < 4; j++)
                 {
-                    GameObject go = TileFactory.Instance.Create(TileColor.None, Content);
+                    GameObject go = TileFactory.Instance.Create(ColourEnum.None, Content);
 
                     switch (j)
                     {
@@ -422,7 +436,7 @@ namespace Frontend
 
                 }
 
-                homeTiles.Add(tileColors[i], tiles);
+                homeTiles.Add(ColourEnums[i], tiles);
 
 
             }
@@ -480,14 +494,163 @@ namespace Frontend
         }
 
 
-        public void StartGame(int numberOfPlayers)
+        public void StartGame()
         {
             // Send numberOfPlayers to backend and return a list of players in an order
 
-            List<PlayerActionDTO> backendPlayerOrder = new List<PlayerActionDTO>();
+            int playerAmountTOSENDTOBACKEND = playerAmount;
+            // TEMPORARY PLAYERORDER
+            List<PlayerDTO> backendPlayerOrder = new List<PlayerDTO>()
+            {
+
+            new PlayerDTO() { colour = ColourEnum.Red, startTile = new PosIndex() { Index = 0*(tiles.Count/4)}, id=Guid.NewGuid(), pieces=new List<PieceDTO>(){
+                new PieceDTO() {ID=Guid.NewGuid(),IsFinished=false,IsInPlay=false},
+                new PieceDTO() {ID=Guid.NewGuid(),IsFinished=false,IsInPlay=false},
+                new PieceDTO() {ID=Guid.NewGuid(),IsFinished=false,IsInPlay=false},
+                new PieceDTO() {ID=Guid.NewGuid(),IsFinished=false,IsInPlay=false},
+            }},
+
+            new PlayerDTO() { colour = ColourEnum.Green, startTile = new PosIndex() { Index = 1*(tiles.Count/4)}, id=Guid.NewGuid(),pieces=new List<PieceDTO>(){
+                new PieceDTO() {ID=Guid.NewGuid(),IsFinished=false,IsInPlay=false},
+                new PieceDTO() {ID=Guid.NewGuid(),IsFinished=false,IsInPlay=false},
+                new PieceDTO() {ID=Guid.NewGuid(),IsFinished=false,IsInPlay=false},
+                new PieceDTO() {ID=Guid.NewGuid(),IsFinished=false,IsInPlay=false},
+            } },
+
+            new PlayerDTO() { colour = ColourEnum.Blue, startTile = new PosIndex() { Index = 2*(tiles.Count/4)}, id=Guid.NewGuid(),pieces=new List<PieceDTO>(){
+                new PieceDTO() {ID=Guid.NewGuid(),IsFinished=false,IsInPlay=false},
+                new PieceDTO() {ID=Guid.NewGuid(),IsFinished=false,IsInPlay=false},
+                new PieceDTO() {ID=Guid.NewGuid(),IsFinished=false,IsInPlay=false},
+                new PieceDTO() {ID=Guid.NewGuid(),IsFinished=false,IsInPlay=false},
+            } },
+
+            new PlayerDTO() { colour = ColourEnum.Yellow, startTile = new PosIndex() { Index = 3*(tiles.Count/4)}, id=Guid.NewGuid(),pieces=new List<PieceDTO>(){
+                new PieceDTO() {ID=Guid.NewGuid(),IsFinished=false,IsInPlay=false},
+                new PieceDTO() {ID=Guid.NewGuid(),IsFinished=false,IsInPlay=false},
+                new PieceDTO() {ID=Guid.NewGuid(),IsFinished=false,IsInPlay=false},
+                new PieceDTO() {ID=Guid.NewGuid(),IsFinished=false,IsInPlay=false},
+            } },
+            
+
+            };
+
+            // TEMPORARY PLAYERORDER
+
+            playerOrder = backendPlayerOrder;
+
+            foreach (var item in backendPlayerOrder)
+            {
+                playerColors.Add(item.id,item.colour);
+              
+                List<GameObject> pieces = new List<GameObject>();
+                for (int i = 0; i < 4; i++)
+                {
+                    GameObject go = new GameObject();
+                    SpriteRenderer sr=(SpriteRenderer)go.AddComponent(new SpriteRenderer());
+                    switch (item.colour)
+                    {
+                        case ColourEnum.None:
+                            sr.SetSprite("Box", 0, 0.1f, Color.White,Content);
+                            break;
+                        case ColourEnum.Red:
+                            sr.SetSprite("Box", 0, 0.1f, Color.Red, Content);
+                            break;
+                        case ColourEnum.Blue:
+                            sr.SetSprite("Box", 0, 0.1f, Color.Blue, Content);
+                            break;
+                        case ColourEnum.Green:
+                            sr.SetSprite("Box", 0, 0.1f, Color.Green, Content);
+                            break;
+                        case ColourEnum.Yellow:
+                            sr.SetSprite("Box", 0, 0.1f, Color.Yellow, Content);
+                            break;
+                        default:
+                            break;
+                    }
+
+                   
+                    go.AddComponent(new PlayerPiece(item.colour, i, item.startTile.Index, item.pieces[i].ID, item.pieces[i].IsInPlay, item.pieces[i].IsFinished));
+
+                    pieces.Add(go);
+
+                }
+
+
+                playerPieces.Add(item.colour,pieces);
+             
+            }
+            // SETS THE CURRENT PLAYER TO BE THE FIRST ON THE LIST IN THE PLAYERORDER
+            UpdateCurrentPlayer(playerOrder[0].id);
+
+        }
+
+
+        public void MakePiecesMoveable(List<Guid> moveAblePieces)
+        {
+            foreach (var item in playerPieces[playerOrder[0].colour])
+            {
+
+               PlayerPiece piece= (PlayerPiece)item.GetComponent<PlayerPiece>();
+
+               if(moveAblePieces.Contains(piece.pieceID))
+                {
+                    piece.MakeMoveAble();
+                }
+
+            }
+            
+
+        }
+
+        public void UpdatePieces(List<PieceDTO> piecesToUpdate)
+        {
+
+            foreach (var item in piecesToUpdate)
+            {
+                foreach (var go in playerPieces[item.PosIndex.Colour])
+                {
+                    PlayerPiece p =(PlayerPiece) go.GetComponent<PlayerPiece>();
+                   if( p.pieceID==item.ID)
+                    {
+
+                        p.UpdatePiece(item);
+
+                    }
+                }
+               
 
             
 
+            }
+
+            
+
+        }
+
+
+        public void UpdateCurrentPlayer(Guid nextPlayersTurn)
+        {
+            switch (playerColors[nextPlayersTurn])
+            {
+                case ColourEnum.None:
+                    stateManager.currentColor = Color.White;
+                    break;
+                case ColourEnum.Red:
+                    stateManager.currentColor = Color.Red;
+                    break;
+                case ColourEnum.Blue:
+                    stateManager.currentColor = Color.Blue;
+                    break;
+                case ColourEnum.Green:
+                    stateManager.currentColor = Color.Green;
+                    break;
+                case ColourEnum.Yellow:
+                    stateManager.currentColor = Color.Yellow;
+                    break;
+                default:
+                    break;
+            }
+           
         }
 
         public void Instantiate(GameObject go)
@@ -547,7 +710,9 @@ namespace Frontend
                 newButtons[i].LoadContent();
             }
 
-            destroyedButtons.Clear();
+            
+
+                destroyedButtons.Clear();
             newButtons.Clear();
            
         }

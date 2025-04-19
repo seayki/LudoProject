@@ -20,5 +20,10 @@ namespace Backend.Services.BoardServices
         {
             throw new NotImplementedException();
         }
+
+        public Task<PosIndex> GetTileEndPos(PosIndex piecePosIndex, ColourEnum pieceColour, int diceRoll)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
