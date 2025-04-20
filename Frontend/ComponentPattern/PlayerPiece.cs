@@ -8,6 +8,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -29,21 +30,23 @@ namespace Frontend.ComponentPattern
         public Guid pieceID { get; set; }
 
         private bool isInplay;
-        private ColourEnum pieceColor;
+        public ColourEnum pieceColor;
         private int startTileIndex;
+        public Guid playerId;
         public bool moveAble = false;
         private int index;
         private bool moveToColorZone = false;
         private int hometilePosIndex;
         private bool isFinished;
 
-        public PlayerPiece(ColourEnum pieceColor, int hometileIndex, int startTileIndex,Guid pieceId,bool isInplay,bool isFinished)
+        public PlayerPiece(Guid playerID,ColourEnum pieceColor, int hometileIndex, int startTileIndex,Guid pieceId,bool isInplay,bool isFinished)
         {
 
             this.hometilePosIndex = hometileIndex;
             this.pieceColor = pieceColor;
             this.startTileIndex = startTileIndex;
-            this.pieceID = pieceID;
+            this.playerId = playerID;
+            this.pieceID = pieceId;
             this.isInplay = isInplay;
             this.isFinished = isFinished;
 
@@ -52,7 +55,9 @@ namespace Frontend.ComponentPattern
         public void MakeMoveAble()
         {
             moveAble = true;
+            SpriteRenderer sr=(SpriteRenderer)GameObject.GetComponent<SpriteRenderer>();
 
+            sr.ShowRectangle = true;
         }
 
         public void MoveToStartTile()
@@ -63,18 +68,7 @@ namespace Frontend.ComponentPattern
 
         public void RemoveFromGame()
         {
-            IsEnabled = false;
-            GameObject.GetComponent<SpriteRenderer>().IsEnabled = false;
-
-            foreach (var item in GameWorld.Instance.playerPieces[pieceColor])
-            {
-               PlayerPiece p=(PlayerPiece)item.GetComponent<PlayerPiece>();
-
-                if(p.pieceID==pieceID)
-                {
-                    GameWorld.Instance.playerPieces[pieceColor].Remove(item);
-                }
-            }
+            GameWorld.Instance.DestroyPiece(GameObject);
            
 
         }
@@ -88,9 +82,12 @@ namespace Frontend.ComponentPattern
         {
                
             GameObject.Transform.Position = GameWorld.Instance.homeTiles[pieceColor][hometilePosIndex].Transform.Position;
+            SpriteRenderer sr = (SpriteRenderer)GameWorld.Instance.homeTiles[pieceColor][hometilePosIndex].GetComponent<SpriteRenderer>();
+            sr.ShowRectangle = true;
 
             this.position = GameObject.Transform.Position;
-            rectangle = new Rectangle((int)(position.X - sprite.Width / 2), (int)(position.Y - sprite.Height / 2), (int)(sprite.Width * scale.X), (int)(sprite.Height * scale.Y));
+
+            rectangle = new Rectangle((int)(position.X - sprite.Width*scale.X / 2), (int)(position.Y - sprite.Height*scale.Y / 2), (int)(sprite.Width * scale.X), (int)(sprite.Height * scale.Y));
 
 
         }
@@ -108,22 +105,27 @@ namespace Frontend.ComponentPattern
 
             }
 
-            if(updatedPiece.IsFinished)
-            {
-                RemoveFromGame();
-            }
 
             if(updatedPiece.PosIndex.Colour==pieceColor)
             {
                 MoveToColorZone();
             }
 
+
+            if (updatedPiece.IsFinished)
+            {
+                RemoveFromGame();
+            }
+
             index = updatedPiece.PosIndex.Index;
-            
 
 
+            moveAble = false;
+            SpriteRenderer sr = (SpriteRenderer)GameObject.GetComponent<SpriteRenderer>();
 
-            
+            sr.ShowRectangle = false;
+
+
         }
 
         public override void Start()
@@ -161,13 +163,14 @@ namespace Frontend.ComponentPattern
                 //TEMPORARY 
 
 
-                List<PieceDTO> piecesToUpdate = new List<PieceDTO>() { new PieceDTO() { ID = pieceID, PosIndex = new PosIndex { Colour = pieceColor, Index = 4 } } };
+                List<PieceDTO> piecesToUpdate = new List<PieceDTO>() { new PieceDTO() { Colour = pieceColor, ID = pieceID, PosIndex = new PosIndex { Colour = ColourEnum.None, Index = startTileIndex }, IsFinished = true } };
 
 
                 //TEMPORARY
 
                 GameWorld.Instance.UpdatePieces(piecesToUpdate);
 
+                
 
 
 

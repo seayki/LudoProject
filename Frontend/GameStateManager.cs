@@ -305,7 +305,7 @@ namespace Frontend
 
 
 
-                    spriteBatch.Draw(GameWorld.Instance.box, new Vector2(800, 130), null, currentColor, 0, new Vector2(0, 0), new Vector2(0.2f, 0.2f), SpriteEffects.None, 0);
+                    spriteBatch.Draw(GameWorld.Instance.box, new Vector2(1165, 465), null, currentColor, 0, new Vector2(0, 0), new Vector2(0.2f, 0.2f), SpriteEffects.None, 0);
 
 
 

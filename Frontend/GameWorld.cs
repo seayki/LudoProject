@@ -49,7 +49,7 @@ namespace Frontend
         public Dictionary<ColourEnum, List<GameObject>> playerPieces;
 
         private List<GameObject> newGameObjects;
-        private List<GameObject> destroyedGameObjects;
+        private List<GameObject> destroyedPieces;
 
         public Texture2D pixel;
         public float deltaTime;
@@ -94,7 +94,7 @@ namespace Frontend
             gameObjects_Playing = new List<GameObject>();
 
             newGameObjects = new List<GameObject>();
-            destroyedGameObjects = new List<GameObject>();
+            destroyedPieces = new List<GameObject>();
 
             colorTiles = new Dictionary<ColourEnum, List<GameObject>>();
             homeTiles = new Dictionary<ColourEnum, List<GameObject>>();
@@ -569,7 +569,7 @@ namespace Frontend
                     }
 
                    
-                    go.AddComponent(new PlayerPiece(item.colour, i, item.startTile.Index, item.pieces[i].ID, item.pieces[i].IsInPlay, item.pieces[i].IsFinished));
+                    go.AddComponent(new PlayerPiece(item.id,item.colour, i, item.startTile.Index, item.pieces[i].ID, item.pieces[i].IsInPlay, item.pieces[i].IsFinished));
 
                     pieces.Add(go);
 
@@ -607,14 +607,15 @@ namespace Frontend
 
             foreach (var item in piecesToUpdate)
             {
-                foreach (var go in playerPieces[item.PosIndex.Colour])
+                foreach (var go in playerPieces[item.Colour])
                 {
                     PlayerPiece p =(PlayerPiece) go.GetComponent<PlayerPiece>();
-                   if( p.pieceID==item.ID)
+                    Debug.WriteLine($"Checking piece with ID: {p.pieceID}, comparing to: {item.ID}");
+                    if ( p.pieceID==item.ID)
                     {
 
                         p.UpdatePiece(item);
-
+                        Debug.WriteLine("Updated Piece");
                     }
                 }
                
@@ -663,14 +664,18 @@ namespace Frontend
             newButtons.Add(button);
         }
 
-        public void Destroy(GameObject go)
-        {
-            destroyedGameObjects.Add(go);
-        }
+       
 
         public void Destroy(Button button)
         {
             destroyedButtons.Add(button);
+        }
+
+        public void DestroyPiece(GameObject go)
+        {
+            destroyedPieces.Add(go);
+
+            Debug.WriteLine(destroyedPieces.Count);
         }
 
         public void Cleanup()
@@ -692,7 +697,27 @@ namespace Frontend
 
             }
 
-            destroyedGameObjects.Clear();
+            for (int i = 0; i < destroyedPieces.Count; i++)
+            {
+              
+                PlayerPiece pieceToDestroy = (PlayerPiece)destroyedPieces[i].GetComponent<PlayerPiece>();
+                
+               
+
+                foreach (var item in playerPieces[pieceToDestroy.pieceColor])
+                {
+                    PlayerPiece p = (PlayerPiece)item.GetComponent<PlayerPiece>();
+
+                    if (p.pieceID == pieceToDestroy.pieceID)
+                    {
+                        playerPieces[pieceToDestroy.pieceColor].Remove(item);
+                        break;
+                    }
+                }
+              
+            }
+
+            destroyedPieces.Clear();
             newGameObjects.Clear();
 
             for (int i = 0; i < newButtons.Count; i++)
@@ -712,7 +737,7 @@ namespace Frontend
 
             
 
-                destroyedButtons.Clear();
+            destroyedButtons.Clear();
             newButtons.Clear();
            
         }

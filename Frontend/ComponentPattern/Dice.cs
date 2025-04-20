@@ -93,7 +93,7 @@ namespace Frontend.ComponentPattern
 
                     //TEMPORARY GET back a list of moveable pieces
                     List<Guid> moveAblePieces = new List<Guid>();
-                    moveAblePieces = GameWorld.Instance.playerPieces[ColourEnum.Green].Select(go => {
+                    moveAblePieces = GameWorld.Instance.playerPieces[ColourEnum.Red].Select(go => {
                         PlayerPiece piece = (PlayerPiece)go.GetComponent<PlayerPiece>();
                         return piece.pieceID;
                     }).ToList();
