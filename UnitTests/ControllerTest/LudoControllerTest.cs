@@ -123,7 +123,7 @@ namespace UnitTests.ControllerTest
 			testPlayers.Add(CreateTestPlayer(ColourEnum.Green));
 			testPlayers.Add(CreateTestPlayer(ColourEnum.Yellow));
 			_GameManagerMock.Setup(gm => gm.CreateNewGame(2, It.IsAny<int>(), It.IsAny<int>()))
-				.Returns((new Board(1, 1, new List<ColourEnum> { ColourEnum.Green, ColourEnum.Yellow }), testPlayers));
+				.Returns((new Board(42, 6, new List<ColourEnum> { ColourEnum.Green, ColourEnum.Yellow }), testPlayers));
 			_GameManagerMock.Setup(gm => gm.RollForPlayerOrder()).Returns(testPlayers);
 
 			// act
