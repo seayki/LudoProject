@@ -6,7 +6,7 @@ using Common.DTOs;
 using Common.Enums;
 using System.Drawing;
 
-namespace Backend.Domains.Board
+namespace Backend.Domains.BoardDomain
 {
     public class Board
     {
@@ -101,15 +101,16 @@ namespace Backend.Domains.Board
             return result;
         }
 
-        public List<Piece> FindValidPicesToMove(ColourEnum colour, int diceRoll)
+        public List<Piece> FindValidPiecesToMove(ColourEnum colour, int diceRoll)
         {
             PlayerZones.TryGetValue(colour, out var playerZone);
             var result = BoardService.FindValidPicesToMove(Pieces, colour, diceRoll, Tiles, playerZone);
             return result;
         }
 
-        public List<Piece> MovePiece(Piece piece, ColourEnum colour, int diceRoll)
+        public List<Piece> MovePiece(Guid pieceId, ColourEnum colour, int diceRoll)
         {
+            var piece = Pieces.Find(x => x.ID == pieceId);
             PlayerZones.TryGetValue(colour, out var playerZone);
             var result = BoardService.MovePiece(Pieces, piece, colour, diceRoll, Tiles, playerZone);
             return result;

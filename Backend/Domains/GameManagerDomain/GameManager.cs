@@ -1,8 +1,14 @@
 ﻿using Backend.Domains.PieceDomain;
 using Backend.Domains.PlayerDomain;
 using Backend.Services.BoardServices.Interfaces;
+using Backend.Services.GameManagerService;
 using Common.DTOs;
 using Common.Enums;
+using Backend.Domains.BoardDomain;
+using Backend.Services.DiceServices.Interfaces;
+using Backend.Services.GameSetupService.Interfaces;
+using Backend.Services.PlayerServices.Interfaces;
+
 
 namespace Backend.Domains.GameManagerDomain
 {
@@ -13,15 +19,15 @@ namespace Backend.Domains.GameManagerDomain
         private Player CurrentPlayer { get; set; }
         private int rollsTaken = 0;
 
-        private readonly IBoardService boardService;
         private readonly IGameSetupService gameSetupService;
         private readonly IDiceService diceService;
- 
-        public GameManager(IBoardService boardService, IGameSetupService gameSetupService, IDiceService diceService)
+        private readonly IPlayerService playerService;
+
+        public GameManager(IGameSetupService gameSetupService, IDiceService diceService, IPlayerService playerService)
         {
-            this.boardService = boardService;
             this.gameSetupService = gameSetupService;
             this.diceService = diceService;
+            this.playerService = playerService;
         }
 
         // Step 1 Create board
@@ -37,7 +43,8 @@ namespace Backend.Domains.GameManagerDomain
         {
             for (int i = 0; i < playerCount; i++)
             {
-                this.Players.Add(new Player(i, (ColourEnum)((i % Enum.GetValues(typeof(ColourEnum)).Length) + 1)));
+                var color = (ColourEnum)((i % Enum.GetValues(typeof(ColourEnum)).Length));
+                this.Players.Add(new Player(color));
             }
         }
 
@@ -57,16 +64,16 @@ namespace Backend.Domains.GameManagerDomain
         }
 
         // Step 4 Return possible moves
-        public List<int>? GetMovablePieces()
+        public List<Piece>? GetMovablePieces()
         {
-            var availablePieces = boardService.GetPossibleMoves(this.CurrentPlayer.GetPiecesInPlay());
-            return availablePieces.Select(p => p.ID).ToList();
+            var availablePieces = Board.FindValidPiecesToMove(CurrentPlayer.Colour, CurrentPlayer.LastRoll);
+            return availablePieces;
         }
 
         // Step 5 Move piece
-        public List<Piece> MovePiece(int pieceId)
+        public List<Piece> MovePiece(Guid pieceId)
         {
-            return boardService.MovePiece(pieceId, CurrentPlayer.LastRoll);
+            return Board.MovePiece(pieceId, CurrentPlayer.Colour,CurrentPlayer.LastRoll);
         }
 
         // Step 6 Check if current player can roll again due to 6'er rule or no pieces in play rule
@@ -75,14 +82,14 @@ namespace Backend.Domains.GameManagerDomain
             if (CurrentPlayer.LastRoll == 6)
                 return true;
 
-            if (!CurrentPlayer.AnyPiecesInPlay() && rollsTaken < 3)
+            if (!playerService.AnyPiecesInPlay(CurrentPlayer) && rollsTaken < 3)
                 return true;
 
             return false;
         }
 
         // Step 7 End turn
-        public int NextTurn()
+        public Guid NextTurn()
         {
             // Move on to the next player and reset the roll
             int index = Players.IndexOf(CurrentPlayer);
@@ -90,7 +97,7 @@ namespace Backend.Domains.GameManagerDomain
             {
                 index = (index + 1) % Players.Count;
                 CurrentPlayer = Players[index];
-            } while (CurrentPlayer.HasFinished());
+            } while (playerService.HasFinished(CurrentPlayer));
 
             rollsTaken = 0;
             this.CurrentPlayer.LastRoll = 0;

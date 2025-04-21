@@ -23,5 +23,21 @@ namespace Backend.Services.PlayerServices
 
             return selectedPiece;
         }
+
+        public bool AnyPiecesInPlay(Player player)
+        {
+            return player.Pieces.Any(p => p.IsInPlay);
+        }
+
+        public List<Piece> GetPiecesInPlay(Player player)
+        {
+            return player.Pieces.Where(p => p.IsInPlay).ToList();
+        }
+
+        public bool HasFinished(Player player)
+        {
+            var finishedPieces = player.Pieces.Where(p => p.IsFinished).ToList();
+            return finishedPieces.Count == 4;
+        }
     }
 }

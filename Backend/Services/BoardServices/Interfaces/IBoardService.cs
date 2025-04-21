@@ -1,5 +1,4 @@
-﻿using Backend.Domains.Board;
-using Backend.Domains.PieceDomain;
+﻿using Backend.Domains.PieceDomain;
 using Backend.Domains.TileDomain;
 using Common.DTOs;
 using Common.Enums;
