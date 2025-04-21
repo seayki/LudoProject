@@ -1,7 +1,6 @@
 ﻿using Backend.Domains.PieceDomain;
 using Backend.Domains.PlayerDomain;
 using Backend.Services.BoardServices.Interfaces;
-using Backend.Services.GameManagerServices;
 using Common.DTOs;
 using Common.Enums;
 
