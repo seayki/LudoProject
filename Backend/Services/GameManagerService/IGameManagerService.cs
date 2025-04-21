@@ -9,7 +9,7 @@ namespace Backend.Services.GameManagerService
         (Board Board, List<Player> Players) CreateNewGame(int playerCount, int boardSize, int lengthOfColourZone);
         List<Player> RollForPlayerOrder();
         void Roll(int roll);
-        List<Piece>? GetMovablePieces();
+        List<Guid>? GetMovablePieces();
         List<Piece> MovePiece(Guid pieceId);
         bool CanRollAgain();
         Guid NextTurn();
