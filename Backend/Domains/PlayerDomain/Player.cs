@@ -7,26 +7,27 @@ namespace Backend.Domains.PlayerDomain
 
     public class Player
     {
-        public int Id { get; init; }
+        public Guid Id { get; init; }
         public ColourEnum Colour { get; init; }
-        public List<Piece> Pieces { get; init; }
+        public List<Piece> Pieces { get; init; } = new();
         public bool IsTurn { get; set; }
         public PosIndex? StartTile { get; set; }
+        public int LastRoll { get; set; } = 0;
 
-        public Player(int id, ColourEnum colour, List<Piece> pieces)
+        public Player(ColourEnum colour)
         {
-            if (colour == ColourEnum.None)
+			if (colour == ColourEnum.None)
+			{
+				throw new Exception("A player must have a valid colour");
+			}
+			for (int i = 0; i < 4; i++)
             {
-                throw new Exception("A player must have a valid colour");
+                Pieces.Add(new Piece(colour));
             }
-            if (pieces.Count != 4)
-            {
-                throw new Exception("A player must have 4 pieces");
-            }
+            
 
-            Id = id;
+            Id = Guid.NewGuid();
             Colour = colour;
-            Pieces = pieces;
             IsTurn = false;
             StartTile = null;
         }

@@ -1,13 +1,15 @@
-﻿using Common.DTOs;
+﻿using Backend.Domains.PieceDomain;
+using Backend.Domains.TileDomain;
+using Common.DTOs;
 using Common.Enums;
-using System.Drawing;
 
 namespace Backend.Services.BoardServices.Interfaces
 {
     public interface IBoardService
     {
-        Task<PosIndex> GetTileEndPos(PosIndex piecePosIndex, ColourEnum pieceColour, int diceRoll);
-        Task<PosIndex> GetStartTilePos(ColourEnum colour);
-        Task<bool> GetGoalTilePieces(ColourEnum colour, Guid pieceId);
+        PosIndex GetStartTilePos(List<Tile> tiles, ColourEnum colour);
+        List<Piece>? FindValidPicesToMove(List<Piece> pieces, ColourEnum colour, int diceRoll, List<Tile> tiles, List<Tile> playerZone);
+        List<Piece> MovePiece(List<Piece> pieces, Piece piece, ColourEnum colour, int diceRoll, List<Tile> tiles, List<Tile> playerZone);
+        void SendPieceHome(Piece piece);
     }
 }

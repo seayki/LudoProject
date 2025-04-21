@@ -1,5 +1,16 @@
+using Backend.Domains.GameManagerDomain;
 using Backend.Services.BoardServices;
 using Backend.Services.BoardServices.Interfaces;
+using Backend.Services.DiceServices;
+using Backend.Services.DiceServices.Interfaces;
+using Backend.Services.GameManagerService;
+using Backend.Services.GameSetupService;
+using Backend.Services.GameSetupService.Interfaces;
+using Backend.Services.PieceService;
+using Backend.Services.PieceService.Interfaces;
+using Backend.Services.PlayerServices;
+using Backend.Services.PlayerServices.Interfaces;
+
 
 public class Program
 {
@@ -7,15 +18,18 @@ public class Program
     {
         var builder = WebApplication.CreateBuilder(args);
 
-        // Add services to the container.
-
         builder.Services.AddControllers();
         // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
 
         //Services
+        builder.Services.AddScoped<IPlayerService, PlayerService>();
+        builder.Services.AddScoped<IDiceService, DiceService>();
+        builder.Services.AddScoped<IPieceService, PieceService>();
+        builder.Services.AddScoped<IGameManagerService, GameManager>();
         builder.Services.AddScoped<IBoardService, BoardService>();
+        builder.Services.AddScoped<IGameSetupService, GameSetupService>();
 
         var app = builder.Build();
 
