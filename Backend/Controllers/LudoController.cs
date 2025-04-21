@@ -10,6 +10,7 @@ namespace Backend.Controllers
 	[ApiController]
 	public class LudoController(IGameManagerService gameManager, ILogger<LudoController> logger) : ControllerBase
 	{
+		[HttpGet("FindValidMoves")]
 		public async Task<IActionResult> FindValidMoves(int diceroll)
 		{
 			try
@@ -26,6 +27,7 @@ namespace Backend.Controllers
 			}
 		}
 
+		[HttpGet("MoveSelectedPiece")]
 		public async Task<IActionResult> MoveSelectedPiece(Guid pieceID, PosIndex posIndex)
 		{
 			try
@@ -40,6 +42,7 @@ namespace Backend.Controllers
 			}
 		}
 
+		[HttpGet("StartGame")]
 		public async Task<IActionResult> StartGame(int PlayerNumber, int BoardSize)
 		{
 			try
@@ -72,6 +75,7 @@ namespace Backend.Controllers
 			}
 		}
 
+		[HttpGet("NextTurn")]
 		public async Task<IActionResult> NextTurn()
 		{
 			try
