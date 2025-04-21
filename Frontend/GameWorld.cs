@@ -559,6 +559,15 @@ namespace Frontend
                         // SETS THE CURRENT PLAYER TO BE THE FIRST ON THE LIST IN THE PLAYERORDER
                         UpdateCurrentPlayer(playerOrder[0].id);
 
+                        ///SHOW PLAYERORDER METHOD USED HERE 
+                        ///
+                        ShowPlayerOrder(playerOrder.Select(p => p.colour).ToList());
+
+                        Button startGameButton = new Button("StartGame", new StartGameButton(), new Vector2(GameWorld.Instance.screenSize.X / 2, 600), new Vector2(1, 1));
+
+                        GameWorld.Instance.Instantiate(startGameButton);
+
+
                     },
                     onError: (error) =>
                     {
@@ -573,6 +582,46 @@ namespace Frontend
                     Console.WriteLine("Error: " + ex.Message);
                 }
             });
+        }
+
+        public void ShowPlayerOrder(List<ColourEnum> playerOrderColours)
+        {
+            List<NonInteractableGOBuilder> playerColorBoxes = new List<NonInteractableGOBuilder>();
+            
+
+            for (int i = 0; i < playerOrderColours.Count; i++)
+            {
+                switch (playerOrderColours[i])
+                {
+                    case ColourEnum.None:
+                        break;
+                    case ColourEnum.Red:
+                       
+                        playerColorBoxes.Add(new NonInteractableGOBuilder("Box", 0.2f, new Vector2(700 + 100 * i, 400), Color.Red));
+                        break;
+                    case ColourEnum.Blue:
+                      
+                        playerColorBoxes.Add( new NonInteractableGOBuilder("Box", 0.2f, new Vector2(700 + 100 * i, 400), Color.Blue));
+                        break;
+                    case ColourEnum.Green:
+                      
+                        playerColorBoxes.Add(new NonInteractableGOBuilder("Box", 0.2f, new Vector2(700 + 100 * i, 400), Color.Green));
+                        break;
+                    case ColourEnum.Yellow:
+                        playerColorBoxes.Add(new NonInteractableGOBuilder("Box", 0.2f, new Vector2(700 + 100 * i, 400), Color.Yellow));
+                        break;
+                    default:
+                        break;
+                }
+
+            }
+
+
+            foreach (var item in playerColorBoxes)
+            {
+                Instantiate(item.BuildGameObject());
+            }
+
         }
 
         public void StartGame()
