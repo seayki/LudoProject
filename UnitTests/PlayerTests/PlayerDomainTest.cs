@@ -13,28 +13,28 @@ namespace UnitTests.PlayerTests
         public static IEnumerable<object[]> PlayerConstructorTestData()
         {
             yield return new object[] { 1, ColourEnum.Red, new List<Piece> {
-                new Piece(1, ColourEnum.Red),
-                new Piece(2, ColourEnum.Red),
-                new Piece(3, ColourEnum.Red),
-                new Piece(4, ColourEnum.Red)
+                new Piece(ColourEnum.Red),
+                new Piece(ColourEnum.Red),
+                new Piece(ColourEnum.Red),
+                new Piece(ColourEnum.Red)
             }, false, null, true };
             yield return new object[] { 2, ColourEnum.Blue, new List<Piece> {
-                new Piece(1, ColourEnum.Blue),
-                new Piece(2, ColourEnum.Blue),
-                new Piece(3, ColourEnum.Blue),
-                new Piece(4, ColourEnum.Blue)
+                new Piece(ColourEnum.Blue),
+                new Piece(ColourEnum.Blue),
+                new Piece(ColourEnum.Blue),
+                new Piece(ColourEnum.Blue)
             }, false, null, true };
             yield return new object[] { 3, ColourEnum.Green, new List<Piece> {
-                new Piece(1, ColourEnum.Green),
-                new Piece(2, ColourEnum.Green),
-                new Piece(3, ColourEnum.Green),
-                new Piece(4, ColourEnum.Green)
+                new Piece(ColourEnum.Green),
+                new Piece(ColourEnum.Green),
+                new Piece(ColourEnum.Green),
+                new Piece(ColourEnum.Green)
             }, false, null, true };
             yield return new object[] { 4, ColourEnum.Yellow, new List<Piece> {
-                new Piece(1, ColourEnum.Yellow),
-                new Piece(2, ColourEnum.Yellow),
-                new Piece(3, ColourEnum.Yellow),
-                new Piece(4, ColourEnum.Yellow),
+                new Piece(ColourEnum.Yellow),
+                new Piece(ColourEnum.Yellow),
+                new Piece(ColourEnum.Yellow),
+                new Piece(ColourEnum.Yellow),
             }, false, null, true };
         }
 
@@ -83,7 +83,7 @@ namespace UnitTests.PlayerTests
         [Fact]
         public void TestPlayer_InvalidNumberOfPieces()
         {
-            var pieces = new List<Piece> { new Piece(1, ColourEnum.Red) };
+            var pieces = new List<Piece> { new Piece(ColourEnum.Red) };
 
             Action act = () => new Player(1, ColourEnum.Red, pieces);
 
@@ -97,10 +97,10 @@ namespace UnitTests.PlayerTests
         {
             var player = new Player(1, ColourEnum.Red, new List<Piece>
             {
-                new Piece(1, ColourEnum.Red) { IsInPlay = false },
-                new Piece(2, ColourEnum.Red) { IsInPlay = false },
-                new Piece(3, ColourEnum.Red) { IsInPlay = false },
-                new Piece(4, ColourEnum.Red) { IsInPlay = true }
+                new Piece(ColourEnum.Red) { IsInPlay = false },
+                new Piece(ColourEnum.Red) { IsInPlay = false },
+                new Piece(ColourEnum.Red) { IsInPlay = false },
+                new Piece(ColourEnum.Red) { IsInPlay = true }
             });
 
             var moveablePieces = player.Pieces.Where(p => !p.IsInPlay).ToList();
@@ -114,10 +114,10 @@ namespace UnitTests.PlayerTests
         {
             var player = new Player(2, ColourEnum.Blue, new List<Piece>
             {
-                new Piece(1, ColourEnum.Blue) { IsInPlay = true },
-                new Piece(2, ColourEnum.Blue) { IsInPlay = true },
-                new Piece(3, ColourEnum.Blue) { IsInPlay = true },
-                new Piece(4, ColourEnum.Blue) { IsInPlay = true }
+                new Piece(ColourEnum.Blue) { IsInPlay = true },
+                new Piece(ColourEnum.Blue) { IsInPlay = true },
+                new Piece(ColourEnum.Blue) { IsInPlay = true },
+                new Piece(ColourEnum.Blue) { IsInPlay = true }
             });
 
             var moveablePieces = player.Pieces.Where(p => !p.IsInPlay).ToList();
@@ -131,10 +131,10 @@ namespace UnitTests.PlayerTests
         {
             var player = new Player(3, ColourEnum.Green, new List<Piece>
             {
-                new Piece(1, ColourEnum.Green) { IsInPlay = true },
-                new Piece(2, ColourEnum.Green) { IsInPlay = true },
-                new Piece(3, ColourEnum.Green) { IsInPlay = true },
-                new Piece(4, ColourEnum.Green) { IsInPlay = false }
+                new Piece(ColourEnum.Green) { IsInPlay = true },
+                new Piece(ColourEnum.Green) { IsInPlay = true },
+                new Piece(ColourEnum.Green) { IsInPlay = true },
+                new Piece(ColourEnum.Green) { IsInPlay = false }
             });
 
             var moveablePieces = player.Pieces.Where(p => !p.IsInPlay).ToList();

@@ -17,7 +17,7 @@ namespace Backend.Services.PlayerServices
         //    throw new NotImplementedException();
         //}
 
-        public Piece SelectPiece(Player player, int pieceId)
+        public Piece SelectPiece(Player player, Guid pieceId)
         {
             var selectedPiece = player.Pieces.FirstOrDefault(p => p.ID == pieceId);
 

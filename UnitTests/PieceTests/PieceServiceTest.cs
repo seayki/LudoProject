@@ -7,18 +7,22 @@ using FluentAssertions;
 
 namespace UnitTests.PieceTests
 {
-    public class PieceServiceTest
-    {
-        [Theory]
-        [InlineData(ColourEnum.None, 42)]
-        [InlineData(ColourEnum.Yellow, 12)]
-        [InlineData(ColourEnum.None, 99999)]
-        public void TestSuccessfulMovePieceMethod(ColourEnum posIndexColour, int posIndexIndex)
-        {
-            // Arrange
-            var piece = new Piece(1, ColourEnum.Yellow);
-            piece.IsInPlay = true;
-            var posIndex = new PosIndex(posIndexIndex, posIndexColour);
+	public class PieceServiceTest
+	{
+		[Theory]
+		[InlineData(ColourEnum.None, 42)]
+		[InlineData(ColourEnum.Yellow, 12)]
+		[InlineData(ColourEnum.None, 99999)]
+		public void TestSuccessfulMovePieceMethod(ColourEnum posIndexColour, int posIndexIndex)
+		{
+			// Arrange
+			var piece = new Piece(ColourEnum.Yellow);
+			piece.IsInPlay = true;
+			var posIndex = new PosIndex
+			{
+				Colour = posIndexColour,
+				Index = posIndexIndex
+			};
 
 
             IPieceService pieceService = new PieceService();
@@ -32,18 +36,22 @@ namespace UnitTests.PieceTests
             piece.PosIndex.Colour.Should().Be(posIndexColour);
         }
 
-        [Theory]
-        [InlineData("IsInPlay", false, "Piece is in base, not on board")]
-        [InlineData("IsFinished", true, "Piece is in goal, and can't be moved anymore")]
-        public void TestInvalidMovePieceMethod(
-            string parameterCausingInvalidOperation,
-            bool invalidValue,
-            string expectedMessage)
-        {
-            // Arrange
-            var piece = new Piece(1, ColourEnum.Yellow);
-            piece.IsInPlay = true;
-            var posIndex = new PosIndex(1, ColourEnum.None);
+		[Theory]
+		[InlineData("IsInPlay", false, "Piece is in base, not on board")]
+		[InlineData("IsFinished", true, "Piece is in goal, and can't be moved anymore")]
+		public void TestInvalidMovePieceMethod(
+			string parameterCausingInvalidOperation, 
+			bool invalidValue, 
+			string expectedMessage)
+		{
+			// Arrange
+			var piece = new Piece(ColourEnum.Yellow);
+			piece.IsInPlay = true;
+			var posIndex = new PosIndex
+			{
+				Colour = ColourEnum.None,
+				Index = 1
+			};
 
             IPieceService pieceService = new PieceService();
 
@@ -63,15 +71,19 @@ namespace UnitTests.PieceTests
             act.Should().Throw<Exception>().WithMessage(expectedMessage);
         }
 
-        [Theory]
-        [InlineData(ColourEnum.Yellow, 1)]
-        [InlineData(ColourEnum.None, 52)]
-        [InlineData(ColourEnum.None, 891283)]
-        public void TestSuccessfulMovePieceOut(ColourEnum posIndexColour, int posIndexIndex)
-        {
-            // Arrange
-            var piece = new Piece(1, ColourEnum.Yellow);
-            var posIndex = new PosIndex(posIndexIndex, posIndexColour);
+		[Theory]
+		[InlineData(ColourEnum.Yellow, 1)]
+		[InlineData(ColourEnum.None, 52)]
+		[InlineData(ColourEnum.None, 891283)]
+		public void TestSuccessfulMovePieceOut(ColourEnum posIndexColour, int posIndexIndex)
+		{
+			// Arrange
+			var piece = new Piece(ColourEnum.Yellow);
+			var posIndex = new PosIndex
+			{
+				Colour = posIndexColour,
+				Index = posIndexIndex
+			};
 
             IPieceService pieceService = new PieceService();
 
@@ -83,13 +95,17 @@ namespace UnitTests.PieceTests
             piece.IsInPlay.Should().BeTrue();
         }
 
-        [Fact]
-        public void MovePieceOut_PieceAlreadyOnBoard_ExceptionThrown()
-        {
-            // Arrange
-            var piece = new Piece(1, ColourEnum.Yellow);
-            piece.IsInPlay = true;
-            var posIndex = new PosIndex(4, ColourEnum.None);
+		[Fact]
+		public void MovePieceOut_PieceAlreadyOnBoard_ExceptionThrown()
+		{
+			// Arrange
+			var piece = new Piece(ColourEnum.Yellow);
+			piece.IsInPlay = true;
+			var posIndex = new PosIndex
+			{
+				Colour = ColourEnum.None,
+				Index = 4
+			};
 
             IPieceService pieceService = new PieceService();
 
@@ -101,12 +117,12 @@ namespace UnitTests.PieceTests
             piece.PosIndex.Should().BeNull();
         }
 
-        [Fact]
-        public void ReturnPieceToBase_PieceIsOnBoard_PieceNoLongerInPlay()
-        {
-            // Arrange
-            var piece = new Piece(1, ColourEnum.Yellow);
-            piece.IsInPlay = true;
+		[Fact]
+		public void ReturnPieceToBase_PieceIsOnBoard_PieceNoLongerInPlay()
+		{
+			// Arrange
+			var piece = new Piece(ColourEnum.Yellow);
+			piece.IsInPlay = true;
 
             IPieceService pieceService = new PieceService();
 
@@ -118,12 +134,12 @@ namespace UnitTests.PieceTests
             piece.PosIndex.Should().BeNull();
         }
 
-        [Fact]
-        public void ReturnPieceToBase_PieceIsNotOnBoard_ExceptionThrown()
-        {
-            // Arrange
-            var piece = new Piece(1, ColourEnum.Yellow);
-            piece.IsInPlay = false;
+		[Fact]
+		public void ReturnPieceToBase_PieceIsNotOnBoard_ExceptionThrown()
+		{
+			// Arrange
+			var piece = new Piece(ColourEnum.Yellow);
+			piece.IsInPlay = false;
 
             IPieceService pieceService = new PieceService();
 
