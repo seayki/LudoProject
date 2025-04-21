@@ -1,12 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Backend.Domains.PieceDomain;
 using Backend.Domains.PlayerDomain;
 using Backend.Services.PlayerServices;
-using Backend.Services.PlayerServices.Interfaces;
 using Common.Enums;
 using Xunit;
 using FluentAssertions;
@@ -27,14 +23,7 @@ namespace UnitTests.PlayerTests
         public void TestSelectPiece_ReturnsCorrectPiece()
         {
             // Arrange
-            var player = new Player(1, ColourEnum.Red, new List<Piece>
-            {
-                new Piece(ColourEnum.Red),
-                new Piece(ColourEnum.Red),
-                new Piece(ColourEnum.Red),
-                new Piece(ColourEnum.Red)
-            });
-
+            var player = new Player(ColourEnum.Red);
             var piece2ID = player.Pieces[1].ID;
 
             // Act
@@ -45,18 +34,12 @@ namespace UnitTests.PlayerTests
             selectedPiece.ID.Should().Be(piece2ID);
         }
 
-        // Test om der retuneres null, hvis der vælges en brik, der ikke findes
+        // Test om der returneres null, hvis der vælges en brik, der ikke findes
         [Fact]
         public void TestSelectPiece_ReturnsNullForInvalidPieceId()
         {
             // Arrange
-            var player = new Player(1, ColourEnum.Red, new List<Piece>
-            {
-                new Piece(ColourEnum.Red),
-                new Piece(ColourEnum.Red),
-                new Piece(ColourEnum.Red),
-                new Piece(ColourEnum.Red)
-            });
+            var player = new Player(ColourEnum.Red);
 
             // Act
             var selectedPiece = _playerService.SelectPiece(player, Guid.Empty);
@@ -64,6 +47,5 @@ namespace UnitTests.PlayerTests
             // Assert
             selectedPiece.Should().BeNull();
         }
-
     }
 }
