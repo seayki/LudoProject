@@ -91,15 +91,18 @@ namespace Frontend.ComponentPattern
 
                     // SEND RAND0M NUMBER TO BACKEND
 
+                    APIFindValidMoves(randNumber);
+
+
                     //TEMPORARY GET back a list of moveable pieces
-                    List<Guid> moveAblePieces = new List<Guid>();
-                    moveAblePieces = GameWorld.Instance.playerPieces[ColourEnum.Red].Select(go => {
-                        PlayerPiece piece = (PlayerPiece)go.GetComponent<PlayerPiece>();
-                        return piece.pieceID;
-                    }).ToList();
+                    //List<Guid> moveAblePieces = new List<Guid>();
+                    //moveAblePieces = GameWorld.Instance.playerPieces[ColourEnum.Red].Select(go => {
+                    //    PlayerPiece piece = (PlayerPiece)go.GetComponent<PlayerPiece>();
+                    //    return piece.pieceID;
+                    //}).ToList();
                     //TEMPORARY
 
-                    GameWorld.Instance.MakePiecesMoveable(moveAblePieces);
+                    
 
                     animator.StopAnimationAndSetSprite(numberSprites[randNumber]);
 
@@ -112,6 +115,37 @@ namespace Frontend.ComponentPattern
             }
         }
 
-       
+
+        public void APIFindValidMoves(int diceRoll)
+        {
+
+            GameWorld.Instance.asyncTaskManager.EnqueueTask(async () =>
+            {
+                try
+                {
+                    await GameWorld.Instance.apiService.GetAsync<List<Guid>>("https://localhost:7221/api/Ludo/FindValidMoves?diceroll=" + diceRoll.ToString(),
+                    onSuccess: (responseObj) =>
+                    {
+
+                        GameWorld.Instance.MakePiecesMoveable(responseObj);
+
+                    },
+                    onError: (error) =>
+                    {
+                        Console.WriteLine("POST failed: " + error.Message);
+                    }
+                    );
+
+                }
+                catch (Exception ex)
+                {
+
+                    Console.WriteLine("Error: " + ex.Message);
+                }
+            });
+
+        }
+
+
     }
 }

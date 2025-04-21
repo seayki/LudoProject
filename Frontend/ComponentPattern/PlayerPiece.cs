@@ -58,6 +58,7 @@ namespace Frontend.ComponentPattern
             SpriteRenderer sr=(SpriteRenderer)GameObject.GetComponent<SpriteRenderer>();
 
             sr.ShowRectangle = true;
+
         }
 
         public void MoveToStartTile()
@@ -160,33 +161,18 @@ namespace Frontend.ComponentPattern
 
                 //SEND PIECEID TO BACKEND AND GET A LIST OF PIECEDTO THAT REPRESENTS THE UPDATED PIECES
 
+                APIMoveSelectedPiece(pieceID);
+
+
                 //TEMPORARY 
 
 
-                List<PieceDTO> piecesToUpdate = new List<PieceDTO>() { new PieceDTO() { Colour = pieceColor, ID = pieceID, PosIndex = new PosIndex { Colour = ColourEnum.None, Index = startTileIndex }, IsFinished = true } };
+                //List<PieceDTO> piecesToUpdate = new List<PieceDTO>() { new PieceDTO() { Colour = pieceColor, ID = pieceID, PosIndex = new PosIndex { Colour = ColourEnum.None, Index = startTileIndex }, IsFinished = true } };
 
 
                 //TEMPORARY
 
-                GameWorld.Instance.UpdatePieces(piecesToUpdate);
-
-                
-
-
-
-
-                if (moveToColorZone == false)
-                {
-                    GameObject.Transform.Position = GameWorld.Instance.tiles[index].Transform.Position;
-                }
-                else
-                {
-                    GameObject.Transform.Position = GameWorld.Instance.colorTiles[pieceColor][index].Transform.Position;
-                }
-
-                this.position = GameObject.Transform.Position;
-                rectangle = new Rectangle((int)(position.X - sprite.Width / 2), (int)(position.Y - sprite.Height / 2), (int)(sprite.Width * scale.X), (int)(sprite.Height * scale.Y));
-
+              
                 moveAble = false;
                 down = false;
 
@@ -196,18 +182,97 @@ namespace Frontend.ComponentPattern
                 //SEND NEXT TURN TO BACKEND AND UPDATE WHOS TURN IT IS BASED ON A PLAYER GUID
 
                 //TEMPORARY
-                Guid nextPlayersTurn = GameWorld.Instance.playerColors.Keys.ToList()[1];
+                //Guid nextPlayersTurn = GameWorld.Instance.playerColors.Keys.ToList()[1];
                 //TEMPORARY
 
-                GameWorld.Instance.UpdateCurrentPlayer(nextPlayersTurn);
+               
 
             }
 
 
         }
 
-     
 
+        public void APIMoveSelectedPiece(Guid pieceID)
+        {
+
+            GameWorld.Instance.asyncTaskManager.EnqueueTask(async () =>
+            {
+                try
+                {
+                    var result = GameWorld.Instance.apiService.GetAsync<List<PieceDTO>>("https://localhost:7221/api/Ludo/MoveSelectedPiece?pieceID=" + pieceID.ToString(),
+                    onSuccess: (responseObj) =>
+                    {
+
+                        GameWorld.Instance.UpdatePieces(responseObj);
+
+
+                        if (moveToColorZone == false)
+                        {
+                            GameObject.Transform.Position = GameWorld.Instance.tiles[index].Transform.Position;
+                        }
+                        else
+                        {
+                            GameObject.Transform.Position = GameWorld.Instance.colorTiles[pieceColor][index].Transform.Position;
+                        }
+
+                        this.position = GameObject.Transform.Position;
+                        rectangle = new Rectangle((int)(position.X - sprite.Width / 2), (int)(position.Y - sprite.Height / 2), (int)(sprite.Width * scale.X), (int)(sprite.Height * scale.Y));
+
+                        //SEND NEXT TURN TO BACKEND AND UPDATE WHOS TURN IT IS BASED ON A PLAYER GUID
+
+                        APINextTurn();
+                       
+                        
+
+                    },
+                    onError: (error) =>
+                    {
+                        Console.WriteLine("POST failed: " + error.Message);
+                    }
+                    );
+
+                }
+                catch (Exception ex)
+                {
+
+                    Console.WriteLine("Error: " + ex.Message);
+                }
+            });
+
+        }
+
+
+
+        public void APINextTurn()
+        {
+
+            GameWorld.Instance.asyncTaskManager.EnqueueTask(async () =>
+            {
+                try
+                {
+                    await GameWorld.Instance.apiService.GetAsync<Guid>("https://localhost:7221/api/Ludo/NextTurn",
+                    onSuccess: (responseObj) =>
+                    {
+
+                        GameWorld.Instance.UpdateCurrentPlayer(responseObj);
+
+                    },
+                    onError: (error) =>
+                    {
+                        Console.WriteLine("POST failed: " + error.Message);
+                    }
+                    );
+
+                }
+                catch (Exception ex)
+                {
+
+                    Console.WriteLine("Error: " + ex.Message);
+                }
+            });
+
+        }
 
     }
 }

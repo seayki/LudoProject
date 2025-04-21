@@ -11,6 +11,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Frontend
 {
@@ -59,6 +60,9 @@ namespace Frontend
         public int playerAmount;
         private List<PlayerDTO> playerOrder;
 
+
+        public AsyncTaskManager asyncTaskManager;
+        public APIService apiService;
         public static GameWorld Instance
         {
             get
@@ -110,6 +114,9 @@ namespace Frontend
             newButtons = new List<Button>();
             destroyedButtons = new List<Button>();
 
+            asyncTaskManager = new AsyncTaskManager();
+
+            apiService = new APIService();
         }
 
         protected override void Initialize()
@@ -151,6 +158,7 @@ namespace Frontend
             deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
             stateManager.Update(gameTime);
 
+            asyncTaskManager.Update();
             // TODO: Add your update logic here
 
             base.Update(gameTime);
@@ -494,94 +502,124 @@ namespace Frontend
         }
 
 
+        public void APIStartGame(int playerNumbers, int BoardSize)
+        {
+            // CREATE DATA DTO
+
+            asyncTaskManager.EnqueueTask(async () =>
+            {
+                try
+                {
+                    await apiService.GetAsync<List<PlayerDTO>>("https://localhost:7221/api/Ludo/StartGame?PlayerNumber="+playerNumbers.ToString()+"&BoardSize="+BoardSize.ToString(), 
+                    onSuccess: (responseObj) =>
+                    {
+                        playerOrder = responseObj;
+
+                        foreach (var item in playerOrder)
+                        {
+                            playerColors.Add(item.id, item.colour);
+
+                            List<GameObject> pieces = new List<GameObject>();
+                            for (int i = 0; i < 4; i++)
+                            {
+                                GameObject go = new GameObject();
+                                SpriteRenderer sr = (SpriteRenderer)go.AddComponent(new SpriteRenderer());
+                                switch (item.colour)
+                                {
+                                    case ColourEnum.None:
+                                        sr.SetSprite("Box", 0, 0.1f, Color.White, Content);
+                                        break;
+                                    case ColourEnum.Red:
+                                        sr.SetSprite("Box", 0, 0.1f, Color.Red, Content);
+                                        break;
+                                    case ColourEnum.Blue:
+                                        sr.SetSprite("Box", 0, 0.1f, Color.Blue, Content);
+                                        break;
+                                    case ColourEnum.Green:
+                                        sr.SetSprite("Box", 0, 0.1f, Color.Green, Content);
+                                        break;
+                                    case ColourEnum.Yellow:
+                                        sr.SetSprite("Box", 0, 0.1f, Color.Yellow, Content);
+                                        break;
+                                    default:
+                                        break;
+                                }
+
+
+                                go.AddComponent(new PlayerPiece(item.id, item.colour, i, item.startTile.Index, item.pieces[i].ID, item.pieces[i].IsInPlay, item.pieces[i].IsFinished));
+
+                                pieces.Add(go);
+
+                            }
+
+
+                            playerPieces.Add(item.colour, pieces);
+
+                        }
+                        // SETS THE CURRENT PLAYER TO BE THE FIRST ON THE LIST IN THE PLAYERORDER
+                        UpdateCurrentPlayer(playerOrder[0].id);
+
+                    },
+                    onError: (error) =>
+                    {
+                        Console.WriteLine("POST failed: " + error.Message);
+                    }
+                    );
+                    
+                }
+                catch (Exception ex)
+                {
+
+                    Console.WriteLine("Error: " + ex.Message);
+                }
+            });
+        }
+
         public void StartGame()
         {
             // Send numberOfPlayers to backend and return a list of players in an order
 
             int playerAmountTOSENDTOBACKEND = playerAmount;
-            // TEMPORARY PLAYERORDER
-            List<PlayerDTO> backendPlayerOrder = new List<PlayerDTO>()
-            {
 
-            new PlayerDTO() { colour = ColourEnum.Red, startTile = new PosIndex() { Index = 0*(tiles.Count/4)}, id=Guid.NewGuid(), pieces=new List<PieceDTO>(){
-                new PieceDTO() {ID=Guid.NewGuid(),IsFinished=false,IsInPlay=false},
-                new PieceDTO() {ID=Guid.NewGuid(),IsFinished=false,IsInPlay=false},
-                new PieceDTO() {ID=Guid.NewGuid(),IsFinished=false,IsInPlay=false},
-                new PieceDTO() {ID=Guid.NewGuid(),IsFinished=false,IsInPlay=false},
-            }},
+            APIStartGame(playerAmount, tiles.Count);
+            //// TEMPORARY PLAYERORDER
+            //List<PlayerDTO> backendPlayerOrder = new List<PlayerDTO>()
+            //{
 
-            new PlayerDTO() { colour = ColourEnum.Green, startTile = new PosIndex() { Index = 1*(tiles.Count/4)}, id=Guid.NewGuid(),pieces=new List<PieceDTO>(){
-                new PieceDTO() {ID=Guid.NewGuid(),IsFinished=false,IsInPlay=false},
-                new PieceDTO() {ID=Guid.NewGuid(),IsFinished=false,IsInPlay=false},
-                new PieceDTO() {ID=Guid.NewGuid(),IsFinished=false,IsInPlay=false},
-                new PieceDTO() {ID=Guid.NewGuid(),IsFinished=false,IsInPlay=false},
-            } },
+            //new PlayerDTO() { colour = ColourEnum.Red, startTile = new PosIndex() { Index = 0*(tiles.Count/4)}, id=Guid.NewGuid(), pieces=new List<PieceDTO>(){
+            //    new PieceDTO() {ID=Guid.NewGuid(),IsFinished=false,IsInPlay=false},
+            //    new PieceDTO() {ID=Guid.NewGuid(),IsFinished=false,IsInPlay=false},
+            //    new PieceDTO() {ID=Guid.NewGuid(),IsFinished=false,IsInPlay=false},
+            //    new PieceDTO() {ID=Guid.NewGuid(),IsFinished=false,IsInPlay=false},
+            //}},
 
-            new PlayerDTO() { colour = ColourEnum.Blue, startTile = new PosIndex() { Index = 2*(tiles.Count/4)}, id=Guid.NewGuid(),pieces=new List<PieceDTO>(){
-                new PieceDTO() {ID=Guid.NewGuid(),IsFinished=false,IsInPlay=false},
-                new PieceDTO() {ID=Guid.NewGuid(),IsFinished=false,IsInPlay=false},
-                new PieceDTO() {ID=Guid.NewGuid(),IsFinished=false,IsInPlay=false},
-                new PieceDTO() {ID=Guid.NewGuid(),IsFinished=false,IsInPlay=false},
-            } },
+            //new PlayerDTO() { colour = ColourEnum.Green, startTile = new PosIndex() { Index = 1*(tiles.Count/4)}, id=Guid.NewGuid(),pieces=new List<PieceDTO>(){
+            //    new PieceDTO() {ID=Guid.NewGuid(),IsFinished=false,IsInPlay=false},
+            //    new PieceDTO() {ID=Guid.NewGuid(),IsFinished=false,IsInPlay=false},
+            //    new PieceDTO() {ID=Guid.NewGuid(),IsFinished=false,IsInPlay=false},
+            //    new PieceDTO() {ID=Guid.NewGuid(),IsFinished=false,IsInPlay=false},
+            //} },
 
-            new PlayerDTO() { colour = ColourEnum.Yellow, startTile = new PosIndex() { Index = 3*(tiles.Count/4)}, id=Guid.NewGuid(),pieces=new List<PieceDTO>(){
-                new PieceDTO() {ID=Guid.NewGuid(),IsFinished=false,IsInPlay=false},
-                new PieceDTO() {ID=Guid.NewGuid(),IsFinished=false,IsInPlay=false},
-                new PieceDTO() {ID=Guid.NewGuid(),IsFinished=false,IsInPlay=false},
-                new PieceDTO() {ID=Guid.NewGuid(),IsFinished=false,IsInPlay=false},
-            } },
+            //new PlayerDTO() { colour = ColourEnum.Blue, startTile = new PosIndex() { Index = 2*(tiles.Count/4)}, id=Guid.NewGuid(),pieces=new List<PieceDTO>(){
+            //    new PieceDTO() {ID=Guid.NewGuid(),IsFinished=false,IsInPlay=false},
+            //    new PieceDTO() {ID=Guid.NewGuid(),IsFinished=false,IsInPlay=false},
+            //    new PieceDTO() {ID=Guid.NewGuid(),IsFinished=false,IsInPlay=false},
+            //    new PieceDTO() {ID=Guid.NewGuid(),IsFinished=false,IsInPlay=false},
+            //} },
+
+            //new PlayerDTO() { colour = ColourEnum.Yellow, startTile = new PosIndex() { Index = 3*(tiles.Count/4)}, id=Guid.NewGuid(),pieces=new List<PieceDTO>(){
+            //    new PieceDTO() {ID=Guid.NewGuid(),IsFinished=false,IsInPlay=false},
+            //    new PieceDTO() {ID=Guid.NewGuid(),IsFinished=false,IsInPlay=false},
+            //    new PieceDTO() {ID=Guid.NewGuid(),IsFinished=false,IsInPlay=false},
+            //    new PieceDTO() {ID=Guid.NewGuid(),IsFinished=false,IsInPlay=false},
+            //} },
             
 
-            };
+            //};
 
             // TEMPORARY PLAYERORDER
 
-            playerOrder = backendPlayerOrder;
-
-            foreach (var item in backendPlayerOrder)
-            {
-                playerColors.Add(item.id,item.colour);
-              
-                List<GameObject> pieces = new List<GameObject>();
-                for (int i = 0; i < 4; i++)
-                {
-                    GameObject go = new GameObject();
-                    SpriteRenderer sr=(SpriteRenderer)go.AddComponent(new SpriteRenderer());
-                    switch (item.colour)
-                    {
-                        case ColourEnum.None:
-                            sr.SetSprite("Box", 0, 0.1f, Color.White,Content);
-                            break;
-                        case ColourEnum.Red:
-                            sr.SetSprite("Box", 0, 0.1f, Color.Red, Content);
-                            break;
-                        case ColourEnum.Blue:
-                            sr.SetSprite("Box", 0, 0.1f, Color.Blue, Content);
-                            break;
-                        case ColourEnum.Green:
-                            sr.SetSprite("Box", 0, 0.1f, Color.Green, Content);
-                            break;
-                        case ColourEnum.Yellow:
-                            sr.SetSprite("Box", 0, 0.1f, Color.Yellow, Content);
-                            break;
-                        default:
-                            break;
-                    }
-
-                   
-                    go.AddComponent(new PlayerPiece(item.id,item.colour, i, item.startTile.Index, item.pieces[i].ID, item.pieces[i].IsInPlay, item.pieces[i].IsFinished));
-
-                    pieces.Add(go);
-
-                }
-
-
-                playerPieces.Add(item.colour,pieces);
-             
-            }
-            // SETS THE CURRENT PLAYER TO BE THE FIRST ON THE LIST IN THE PLAYERORDER
-            UpdateCurrentPlayer(playerOrder[0].id);
-
+           
         }
 
 
