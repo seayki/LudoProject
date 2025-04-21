@@ -7,7 +7,7 @@ namespace Backend.Services.PlayerServices
 {
     public class PlayerService : IPlayerService
     {
-        Player IPlayerService.GetBasePiece()
+        Piece IPlayerService.GetBasePiece()
         {
             throw new NotImplementedException();
         }
@@ -22,6 +22,22 @@ namespace Backend.Services.PlayerServices
             var selectedPiece = player.Pieces.FirstOrDefault(p => p.ID == pieceId);
 
             return selectedPiece;
+        }
+
+        public bool AnyPiecesInPlay(Player player)
+        {
+            return player.Pieces.Any(p => p.IsInPlay);
+        }
+
+        public List<Piece> GetPiecesInPlay(Player player)
+        {
+            return player.Pieces.Where(p => p.IsInPlay).ToList();
+        }
+
+        public bool HasFinished(Player player)
+        {
+            var finishedPieces = player.Pieces.Where(p => p.IsFinished).ToList();
+            return finishedPieces.Count == 4;
         }
     }
 }

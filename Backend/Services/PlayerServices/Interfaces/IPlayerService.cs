@@ -8,5 +8,9 @@ namespace Backend.Services.PlayerServices.Interfaces
         //Player SelectPiece(int pieceId);
         Piece? SelectPiece(Player player, Guid pieceId);
         Piece GetBasePiece();
+        bool AnyPiecesInPlay(Player player);
+
+        List<Piece> GetPiecesInPlay(Player player);
+        bool HasFinished(Player player);
     }
 }
