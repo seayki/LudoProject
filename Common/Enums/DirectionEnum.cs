@@ -1,17 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Common.Enums
+﻿namespace Common.Enums
 {
     public enum DirectionEnum
     {
-        Forward=0,
-        Backward=1,
-        GoToColourTiles=2,
-
-
+        Forward = 0,
+        Backward = 1,
+        ToColourZone = 2
     }
 }
