@@ -16,8 +16,10 @@ namespace Backend.Domains.BoardDomain
         public IBoardService BoardService { get; init; } = new BoardService();
 
 
-        public Board(int numberOfTiles, int lengthOfColourZone, List<ColourEnum> playerColours)
+        public Board(int numberOfTiles, int lengthOfColourZone, List<ColourEnum> playerColours, List<Piece> pieces)
         {
+            Pieces = pieces;
+
             for (int i = 0; i < numberOfTiles; i++)
             {
                 var index = new PosIndex(i, ColourEnum.None);

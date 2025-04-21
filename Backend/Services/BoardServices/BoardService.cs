@@ -22,8 +22,9 @@ namespace Backend.Services.BoardServices
             var colourPieces = pieces.Where(x => x.Colour == colour && x.IsFinished == false).ToList();
 
             var validPieces = new List<Piece>();
-            
-            validPieces.AddRange(colourPieces.Where(x => x.IsInPlay == false));
+
+            if (diceRoll == 6)
+                validPieces.AddRange(colourPieces.Where(x => x.IsInPlay == false));
 
             if (colourPieces is null)
                 return validPieces;
