@@ -118,7 +118,10 @@ namespace Frontend.ComponentPattern
                 RemoveFromGame();
             }
 
-            index = updatedPiece.PosIndex.Index;
+            if (updatedPiece.PosIndex!= null)
+            {
+                index = updatedPiece.PosIndex.Index;
+            }
 
 
             moveAble = false;
