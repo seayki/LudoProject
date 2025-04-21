@@ -9,7 +9,7 @@ namespace Common.DTOs
 {
 	public class PlayerDTO
 	{
-		public int id { get; init; }
+		public Guid id { get; init; }
 		public ColourEnum colour { get; init; }
 		public PosIndex startTile { get; init; }
 		public List<PieceDTO> pieces { get; init; }

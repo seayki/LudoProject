@@ -1,5 +1,5 @@
 ﻿using Backend.Controllers;
-using Backend.Domains.Board;
+using Backend.Domains.BoardDomain;
 using Backend.Domains.PieceDomain;
 using Backend.Domains.PlayerDomain;
 using Backend.Services.GameManagerServicesTemp.Interfaces;
@@ -120,10 +120,10 @@ namespace UnitTests.ControllerTest
 		{
 			// arrange
 			var testPlayers = new List<Player>();
-			testPlayers.Add(CreateTestPlayer(1, ColourEnum.Green));
-			testPlayers.Add(CreateTestPlayer(2, ColourEnum.Yellow));
+			testPlayers.Add(CreateTestPlayer(ColourEnum.Green));
+			testPlayers.Add(CreateTestPlayer(ColourEnum.Yellow));
 			_GameManagerMock.Setup(gm => gm.CreateNewGame(2, It.IsAny<int>(), It.IsAny<int>()))
-				.Returns((new Board(), testPlayers));
+				.Returns((new Board(1, 1, new List<ColourEnum> { ColourEnum.Green, ColourEnum.Yellow }), testPlayers));
 			_GameManagerMock.Setup(gm => gm.RollForPlayerOrder()).Returns(testPlayers);
 
 			// act
@@ -193,11 +193,9 @@ namespace UnitTests.ControllerTest
 			return pieces;
 		}
 
-		private Player CreateTestPlayer(int id, ColourEnum colour)
+		private Player CreateTestPlayer(ColourEnum colour)
 		{
-			var pieces = GetTestPieces(colour);
-
-			var player = new Player(id, colour, pieces);
+			var player = new Player(colour);
 
 			return player;
 		}
@@ -212,9 +210,9 @@ namespace UnitTests.ControllerTest
 		public static IEnumerable<object[]> PieceAndPosIndexTestCases =>
 		new List<object[]>
 		{
-			new object[] { new Piece(ColourEnum.Yellow), new PosIndex { Index = 1, Colour = ColourEnum.Yellow } },
-			new object[] { new Piece(ColourEnum.Green), new PosIndex { Index = 2214, Colour = ColourEnum.Green } },
-			new object[] { new Piece(ColourEnum.Yellow), new PosIndex { Index = 120, Colour = ColourEnum.None } },
+			new object[] { new Piece(ColourEnum.Yellow), new PosIndex(1, ColourEnum.Yellow)},
+			new object[] { new Piece(ColourEnum.Green), new PosIndex(2214, ColourEnum.Green)},
+			new object[] { new Piece(ColourEnum.Yellow), new PosIndex(120, ColourEnum.None) },
 		};
 	}
 }
