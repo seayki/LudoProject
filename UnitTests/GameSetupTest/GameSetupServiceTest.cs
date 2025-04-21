@@ -21,7 +21,7 @@ namespace UnitTests.GameSetupTest
 	{
 		[Theory]
 		[ClassData(typeof(PlayerOrderTestData))]
-		public void RollForPlayerOrder_FourPlayersInList_SamePlayersComeOutInSpecificOrder(int[] expectedOrder, Queue<int> diceRolls)
+		public void RollForPlayerOrder_FourPlayersInList_SamePlayersComeOutInSpecificOrder(int[] expectedOrderIndexes, Queue<int> diceRolls)
 		{
 			// Arrange
 			var mockDice = new Mock<IDiceService>();
@@ -31,11 +31,17 @@ namespace UnitTests.GameSetupTest
 
 			var players = new List<Player>
 			{
-				CreateTestPlayer(1, ColourEnum.Red),
-				CreateTestPlayer(2, ColourEnum.Blue),
-				CreateTestPlayer(3, ColourEnum.Green),
-				CreateTestPlayer(4, ColourEnum.Yellow)
+				CreateTestPlayer(ColourEnum.Red),
+				CreateTestPlayer(ColourEnum.Blue),
+				CreateTestPlayer(ColourEnum.Green),
+				CreateTestPlayer(ColourEnum.Yellow)
 			};
+
+			List<Guid> expectedOrder = new();
+			foreach (var index in expectedOrderIndexes)
+			{
+				expectedOrder.Add(players[index].Id);
+			}
 
 			// Act
 			var result = gameSetupService.RollForPlayerOrder(players);
@@ -62,17 +68,9 @@ namespace UnitTests.GameSetupTest
 			act.Should().Throw<Exception>().WithMessage("*Need players to roll*");
 		}
 
-		private Player CreateTestPlayer(int id, ColourEnum colour)
+		private Player CreateTestPlayer(ColourEnum colour)
 		{
-			var pieces = new List<Piece>();
-
-			// Add 4 Pieces to the player's list
-			for (int i = 0; i < 4; i++)
-			{
-				pieces.Add(new Piece(colour));
-			}
-
-			var player = new Player(id, colour, pieces);
+			var player = new Player(colour);
 
 			return player;
 		}
@@ -81,10 +79,10 @@ namespace UnitTests.GameSetupTest
 		{
 			public IEnumerator<object[]> GetEnumerator()
 			{
-				yield return new object[] { new int[] { 2, 3, 4, 1 }, new Queue<int>(new[] { 1, 6, 3, 6, 4, 3 }) };
-				yield return new object[] { new int[] { 1, 2, 3, 4 }, new Queue<int>(new[] { 6, 6, 6, 6, 4, 3, 2, 4, 2, 2, 2, 2, 2, 1 }) };
-				yield return new object[] { new int[] { 4, 1, 2, 3 }, new Queue<int>(new[] { 1, 3, 3, 6 }) };
-				yield return new object[] { new int[] { 2, 3, 4, 1 }, new Queue<int>(new[] { 1, 6, 3, 3 }) };
+				yield return new object[] { new int[] { 1, 2, 3, 0 }, new Queue<int>(new[] { 1, 6, 3, 6, 4, 3 }) };
+				yield return new object[] { new int[] { 0, 1, 2, 3 }, new Queue<int>(new[] { 6, 6, 6, 6, 4, 3, 2, 4, 2, 2, 2, 2, 2, 1 }) };
+				yield return new object[] { new int[] { 3, 0, 1, 2 }, new Queue<int>(new[] { 1, 3, 3, 6 }) };
+				yield return new object[] { new int[] { 1, 2, 3, 0 }, new Queue<int>(new[] { 1, 6, 3, 3 }) };
 
 			}
 

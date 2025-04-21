@@ -16,14 +16,15 @@ namespace Backend.Domains.PlayerDomain
 
         public Player(ColourEnum colour)
         {
-            for (int i = 0; i < 4; i++)
+			if (colour == ColourEnum.None)
+			{
+				throw new Exception("A player must have a valid colour");
+			}
+			for (int i = 0; i < 4; i++)
             {
                 Pieces.Add(new Piece(colour));
             }
-            if (colour == ColourEnum.None)
-            {
-                throw new Exception("A player must have a valid colour");
-            }
+            
 
             Id = Guid.NewGuid();
             Colour = colour;
