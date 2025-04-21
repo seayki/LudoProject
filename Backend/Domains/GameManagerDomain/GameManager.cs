@@ -20,13 +20,11 @@ namespace Backend.Domains.GameManagerDomain
         private int rollsTaken = 0;
 
         private readonly IGameSetupService gameSetupService;
-        private readonly IDiceService diceService;
         private readonly IPlayerService playerService;
 
-        public GameManager(IGameSetupService gameSetupService, IDiceService diceService, IPlayerService playerService)
+        public GameManager(IGameSetupService gameSetupService, IPlayerService playerService)
         {
             this.gameSetupService = gameSetupService;
-            this.diceService = diceService;
             this.playerService = playerService;
         }
 
