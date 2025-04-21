@@ -64,10 +64,11 @@ namespace Backend.Domains.GameManagerDomain
         }
 
         // Step 4 Return possible moves
-        public List<Piece>? GetMovablePieces()
+        public List<Guid>? GetMovablePieces()
         {
             var availablePieces = Board.FindValidPiecesToMove(CurrentPlayer.Colour, CurrentPlayer.LastRoll);
-            return availablePieces;
+            var ids = availablePieces.Select(p => p.ID).ToList();
+            return ids;
         }
 
         // Step 5 Move piece

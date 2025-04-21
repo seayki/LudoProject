@@ -1,4 +1,4 @@
-﻿using Backend.Domains.Board;
+﻿using Backend.Domains.BoardDomain;
 using Backend.Services.BoardServices;
 using Backend.Services.BoardServices.Interfaces;
 using Common.Enums;
