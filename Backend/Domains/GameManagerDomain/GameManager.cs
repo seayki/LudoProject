@@ -33,7 +33,8 @@ namespace Backend.Domains.GameManagerDomain
         {
             this.AddPlayers(playerCount);
             var colours = Players.Select(p => p.Colour).ToList();
-            this.Board = new Board(boardSize, lengthOfColourZone, colours);          
+            this.Board = new Board(boardSize, lengthOfColourZone, colours);    
+            Players.ForEach(a => a.StartTile = Board.GetStartTile(a.Colour));
             return (this.Board, this.Players);
         }
 
