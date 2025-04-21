@@ -1,20 +1,23 @@
-﻿using Backend.Services.TileServices;
-using Common.DTOs;
+﻿using Common.DTOs;
 using Common.Enums;
 
 namespace Backend.Domains.TileDomain
 {
     public class Tile
     {
-        public PosIndex posIndex;
-        public Dictionary<DirectionEnum, PosIndex> directions = new Dictionary<DirectionEnum, PosIndex>();
-        public readonly ITileService tileService;
+        public PosIndex PosIndex { get; init; }
+        public ColourEnum Colour { get; set; }
+        public Dictionary<DirectionEnum, PosIndex> Directions { get; init; }
+        public bool IsGoalTile { get; set; }
+        public bool IsStartTile { get; set; }
 
-        public Tile(ITileService tileService,PosIndex posIndex, Dictionary<DirectionEnum, PosIndex> directions)
+        public Tile(PosIndex posIndex, ColourEnum colour, Dictionary<DirectionEnum, PosIndex> directions, bool isGoalTile, bool isStartTile)
         {
-            this.tileService = tileService;
-            this.posIndex = posIndex;
-            this.directions = directions;
+            PosIndex = posIndex;
+            Colour = colour;
+            Directions = directions;
+            IsGoalTile = isGoalTile;
+            IsStartTile = isStartTile;
         }
         
     }
