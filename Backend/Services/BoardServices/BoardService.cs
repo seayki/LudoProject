@@ -37,7 +37,7 @@ namespace Backend.Services.BoardServices
                 var tilesToCross = GetTilesToCross(piece, colour, diceRoll, tiles, playerZone);
                 tilesToCross.RemoveAt(tilesToCross.Count - 1);
 
-                if (colourPieces.Any(x => tilesToCross.Contains(x.PosIndex) && x.ID != piece.ID))
+                if (!colourPieces.Any(x => tilesToCross.Contains(x.PosIndex) && x.ID != piece.ID))
                     validPieces.Add(piece);
             }
             return validPieces;
@@ -118,7 +118,7 @@ namespace Backend.Services.BoardServices
         private List<PosIndex> GetTilesToCross(Piece piece, ColourEnum colour, int diceRoll, List<Tile> tiles, List<Tile> playerZone)
         {
             var piecePosIndex = piece.PosIndex;
-            var directions = tiles.ElementAt(piecePosIndex.Index).Directions;
+            var directions = piece.PosIndex.Colour != ColourEnum.None ? playerZone.ElementAt(piecePosIndex.Index).Directions : tiles.ElementAt(piecePosIndex.Index).Directions;
             var tilesToCross = new List<PosIndex>();
             bool movingBackwards = false;
 
@@ -140,7 +140,7 @@ namespace Backend.Services.BoardServices
                     continue;
                 }
 
-                if (directions.TryGetValue(DirectionEnum.Backward, out var backwardPos) && backwardPos.Index == playerZone.Count - 1)
+                if (directions.TryGetValue(DirectionEnum.Backward, out var backwardPos) && (!tilesToCross.Any() ? piecePosIndex.Index : tilesToCross.Last().Index) == playerZone.Count - 1)
                 {
                     var playerTile = playerZone.Find(x => x.PosIndex == backwardPos);
                     tilesToCross.Add(playerTile.PosIndex);
