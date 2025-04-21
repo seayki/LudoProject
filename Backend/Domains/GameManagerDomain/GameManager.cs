@@ -43,7 +43,7 @@ namespace Backend.Domains.GameManagerDomain
         {
             for (int i = 0; i < playerCount; i++)
             {
-                var color = (ColourEnum)((i % Enum.GetValues(typeof(ColourEnum)).Length));
+                var color = (ColourEnum)(i + 1);
                 this.Players.Add(new Player(color));
             }
         }
