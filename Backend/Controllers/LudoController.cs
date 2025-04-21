@@ -28,11 +28,21 @@ namespace Backend.Controllers
 		}
 
 		[HttpGet("MoveSelectedPiece")]
-		public async Task<IActionResult> MoveSelectedPiece(Guid pieceID, PosIndex posIndex)
+		public async Task<IActionResult> MoveSelectedPiece(Guid pieceID)
 		{
 			try
 			{
 				var affectedPieces = gameManager.MovePiece(pieceID);
+
+				var resultValue = from p in affectedPieces
+								  select new PieceDTO()
+								  {
+									  ID = p.ID,
+									  PosIndex = p.PosIndex,
+									  IsInPlay = p.IsInPlay,
+									  IsFinished = p.IsFinished
+								  };
+
 				return new OkObjectResult(affectedPieces);
 			}
 			catch (Exception ex)

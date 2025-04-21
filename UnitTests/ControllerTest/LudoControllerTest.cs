@@ -90,7 +90,7 @@ namespace UnitTests.ControllerTest
 			});
 
 			// act
-			var result = _sut.MoveSelectedPiece(piece.ID, posIndex).Result;
+			var result = _sut.MoveSelectedPiece(piece.ID).Result;
 
 			// assert
 			result.Should().BeOfType<OkObjectResult>()
@@ -108,7 +108,7 @@ namespace UnitTests.ControllerTest
 			_GameManagerMock.Setup(gm => gm.MovePiece(It.IsAny<Guid>())).Throws(new Exception());
 
 			// act
-			var result = _sut.MoveSelectedPiece(Guid.NewGuid(), new PosIndex()).Result;
+			var result = _sut.MoveSelectedPiece(Guid.NewGuid()).Result;
 
 			// assert
 			result.Should().BeOfType<BadRequestObjectResult>()
