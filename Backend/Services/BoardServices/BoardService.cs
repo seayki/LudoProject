@@ -41,8 +41,10 @@ namespace Backend.Services.BoardServices
             return validPieces;
         }
 
-        bool IBoardService.MovePiece(List<Piece> pieces, Piece piece, ColourEnum colour, int diceRoll, List<Tile> tiles, List<Tile> playerZone)
+        List<Piece> IBoardService.MovePiece(List<Piece> pieces, Piece piece, ColourEnum colour, int diceRoll, List<Tile> tiles, List<Tile> playerZone)
         {
+            List<Piece> piecesChanged = new List<Piece>();
+
             var tilesToCross = GetTilesToCross(piece, colour, diceRoll, tiles, playerZone);
 
             var tileToMoveTo = tilesToCross.Last();
@@ -50,20 +52,24 @@ namespace Backend.Services.BoardServices
             var pieceToSendHome = CheckTileForPieceToSendHome(pieces, piece, tileToMoveTo);
 
             if (pieceToSendHome is not null)
+            {
                 SendPieceHome(pieceToSendHome);
+                piecesChanged.Add(pieceToSendHome);
+            }
 
             if (pieceToSendHome is not null && pieceToSendHome.ID == piece.ID)
-                return false;
+                return piecesChanged;
 
+            piecesChanged.Add(piece);
             if (tileToMoveTo == playerZone.Last().PosIndex)
             {
                 piece.PosIndex = tileToMoveTo;
                 piece.IsFinished = true;
-                return true;
+                return piecesChanged;
             }
 
             piece.PosIndex = tileToMoveTo;
-            return true;
+            return piecesChanged;
         }
 
         void IBoardService.SendPieceHome(Piece piece)

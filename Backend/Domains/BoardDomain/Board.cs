@@ -14,14 +14,10 @@ namespace Backend.Domains.Board
         public Dictionary<ColourEnum, List<Tile>> PlayerZones { get; init; } = new();
         public List<Piece> Pieces { get; set; } = new();
         public IBoardService BoardService { get; init; } = new BoardService();
-        private int NumberOfTiles { get; init; }
-        private int LengthOfColourZone { get; init; }
+
 
         public Board(int numberOfTiles, int lengthOfColourZone, List<ColourEnum> playerColours)
         {
-            NumberOfTiles = numberOfTiles;
-            LengthOfColourZone = lengthOfColourZone;
-
             for (int i = 0; i < numberOfTiles; i++)
             {
                 var index = new PosIndex(i, ColourEnum.None);
@@ -112,7 +108,7 @@ namespace Backend.Domains.Board
             return result;
         }
 
-        public bool MovePiece(Piece piece, ColourEnum colour, int diceRoll)
+        public List<Piece> MovePiece(Piece piece, ColourEnum colour, int diceRoll)
         {
             PlayerZones.TryGetValue(colour, out var playerZone);
             var result = BoardService.MovePiece(Pieces, piece, colour, diceRoll, Tiles, playerZone);
