@@ -12,38 +12,16 @@ namespace UnitTests.PlayerTests
     {
         public static IEnumerable<object[]> PlayerConstructorTestData()
         {
-            yield return new object[] { 1, ColourEnum.Red, new List<Piece> {
-                new Piece(ColourEnum.Red),
-                new Piece(ColourEnum.Red),
-                new Piece(ColourEnum.Red),
-                new Piece(ColourEnum.Red)
-            }, false, null, true };
-            yield return new object[] { 2, ColourEnum.Blue, new List<Piece> {
-                new Piece(ColourEnum.Blue),
-                new Piece(ColourEnum.Blue),
-                new Piece(ColourEnum.Blue),
-                new Piece(ColourEnum.Blue)
-            }, false, null, true };
-            yield return new object[] { 3, ColourEnum.Green, new List<Piece> {
-                new Piece(ColourEnum.Green),
-                new Piece(ColourEnum.Green),
-                new Piece(ColourEnum.Green),
-                new Piece(ColourEnum.Green)
-            }, false, null, true };
-            yield return new object[] { 4, ColourEnum.Yellow, new List<Piece> {
-                new Piece(ColourEnum.Yellow),
-                new Piece(ColourEnum.Yellow),
-                new Piece(ColourEnum.Yellow),
-                new Piece(ColourEnum.Yellow),
-            }, false, null, true };
+            yield return new object[] { ColourEnum.Red, false, null, true };
+            yield return new object[] { ColourEnum.Blue, false, null, true };
+            yield return new object[] { ColourEnum.Green, false, null, true };
+            yield return new object[] { ColourEnum.Yellow, false, null, true };
         }
 
         [Theory]
         [MemberData(nameof(PlayerConstructorTestData))]
         public void TestPlayerConstructor(
-            int id,
             ColourEnum colour,
-            List<Piece> pieces,
             bool expectedIsTurn,
             PosIndex? expectedStartTile,
             bool shouldPass)
@@ -51,57 +29,53 @@ namespace UnitTests.PlayerTests
             // Assert
             if (shouldPass)
             {
-                var player = new Player(id, colour, pieces);
+                var player = new Player(colour);
 
                 player.Should().NotBeNull();
-                player.Id.Should().Be(id);
                 player.Colour.Should().Be(colour);
-                player.Pieces.Should().BeEquivalentTo(pieces);
+                player.Pieces.Should().HaveCount(4);
+                player.Pieces.All(p => p.Colour == colour).Should().BeTrue();
                 player.IsTurn.Should().Be(expectedIsTurn);
                 player.StartTile.Should().Be(expectedStartTile);
             }
             else
             {
-                Action act = () => new Player(id, colour, pieces);
+                Action act = () => new Player(colour);
                 act.Should().Throw<ArgumentException>()
-                    .WithMessage("A player must");
+                    .WithMessage("A player must have a valid colour");
             }
         }
         [Fact]
         public void TestPlayer_InvalidColour()
         {
-            // Arrange
-            var pieces = new List<Piece>();
-
-            Action act = () => new Player(0, ColourEnum.None, pieces);
+            Action act = () => new Player(ColourEnum.None);
 
             act.Should().Throw<Exception>()
                 .WithMessage("A player must have a valid colour");
         }
 
         // Test om der er minimum 4 brikker for for en spiller
-        [Fact]
-        public void TestPlayer_InvalidNumberOfPieces()
-        {
-            var pieces = new List<Piece> { new Piece(ColourEnum.Red) };
+        //[Fact]
+        //public void TestPlayer_InvalidNumberOfPieces()
+        //{
+        //    var pieces = new List<Piece> { new Piece(ColourEnum.Red) };
 
-            Action act = () => new Player(1, ColourEnum.Red, pieces);
+        //    Action act = () => new Player(1, ColourEnum.Red, pieces);
 
-            act.Should().Throw<Exception>()
-                .WithMessage("A player must have 4 pieces");
-        }
+        //    act.Should().Throw<Exception>()
+        //        .WithMessage("A player must have 4 pieces");
+        //}
 
         // Test om brikker kan flyttes ud
         [Fact]
         public void TestPlayerCanMovePieceOutFromStart()
         {
-            var player = new Player(1, ColourEnum.Red, new List<Piece>
-            {
-                new Piece(ColourEnum.Red) { IsInPlay = false },
-                new Piece(ColourEnum.Red) { IsInPlay = false },
-                new Piece(ColourEnum.Red) { IsInPlay = false },
-                new Piece(ColourEnum.Red) { IsInPlay = true }
-            });
+            var player = new Player(ColourEnum.Red);
+            // Sæt tre brikker til ikke at være i spil manuelt
+            player.Pieces[0].IsInPlay = false;
+            player.Pieces[1].IsInPlay = false;
+            player.Pieces[2].IsInPlay = false;
+            player.Pieces[3].IsInPlay = true;
 
             var moveablePieces = player.Pieces.Where(p => !p.IsInPlay).ToList();
 
@@ -112,13 +86,8 @@ namespace UnitTests.PlayerTests
         [Fact]
         public void TestPlayerCannotMoveAnyPieceOutFromStart()
         {
-            var player = new Player(2, ColourEnum.Blue, new List<Piece>
-            {
-                new Piece(ColourEnum.Blue) { IsInPlay = true },
-                new Piece(ColourEnum.Blue) { IsInPlay = true },
-                new Piece(ColourEnum.Blue) { IsInPlay = true },
-                new Piece(ColourEnum.Blue) { IsInPlay = true }
-            });
+            var player = new Player(ColourEnum.Blue);
+            player.Pieces.ForEach(p => p.IsInPlay = true);
 
             var moveablePieces = player.Pieces.Where(p => !p.IsInPlay).ToList();
 
@@ -129,13 +98,9 @@ namespace UnitTests.PlayerTests
         [Fact]
         public void TestPlayerHasOnePieceThatCanMoveOutFromStart()
         {
-            var player = new Player(3, ColourEnum.Green, new List<Piece>
-            {
-                new Piece(ColourEnum.Green) { IsInPlay = true },
-                new Piece(ColourEnum.Green) { IsInPlay = true },
-                new Piece(ColourEnum.Green) { IsInPlay = true },
-                new Piece(ColourEnum.Green) { IsInPlay = false }
-            });
+            var player = new Player(ColourEnum.Green);
+            player.Pieces.ForEach(p => p.IsInPlay = true);
+            player.Pieces[3].IsInPlay = false;
 
             var moveablePieces = player.Pieces.Where(p => !p.IsInPlay).ToList();
 
