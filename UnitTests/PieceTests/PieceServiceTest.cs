@@ -18,11 +18,7 @@ namespace UnitTests.PieceTests
 			// Arrange
 			var piece = new Piece(ColourEnum.Yellow);
 			piece.IsInPlay = true;
-			var posIndex = new PosIndex
-			{
-				Colour = posIndexColour,
-				Index = posIndexIndex
-			};
+			var posIndex = new PosIndex(posIndexIndex, posIndexColour);
 
 
             IPieceService pieceService = new PieceService();
@@ -47,11 +43,7 @@ namespace UnitTests.PieceTests
 			// Arrange
 			var piece = new Piece(ColourEnum.Yellow);
 			piece.IsInPlay = true;
-			var posIndex = new PosIndex
-			{
-				Colour = ColourEnum.None,
-				Index = 1
-			};
+			var posIndex = new PosIndex(1, ColourEnum.None);
 
             IPieceService pieceService = new PieceService();
 
@@ -79,11 +71,7 @@ namespace UnitTests.PieceTests
 		{
 			// Arrange
 			var piece = new Piece(ColourEnum.Yellow);
-			var posIndex = new PosIndex
-			{
-				Colour = posIndexColour,
-				Index = posIndexIndex
-			};
+			var posIndex = new PosIndex(posIndexIndex, posIndexColour);
 
             IPieceService pieceService = new PieceService();
 
@@ -101,11 +89,7 @@ namespace UnitTests.PieceTests
 			// Arrange
 			var piece = new Piece(ColourEnum.Yellow);
 			piece.IsInPlay = true;
-			var posIndex = new PosIndex
-			{
-				Colour = ColourEnum.None,
-				Index = 4
-			};
+			var posIndex = new PosIndex(4, ColourEnum.None);
 
             IPieceService pieceService = new PieceService();
 
