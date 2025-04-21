@@ -12,6 +12,7 @@ namespace UnitTests.DiceTests
     {
         private DiceService diceService = new DiceService();
 
+        [Fact]
         public void TestRoll()
         {
             var result = diceService.Roll();
