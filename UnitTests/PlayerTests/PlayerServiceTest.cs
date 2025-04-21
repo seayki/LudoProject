@@ -28,19 +28,21 @@ namespace UnitTests.PlayerTests
         {
             // Arrange
             var player = new Player(1, ColourEnum.Red, new List<Piece>
-        {
-            new Piece(1, ColourEnum.Red),
-            new Piece(2, ColourEnum.Red),
-            new Piece(3, ColourEnum.Red),
-            new Piece(4, ColourEnum.Red)
-        });
+            {
+                new Piece(ColourEnum.Red),
+                new Piece(ColourEnum.Red),
+                new Piece(ColourEnum.Red),
+                new Piece(ColourEnum.Red)
+            });
+
+            var piece2ID = player.Pieces[1].ID;
 
             // Act
-            var selectedPiece = _playerService.SelectPiece(player, 2);
+            var selectedPiece = _playerService.SelectPiece(player, piece2ID);
 
             // Assert
             selectedPiece.Should().NotBeNull();
-            selectedPiece.ID.Should().Be(2);
+            selectedPiece.ID.Should().Be(piece2ID);
         }
 
         // Test om der retuneres null, hvis der vælges en brik, der ikke findes
@@ -50,14 +52,14 @@ namespace UnitTests.PlayerTests
             // Arrange
             var player = new Player(1, ColourEnum.Red, new List<Piece>
             {
-                new Piece(1, ColourEnum.Red),
-                new Piece(2, ColourEnum.Red),
-                new Piece(3, ColourEnum.Red),
-                new Piece(4, ColourEnum.Red)
+                new Piece(ColourEnum.Red),
+                new Piece(ColourEnum.Red),
+                new Piece(ColourEnum.Red),
+                new Piece(ColourEnum.Red)
             });
 
             // Act
-            var selectedPiece = _playerService.SelectPiece(player, 999);
+            var selectedPiece = _playerService.SelectPiece(player, Guid.Empty);
 
             // Assert
             selectedPiece.Should().BeNull();
