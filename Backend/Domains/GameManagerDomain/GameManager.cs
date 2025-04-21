@@ -51,6 +51,7 @@ namespace Backend.Domains.GameManagerDomain
         public List<Player> RollForPlayerOrder()
         {
             var playerOrder = gameSetupService.RollForPlayerOrder(Players);
+            this.Players = playerOrder;
             this.CurrentPlayer = Players[0];
             return playerOrder;
         }
