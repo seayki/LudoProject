@@ -16,8 +16,10 @@ namespace Backend.Domains.BoardDomain
         public IBoardService BoardService { get; init; } = new BoardService();
 
 
-        public Board(int numberOfTiles, int lengthOfColourZone, List<ColourEnum> playerColours)
+        public Board(int numberOfTiles, int lengthOfColourZone, List<ColourEnum> playerColours, List<Piece> pieces)
         {
+            Pieces = pieces;
+
             for (int i = 0; i < numberOfTiles; i++)
             {
                 var index = new PosIndex(i, ColourEnum.None);
@@ -48,13 +50,13 @@ namespace Backend.Domains.BoardDomain
 
                 playerTiles.Last().IsGoalTile = true;
 
-                for (int i = 0; i < PlayerZones.Count; i++)
+                for (int i = 0; i < playerTiles.Count; i++)
                 {
                     if (i == 0)
                     {
                         playerTiles.ElementAt(i).Directions.Add(DirectionEnum.Forward, playerTiles.ElementAt(i + 1).PosIndex);
                     }
-                    else if (i == PlayerZones.Count - 1)
+                    else if (i == playerTiles.Count - 1)
                     {
                         playerTiles.ElementAt(i).Directions.Add(DirectionEnum.Backward, playerTiles.ElementAt(i - 1).PosIndex);
                     }

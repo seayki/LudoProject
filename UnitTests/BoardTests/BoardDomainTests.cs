@@ -1,4 +1,5 @@
 ﻿using Backend.Domains.BoardDomain;
+using Backend.Domains.PieceDomain;
 using Common.Enums;
 
 namespace UnitTests.BoardTests
@@ -14,7 +15,7 @@ namespace UnitTests.BoardTests
             List<ColourEnum> players = new List<ColourEnum>() { ColourEnum.Red, ColourEnum.Blue, ColourEnum.Green, ColourEnum.Yellow };
 
             //Act
-            var result = new Board(length, zoneLength, players);
+            var result = new Board(length, zoneLength, players, new List<Piece>());
 
             //Assert
             Assert.Equal(length, result.Tiles.Count);
