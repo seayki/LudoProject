@@ -1,4 +1,5 @@
-﻿using Backend.Domains.PieceDomain;
+﻿using Backend.Domains.GameManagerDomain;
+using Backend.Domains.PieceDomain;
 using Backend.Services.GameManagerService;
 using Common.DTOs;
 using Microsoft.AspNetCore.Http;
@@ -8,9 +9,18 @@ namespace Backend.Controllers
 {
 	[Route("api/[controller]")]
 	[ApiController]
-	public class LudoController(IGameManagerService gameManager, ILogger<LudoController> logger) : ControllerBase
+	public class LudoController : ControllerBase
 	{
-		[HttpGet("FindValidMoves")]
+        private readonly IGameManagerService gameManager;
+        private readonly ILogger<LudoController> logger;
+
+        public LudoController(IGameManagerService gameManager, ILogger<LudoController> logger)
+        {
+            this.gameManager = gameManager;
+            this.logger = logger;
+        }
+
+        [HttpGet("FindValidMoves")]
 		public async Task<IActionResult> FindValidMoves(int diceroll)
 		{
 			try
@@ -67,14 +77,14 @@ namespace Backend.Controllers
 									  colour = p.Colour,
 									  startTile = p.StartTile,
 									  pieces = (List<PieceDTO>)(from piece in p.Pieces
-											   select new PieceDTO()
-											   {
-												   ID = piece.ID,
-												   PosIndex = piece.PosIndex,
-												   IsInPlay = piece.IsInPlay,
-												   IsFinished = piece.IsFinished
-											   })
-								  };
+                                      select new PieceDTO()
+                                      {
+                                          ID = piece.ID,
+                                          PosIndex = piece.PosIndex,
+                                          IsInPlay = piece.IsInPlay,
+                                          IsFinished = piece.IsFinished
+                                      }).ToList()
+                                  };
 
 				return new OkObjectResult(resultValue);
 			}
