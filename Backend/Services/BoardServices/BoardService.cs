@@ -32,7 +32,7 @@ namespace Backend.Services.BoardServices
             if (colourPieces.Count == 1)
                 return colourPieces;
 
-            foreach (var piece in colourPieces)
+            foreach (var piece in colourPieces.Where(x => x.PosIndex != null))
             {
                 var tilesToCross = GetTilesToCross(piece, colour, diceRoll, tiles, playerZone);
                 tilesToCross.RemoveAt(tilesToCross.Count - 1);
