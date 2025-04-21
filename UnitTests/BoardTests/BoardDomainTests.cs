@@ -1,4 +1,4 @@
-﻿using Backend.Domains.Board;
+﻿using Backend.Domains.BoardDomain;
 using Common.Enums;
 
 namespace UnitTests.BoardTests
