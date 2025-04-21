@@ -118,7 +118,7 @@ namespace Backend.Services.BoardServices
         private List<PosIndex> GetTilesToCross(Piece piece, ColourEnum colour, int diceRoll, List<Tile> tiles, List<Tile> playerZone)
         {
             var piecePosIndex = piece.PosIndex;
-            var directions = tiles.ElementAt(piecePosIndex.Index).Directions;
+            var directions = piece.PosIndex.Colour != ColourEnum.None ? playerZone.ElementAt(piecePosIndex.Index).Directions : tiles.ElementAt(piecePosIndex.Index).Directions;
             var tilesToCross = new List<PosIndex>();
             bool movingBackwards = false;
 
