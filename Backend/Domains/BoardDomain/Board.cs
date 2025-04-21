@@ -52,16 +52,16 @@ namespace Backend.Domains.BoardDomain
                 {
                     if (i == 0)
                     {
-                        playerTiles.ElementAt(i).Directions.Add(DirectionEnum.Forward, Tiles.ElementAt(i + 1).PosIndex);
+                        playerTiles.ElementAt(i).Directions.Add(DirectionEnum.Forward, playerTiles.ElementAt(i + 1).PosIndex);
                     }
                     else if (i == PlayerZones.Count - 1)
                     {
-                        playerTiles.ElementAt(i).Directions.Add(DirectionEnum.Backward, Tiles.ElementAt(i - 1).PosIndex);
+                        playerTiles.ElementAt(i).Directions.Add(DirectionEnum.Backward, playerTiles.ElementAt(i - 1).PosIndex);
                     }
                     else
                     {
-                        playerTiles.ElementAt(i).Directions.Add(DirectionEnum.Forward, Tiles.ElementAt(i + 1).PosIndex);
-                        playerTiles.ElementAt(i).Directions.Add(DirectionEnum.Backward, Tiles.ElementAt(i - 1).PosIndex);
+                        playerTiles.ElementAt(i).Directions.Add(DirectionEnum.Forward, playerTiles.ElementAt(i + 1).PosIndex);
+                        playerTiles.ElementAt(i).Directions.Add(DirectionEnum.Backward, playerTiles.ElementAt(i - 1).PosIndex);
                     }
                 }
 
