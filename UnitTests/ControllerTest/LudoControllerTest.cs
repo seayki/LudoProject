@@ -2,7 +2,7 @@
 using Backend.Domains.BoardDomain;
 using Backend.Domains.PieceDomain;
 using Backend.Domains.PlayerDomain;
-using Backend.Services.GameManagerServicesTemp.Interfaces;
+using Backend.Services.GameManagerService;
 using Common.DTOs;
 using Common.Enums;
 using FluentAssertions;
@@ -37,7 +37,7 @@ namespace UnitTests.ControllerTest
 		{
 			// arrange
 			var validPieces = new List<Guid> { Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid() };
-			_GameManagerMock.Setup(gm => gm.GetPossibleMoves()).Returns(validPieces);
+			_GameManagerMock.Setup(gm => gm.GetMovablePieces()).Returns(validPieces);
 
 			// act
 			var result = _sut.FindValidMoves(diceValue).Result;
@@ -50,14 +50,14 @@ namespace UnitTests.ControllerTest
 					Value = validPieces
 				}, options => options.ExcludingMissingMembers());
 			_GameManagerMock.Verify(s => s.Roll(It.IsAny<int>()), Times.Once);
-			_GameManagerMock.Verify(s => s.GetPossibleMoves(), Times.Once);
+			_GameManagerMock.Verify(s => s.GetMovablePieces(), Times.Once);
 		}
 
 		[Fact]
 		public void FindValidMoves_GameManagerReturnsException_ErrorMessageReturned()
 		{
 			// arrange
-			_GameManagerMock.Setup(gm => gm.GetPossibleMoves()).Throws(new Exception());
+			_GameManagerMock.Setup(gm => gm.GetMovablePieces()).Throws(new Exception());
 
 			// act
 			var result = _sut.FindValidMoves(6).Result;

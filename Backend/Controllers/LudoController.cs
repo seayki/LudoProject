@@ -1,5 +1,5 @@
 ﻿using Backend.Domains.PieceDomain;
-using Backend.Services.GameManagerServicesTemp.Interfaces;
+using Backend.Services.GameManagerService;
 using Common.DTOs;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -16,7 +16,7 @@ namespace Backend.Controllers
 			try
 			{
 				gameManager.Roll(diceroll);
-				var resultValue = gameManager.GetPossibleMoves();
+				var resultValue = gameManager.GetMovablePieces();
 
 				return new OkObjectResult(resultValue);
 			}
