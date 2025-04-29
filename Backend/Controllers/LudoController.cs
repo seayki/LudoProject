@@ -67,8 +67,8 @@ namespace Backend.Controllers
 		{
 			try
 			{
-				gameManager.CreateNewGame(PlayerNumber, BoardSize, 6);
 				var playersInOrder = gameManager.RollForPlayerOrder();
+				gameManager.CreateNewGame(PlayerNumber, BoardSize, 6);
 
 				var resultValue = from p in playersInOrder
 								  select new PlayerDTO()
