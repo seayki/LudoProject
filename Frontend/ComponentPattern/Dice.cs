@@ -5,6 +5,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -91,7 +92,7 @@ namespace Frontend.ComponentPattern
 
                     // SEND RAND0M NUMBER TO BACKEND
 
-                    APIFindValidMoves(randNumber);
+                    APIFindValidMoves(randNumber+1);
 
 
                     //TEMPORARY GET back a list of moveable pieces
@@ -126,7 +127,7 @@ namespace Frontend.ComponentPattern
                     await GameWorld.Instance.apiService.GetAsync<List<Guid>>("https://localhost:7221/api/Ludo/FindValidMoves?diceroll=" + diceRoll.ToString(),
                     onSuccess: (responseObj) =>
                     {
-
+                        
                         GameWorld.Instance.MakePiecesMoveable(responseObj);
 
                     },

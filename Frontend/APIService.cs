@@ -45,11 +45,17 @@ namespace Frontend
         {
             try
             {
+               
                 var response = await _httpClient.GetAsync(url);
                 response.EnsureSuccessStatusCode();
 
                 var responseBody = await response.Content.ReadAsStringAsync();
-                var result = JsonSerializer.Deserialize<TResponse>(responseBody);
+
+                var options = new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true
+                };
+                var result = JsonSerializer.Deserialize<TResponse>(responseBody,options);
                 onSuccess?.Invoke(result);
             }
             catch (Exception ex)

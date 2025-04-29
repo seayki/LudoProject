@@ -58,7 +58,7 @@ namespace Frontend
         public float FPS;
 
         public int playerAmount;
-        private List<PlayerDTO> playerOrder;
+        private List<PlayerDTO> playerOrderInit;
 
 
         public AsyncTaskManager asyncTaskManager;
@@ -320,23 +320,43 @@ namespace Frontend
 
             }
 
-            SpriteRenderer startTile1 = (SpriteRenderer)tiles[0].GetComponent<SpriteRenderer>();
+            for (int i = 0; i < playerOrderInit.Count; i++)
+            {
 
-            startTile1.Color = Color.Red;
+            
+                switch (playerOrderInit[i].colour)
+                {
+                    case ColourEnum.None:
+                        break;
+                    case ColourEnum.Red:
+                        SpriteRenderer startTile1 = (SpriteRenderer)tiles[i*tiles.Count/4].GetComponent<SpriteRenderer>();
 
+                        startTile1.Color = Color.Red;
+                        break;
+                    case ColourEnum.Blue:
+                        SpriteRenderer startTile2 = (SpriteRenderer)tiles[i * tiles.Count / 4].GetComponent<SpriteRenderer>();
 
-            SpriteRenderer startTile2 = (SpriteRenderer)tiles[12].GetComponent<SpriteRenderer>();
+                        startTile2.Color = Color.Blue;
+                        break;
+                    case ColourEnum.Green:
+                        SpriteRenderer startTile3 = (SpriteRenderer)tiles[i * tiles.Count / 4].GetComponent<SpriteRenderer>();
 
-            startTile2.Color = Color.Green;
+                        startTile3.Color = Color.Green;
+                        break;
+                    case ColourEnum.Yellow:
 
-            SpriteRenderer startTile3 = (SpriteRenderer)tiles[24].GetComponent<SpriteRenderer>();
+                        SpriteRenderer startTile4 = (SpriteRenderer)tiles[i * tiles.Count / 4].GetComponent<SpriteRenderer>();
 
-            startTile3.Color = Color.Yellow;
+                        startTile4.Color = Color.Yellow;
+                        break;
+                    default:
+                        break;
+                }
+            }
 
+          
 
-            SpriteRenderer startTile4 = (SpriteRenderer)tiles[36].GetComponent<SpriteRenderer>();
-
-            startTile4.Color = Color.Blue;
+          
 
 
             CreateColorTiles(playerColors.Values.ToList());
@@ -371,11 +391,11 @@ namespace Frontend
                             break;
 
                         case 1:
-                            go = TileFactory.Instance.Create(ColourEnums[3], Content);
+                            go = TileFactory.Instance.Create(ColourEnums[2], Content);
                             go.Transform.Position = new Vector2(startColorPos.X - tileSpacing - tileSpacing * j, startColorPos.Y);
                             break;
                         case 2:
-                            go = TileFactory.Instance.Create(ColourEnums[2], Content);
+                            go = TileFactory.Instance.Create(ColourEnums[3], Content);
                             go.Transform.Position = new Vector2(startColorPos.X, startColorPos.Y - tileSpacing - tileSpacing * j);
                             break;
                         case 3:
@@ -406,7 +426,7 @@ namespace Frontend
 
         private void CreateHomeTiles(List<ColourEnum> ColourEnums)
         {
-            List<Vector2> startpositions = new List<Vector2>() {new Vector2(112,225),new Vector2(760,225),new Vector2(112,740),new Vector2(760,740) };
+            List<Vector2> startpositions = new List<Vector2>() {new Vector2(112,225),new Vector2(760,225), new Vector2(760, 740),new Vector2(112,740), };
 
 
             Debug.Write(ColourEnums.Count);
@@ -513,9 +533,9 @@ namespace Frontend
                     await apiService.GetAsync<List<PlayerDTO>>("https://localhost:7221/api/Ludo/StartGame?PlayerNumber="+playerNumbers.ToString()+"&BoardSize="+BoardSize.ToString(), 
                     onSuccess: (responseObj) =>
                     {
-                        playerOrder = responseObj;
+                        playerOrderInit = responseObj;
 
-                        foreach (var item in playerOrder)
+                        foreach (var item in playerOrderInit)
                         {
                             playerColors.Add(item.id, item.colour);
 
@@ -550,6 +570,8 @@ namespace Frontend
 
                                 pieces.Add(go);
 
+
+
                             }
 
 
@@ -557,11 +579,11 @@ namespace Frontend
 
                         }
                         // SETS THE CURRENT PLAYER TO BE THE FIRST ON THE LIST IN THE PLAYERORDER
-                        UpdateCurrentPlayer(playerOrder[0].id);
+                        UpdateCurrentPlayer(playerOrderInit[0].id);
 
                         ///SHOW PLAYERORDER METHOD USED HERE 
                         ///
-                        ShowPlayerOrder(playerOrder.Select(p => p.colour).ToList());
+                        ShowPlayerOrder(playerOrderInit.Select(p => p.colour).ToList());
 
                         Button startGameButton = new Button("StartGame", new StartGameButton(), new Vector2(GameWorld.Instance.screenSize.X / 2, 600), new Vector2(1, 1));
 
@@ -630,7 +652,7 @@ namespace Frontend
 
             int playerAmountTOSENDTOBACKEND = playerAmount;
 
-            APIStartGame(playerAmount, tiles.Count);
+            APIStartGame(playerAmount, 48);
             //// TEMPORARY PLAYERORDER
             //List<PlayerDTO> backendPlayerOrder = new List<PlayerDTO>()
             //{
@@ -674,15 +696,22 @@ namespace Frontend
 
         public void MakePiecesMoveable(List<Guid> moveAblePieces)
         {
-            foreach (var item in playerPieces[playerOrder[0].colour])
+            foreach (var gameObjects in playerPieces.Values)
             {
-
-               PlayerPiece piece= (PlayerPiece)item.GetComponent<PlayerPiece>();
-
-               if(moveAblePieces.Contains(piece.pieceID))
+                foreach (var go in gameObjects)
                 {
-                    piece.MakeMoveAble();
+                    PlayerPiece piece = (PlayerPiece)go.GetComponent<PlayerPiece>();
+
+
+                    if (moveAblePieces.Contains(piece.pieceID))
+                    {
+                        piece.MakeMoveAble();
+                    }
+
+
                 }
+             
+
 
             }
             

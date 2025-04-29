@@ -80,9 +80,11 @@ namespace Backend.Controllers
                                       select new PieceDTO()
                                       {
                                           ID = piece.ID,
+                                          Colour = piece.Colour,
                                           PosIndex = piece.PosIndex,
                                           IsInPlay = piece.IsInPlay,
-                                          IsFinished = piece.IsFinished
+                                          IsFinished = piece.IsFinished,
+										 
                                       }).ToList()
                                   };
 
