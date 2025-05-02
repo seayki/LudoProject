@@ -1,7 +1,9 @@
 ﻿using Backend.Domains.GameManagerDomain;
 using Backend.Domains.PieceDomain;
+using Backend.Services.DiceServices.Interfaces;
 using Backend.Services.GameManagerService;
 using Common.DTOs;
+using Common.DTOs.ResponseDTOs;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -13,20 +15,28 @@ namespace Backend.Controllers
 	{
         private readonly IGameManagerService gameManager;
         private readonly ILogger<LudoController> logger;
+		private readonly IDiceService diceService;
 
-        public LudoController(IGameManagerService gameManager, ILogger<LudoController> logger)
+        public LudoController(IGameManagerService gameManager, IDiceService diceService, ILogger<LudoController> logger)
         {
             this.gameManager = gameManager;
             this.logger = logger;
+			this.diceService = diceService;
         }
 
         [HttpGet("FindValidMoves")]
-		public async Task<IActionResult> FindValidMoves(int diceroll)
+		public async Task<IActionResult> RollDieAndFindValidMoves()
 		{
 			try
 			{
+				int diceroll = diceService.Roll();
 				gameManager.Roll(diceroll);
-				var resultValue = gameManager.GetMovablePieces();
+				var validPieces = gameManager.GetMovablePieces();
+				var resultValue = new RollDieAndFindValidMovesResponseDTO 
+				{ 
+					diceroll = diceroll, 
+					validPieces = validPieces 
+				};
 
 				return new OkObjectResult(resultValue);
 			}
