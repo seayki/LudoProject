@@ -32,10 +32,16 @@ namespace Backend.Controllers
 				int diceroll = diceService.Roll();
 				gameManager.Roll(diceroll);
 				var validPieces = gameManager.GetMovablePieces();
+
+				var canRollAgain = false;
+				if (validPieces.Count == 0)
+					canRollAgain = gameManager.CanRollAgain();
+
 				var resultValue = new RollDieAndFindValidMovesResponseDTO 
 				{ 
 					diceroll = diceroll, 
-					validPieces = validPieces 
+					validPieces = validPieces,
+					canReroll = canRollAgain
 				};
 
 				return new OkObjectResult(resultValue);
@@ -48,22 +54,29 @@ namespace Backend.Controllers
 		}
 
 		[HttpGet("MoveSelectedPiece")]
-		public async Task<IActionResult> MoveSelectedPiece(Guid pieceID)
+		public async Task<IActionResult> MoveSelectedPieceAndNextTurn(Guid pieceID)
 		{
 			try
 			{
 				var affectedPieces = gameManager.MovePiece(pieceID);
+				var nextPlayerID = gameManager.NextTurn();
 
-				var resultValue = from p in affectedPieces
+				var affectedPiecesDTOs = (from p in affectedPieces
 								  select new PieceDTO()
 								  {
 									  ID = p.ID,
 									  PosIndex = p.PosIndex,
 									  IsInPlay = p.IsInPlay,
 									  IsFinished = p.IsFinished
-								  };
+								  }).ToList();
 
-				return new OkObjectResult(affectedPieces);
+				var resultValue = new MoveSelectedPieceResponseDTO
+				{
+					affectedPieces = affectedPiecesDTOs,
+					nextPlayerID = nextPlayerID
+				};
+
+				return new OkObjectResult(resultValue);
 			}
 			catch (Exception ex)
 			{
@@ -96,21 +109,6 @@ namespace Backend.Controllers
                                   };
 
 				return new OkObjectResult(resultValue);
-			}
-			catch (Exception ex)
-			{
-				logger.LogError(ex, "Error");
-				return new BadRequestObjectResult("An exception occurred, please check logs");
-			}
-		}
-
-		[HttpGet("NextTurn")]
-		public async Task<IActionResult> NextTurn()
-		{
-			try
-			{
-				var nextPlayer = gameManager.NextTurn();
-				return new OkObjectResult(nextPlayer);
 			}
 			catch (Exception ex)
 			{

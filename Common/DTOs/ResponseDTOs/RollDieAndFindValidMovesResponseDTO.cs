@@ -10,5 +10,6 @@ namespace Common.DTOs.ResponseDTOs
 	{
 		public int diceroll { get; init; }
 		public List<Guid>? validPieces { get; init; }
+		public bool canReroll { get; init; }
 	}
 }
