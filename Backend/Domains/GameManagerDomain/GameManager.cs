@@ -32,6 +32,7 @@ namespace Backend.Domains.GameManagerDomain
         public (Board Board, List<Player> Players) CreateNewGame(int playerCount, int boardSize, int lengthOfColourZone)
         {
             this.AddPlayers(playerCount);
+            this.Players = RollForPlayerOrder();
             var colours = Players.Select(p => p.Colour).ToList();
             var pieces = Players.SelectMany(p => p.Pieces).ToList();
             this.Board = new Board(boardSize, lengthOfColourZone, colours, pieces);    
@@ -81,6 +82,9 @@ namespace Backend.Domains.GameManagerDomain
         // Step 6 Check if current player can roll again due to 6'er rule or no pieces in play rule
         public bool CanRollAgain()
         {
+            if (playerService.HasFinished(CurrentPlayer))
+                return false;
+
             if (CurrentPlayer.LastRoll == 6)
                 return true;
 
@@ -93,6 +97,11 @@ namespace Backend.Domains.GameManagerDomain
         // Step 7 End turn
         public Guid NextTurn()
         {
+            if (CanRollAgain())
+            {
+                return CurrentPlayer.Id;
+            }
+
             // Move on to the next player and reset the roll
             int index = Players.IndexOf(CurrentPlayer);
             do
