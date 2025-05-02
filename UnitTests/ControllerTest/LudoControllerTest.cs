@@ -143,7 +143,6 @@ namespace UnitTests.ControllerTest
 			result.Should().BeOfType<OkObjectResult>()
 				.Which.StatusCode.Should().Be(200);
 			_GameManagerMock.Verify(s => s.CreateNewGame(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<int>()), Times.Once);
-			_GameManagerMock.Verify(s => s.RollForPlayerOrder(), Times.Once);
 		}
 
 		[Fact]

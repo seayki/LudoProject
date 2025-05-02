@@ -24,7 +24,7 @@ namespace Backend.Controllers
 			this.diceService = diceService;
         }
 
-        [HttpGet("FindValidMoves")]
+        [HttpGet("RollDieAndFindValidMoves")]
 		public async Task<IActionResult> RollDieAndFindValidMoves()
 		{
 			try
@@ -77,8 +77,7 @@ namespace Backend.Controllers
 		{
 			try
 			{
-				var playersInOrder = gameManager.RollForPlayerOrder();
-				gameManager.CreateNewGame(PlayerNumber, BoardSize, 6);
+				(_, var playersInOrder) = gameManager.CreateNewGame(PlayerNumber, BoardSize, 6);
 
 				var resultValue = from p in playersInOrder
 								  select new PlayerDTO()

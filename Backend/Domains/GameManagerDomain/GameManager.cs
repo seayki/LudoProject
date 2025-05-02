@@ -32,6 +32,7 @@ namespace Backend.Domains.GameManagerDomain
         public (Board Board, List<Player> Players) CreateNewGame(int playerCount, int boardSize, int lengthOfColourZone)
         {
             this.AddPlayers(playerCount);
+            this.Players = RollForPlayerOrder();
             var colours = Players.Select(p => p.Colour).ToList();
             var pieces = Players.SelectMany(p => p.Pieces).ToList();
             this.Board = new Board(boardSize, lengthOfColourZone, colours, pieces);    
