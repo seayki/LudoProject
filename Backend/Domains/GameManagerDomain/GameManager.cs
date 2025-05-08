@@ -115,5 +115,11 @@ namespace Backend.Domains.GameManagerDomain
 
             return CurrentPlayer.Id;
         }
+
+        // Support method, currently used during reqnroll
+        public Player GetCurrentPlayer()
+        {
+            return CurrentPlayer;
+        }
     } 
 }
