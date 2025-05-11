@@ -67,7 +67,9 @@ namespace Backend.Controllers
 									  ID = p.ID,
 									  PosIndex = p.PosIndex,
 									  IsInPlay = p.IsInPlay,
-									  IsFinished = p.IsFinished
+									  IsFinished = p.IsFinished,
+									  Colour=p.Colour
+									 
 								  }).ToList();
 
 				var resultValue = new MoveSelectedPieceResponseDTO

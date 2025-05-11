@@ -62,10 +62,29 @@ namespace Frontend.ComponentPattern
 
         }
 
+        public void MakeUnMoveAble()
+        {
+            moveAble = false;
+            SpriteRenderer sr = (SpriteRenderer)GameObject.GetComponent<SpriteRenderer>();
+
+            sr.ShowRectangle = false;
+        }
+
         public void MoveToStartTile()
         {
+            if (sprite == null || scale == Vector2.Zero)
+            {
+                SpriteRenderer sr = (SpriteRenderer)GameObject.GetComponent<SpriteRenderer>();
+                this.sprite = sr.Sprite;
+                this.scale = new Vector2(sr.Scale, sr.Scale);
+            }
+
             GameObject.Transform.Position = GameWorld.Instance.tiles[startTileIndex].Transform.Position;
 
+            this.position = GameObject.Transform.Position;
+
+            rectangle = new Rectangle((int)(position.X - sprite.Width * scale.X / 2), (int)(position.Y - sprite.Height * scale.Y / 2), (int)(sprite.Width * scale.X), (int)(sprite.Height * scale.Y));
+            
         }
 
         public void RemoveFromGame()
@@ -82,15 +101,19 @@ namespace Frontend.ComponentPattern
 
         public void MoveToHomeTiles()
         {
+
+
                
             GameObject.Transform.Position = GameWorld.Instance.homeTiles[pieceColor][hometilePosIndex].Transform.Position;
             SpriteRenderer sr = (SpriteRenderer)GameWorld.Instance.homeTiles[pieceColor][hometilePosIndex].GetComponent<SpriteRenderer>();
             sr.ShowRectangle = true;
 
+
+
+
             this.position = GameObject.Transform.Position;
 
-            rectangle = new Rectangle((int)(position.X - sprite.Width*scale.X / 2), (int)(position.Y - sprite.Height*scale.Y / 2), (int)(sprite.Width * scale.X), (int)(sprite.Height * scale.Y));
-
+            rectangle = new Rectangle((int)(position.X - sprite.Width * scale.X / 2), (int)(position.Y - sprite.Height * scale.Y / 2), (int)(sprite.Width * scale.X), (int)(sprite.Height * scale.Y));
 
         }
 
@@ -108,12 +131,6 @@ namespace Frontend.ComponentPattern
             }
 
 
-            if(updatedPiece.PosIndex.Colour==pieceColor)
-            {
-                MoveToColorZone();
-            }
-
-
             if (updatedPiece.IsFinished)
             {
                 RemoveFromGame();
@@ -122,13 +139,19 @@ namespace Frontend.ComponentPattern
             if (updatedPiece.PosIndex!= null)
             {
                 index = updatedPiece.PosIndex.Index;
+
+                if (updatedPiece.PosIndex.Colour == pieceColor)
+                {
+                    MoveToColorZone();
+                }
+
             }
 
+            this.position = GameObject.Transform.Position;
 
-            moveAble = false;
-            SpriteRenderer sr = (SpriteRenderer)GameObject.GetComponent<SpriteRenderer>();
+            rectangle = new Rectangle((int)(position.X - sprite.Width * scale.X / 2), (int)(position.Y - sprite.Height * scale.Y / 2), (int)(sprite.Width * scale.X), (int)(sprite.Height * scale.Y));
 
-            sr.ShowRectangle = false;
+            GameWorld.Instance.MakePiecesUnMoveable(pieceColor);
 
 
         }
@@ -204,7 +227,7 @@ namespace Frontend.ComponentPattern
             {
                 try
                 {
-                    var result = GameWorld.Instance.apiService.GetAsync<MoveSelectedPieceResponseDTO> ("https://localhost:7221/api/Ludo/MoveSelectedPieceAndNextTurn?pieceID=" + pieceID.ToString(),
+                    var result = GameWorld.Instance.apiService.GetAsync<MoveSelectedPieceResponseDTO> ("https://localhost:7221/api/Ludo/MoveSelectedPiece?pieceID=" + pieceID.ToString(),
                     onSuccess: (responseObj) =>
                     {
 
@@ -221,7 +244,8 @@ namespace Frontend.ComponentPattern
                         }
 
                         this.position = GameObject.Transform.Position;
-                        rectangle = new Rectangle((int)(position.X - sprite.Width / 2), (int)(position.Y - sprite.Height / 2), (int)(sprite.Width * scale.X), (int)(sprite.Height * scale.Y));
+
+                        rectangle = new Rectangle((int)(position.X - sprite.Width * scale.X / 2), (int)(position.Y - sprite.Height * scale.Y / 2), (int)(sprite.Width * scale.X), (int)(sprite.Height * scale.Y));
 
                         //SEND NEXT TURN TO BACKEND AND UPDATE WHOS TURN IT IS BASED ON A PLAYER GUID
 

@@ -94,7 +94,7 @@ namespace Frontend.ComponentPattern
 
                     APIFindValidMoves();
 
-
+                    animationStarted = false;
                     //TEMPORARY GET back a list of moveable pieces
                     //List<Guid> moveAblePieces = new List<Guid>();
                     //moveAblePieces = GameWorld.Instance.playerPieces[ColourEnum.Red].Select(go => {
@@ -122,6 +122,7 @@ namespace Frontend.ComponentPattern
                     onSuccess: (responseObj) =>
                     {
                        
+                      
                         GameWorld.Instance.MakePiecesMoveable(responseObj.validPieces);
 
 
@@ -131,6 +132,41 @@ namespace Frontend.ComponentPattern
 
                         timeElapsed = 0;
                         animationStarted = false;
+
+                        if (responseObj.canReroll == false && responseObj.validPieces.Count==0)
+                        {
+                            APIEndTurn();
+                        }
+
+                    },
+                    onError: (error) =>
+                    {
+                        Console.WriteLine("POST failed: " + error.Message);
+                    }
+                    );
+
+                }
+                catch (Exception ex)
+                {
+
+                    Console.WriteLine("Error: " + ex.Message);
+                }
+            });
+
+        }
+
+        public void APIEndTurn()
+        {
+
+            GameWorld.Instance.asyncTaskManager.EnqueueTask(async () =>
+            {
+                try
+                {
+                    await GameWorld.Instance.apiService.GetAsync<EndTurnResponseDTO>("https://localhost:7221/api/Ludo/EndTurn",
+                    onSuccess: (responseObj) =>
+                    {
+
+                        GameWorld.Instance.UpdateCurrentPlayer(responseObj.nextPlayerID);
 
                     },
                     onError: (error) =>

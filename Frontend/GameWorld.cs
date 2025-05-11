@@ -376,6 +376,8 @@ namespace Frontend
                 List<GameObject> colorTileGameObjects = new List<GameObject>();
                 Vector2 startColorPos = tiles[10 + i * 12].Transform.Position;
                 GameObject go=new GameObject();
+
+                ColourEnum actualColor = ColourEnum.None; // Temporary variable to track the actual color used
                 // Colors are set in terms of going around the clock instead of left to right which is how the colorEnums list is set.
                 // Therefore indexes are set accordingly. 
 
@@ -386,20 +388,24 @@ namespace Frontend
                     switch (i)
                     {
                         case 0:
-                            go = TileFactory.Instance.Create(ColourEnums[1], Content);
+                            actualColor = ColourEnums[1];
+                            go = TileFactory.Instance.Create(actualColor, Content);
                             go.Transform.Position = new Vector2(startColorPos.X, startColorPos.Y + tileSpacing + tileSpacing * j);
                             break;
 
                         case 1:
-                            go = TileFactory.Instance.Create(ColourEnums[2], Content);
+                            actualColor = ColourEnums[2];
+                            go = TileFactory.Instance.Create(actualColor, Content);
                             go.Transform.Position = new Vector2(startColorPos.X - tileSpacing - tileSpacing * j, startColorPos.Y);
                             break;
                         case 2:
-                            go = TileFactory.Instance.Create(ColourEnums[3], Content);
+                            actualColor = ColourEnums[3];
+                            go = TileFactory.Instance.Create(actualColor, Content);
                             go.Transform.Position = new Vector2(startColorPos.X, startColorPos.Y - tileSpacing - tileSpacing * j);
                             break;
                         case 3:
-                            go = TileFactory.Instance.Create(ColourEnums[0], Content);
+                            actualColor = ColourEnums[0];
+                            go = TileFactory.Instance.Create(actualColor, Content);
                             go.Transform.Position = new Vector2(startColorPos.X + tileSpacing + tileSpacing * j, startColorPos.Y);
                             break;
 
@@ -416,7 +422,7 @@ namespace Frontend
 
                 }
 
-                colorTiles.Add(ColourEnums[i], colorTileGameObjects);
+                colorTiles.Add(actualColor, colorTileGameObjects);
                 
             }
 
@@ -696,25 +702,47 @@ namespace Frontend
 
         public void MakePiecesMoveable(List<Guid> moveAblePieces)
         {
-            foreach (var gameObjects in playerPieces.Values)
+
+            if (moveAblePieces.Count > 0)
             {
-                foreach (var go in gameObjects)
+                foreach (var gameObjects in playerPieces.Values)
                 {
-                    PlayerPiece piece = (PlayerPiece)go.GetComponent<PlayerPiece>();
-
-
-                    if (moveAblePieces.Contains(piece.pieceID))
+                    foreach (var go in gameObjects)
                     {
-                        piece.MakeMoveAble();
+                        PlayerPiece piece = (PlayerPiece)go.GetComponent<PlayerPiece>();
+
+
+                        if (moveAblePieces.Contains(piece.pieceID))
+                        {
+                            piece.MakeMoveAble();
+                        }
+
+
                     }
 
 
+
                 }
-             
-
-
             }
             
+
+        }
+
+
+
+        public void MakePiecesUnMoveable(ColourEnum pieceColor)
+        {
+
+                foreach (var gameObject in playerPieces[pieceColor])
+                {
+                 
+                    PlayerPiece piece = (PlayerPiece)gameObject.GetComponent<PlayerPiece>();
+
+                    piece.MakeUnMoveAble();
+                        
+                }
+           
+
 
         }
 
