@@ -85,6 +85,27 @@ namespace Backend.Controllers
 			}
 		}
 
+		[HttpGet("EndTurn")]
+		public async Task<IActionResult> EndTurn(Guid pieceID)
+		{
+			try
+			{
+				var nextPlayerID = gameManager.NextTurn();
+
+				var resultValue = new EndTurnResponseDTO
+				{
+					nextPlayerID = nextPlayerID
+				};
+
+				return new OkObjectResult(resultValue);
+			}
+			catch (Exception ex)
+			{
+				logger.LogError(ex, "Error");
+				return new BadRequestObjectResult("An exception occurred, please check logs");
+			}
+		}
+
 		[HttpGet("StartGame")]
 		public async Task<IActionResult> StartGame(int PlayerNumber, int BoardSize)
 		{
