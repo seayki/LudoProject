@@ -206,25 +206,193 @@ this.ScenarioInitialize(scenarioInfo);
     await testRunner.AndAsync("the dice should always roll 4", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
 #line hidden
 #line 27
- await testRunner.AndAsync("The game backend is initialized", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
+ await testRunner.AndAsync("The dice should first roll for player order", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
 #line hidden
 #line 28
- await testRunner.AndAsync("The game has started", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
+ await testRunner.AndAsync("The game backend is initialized", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
 #line hidden
 #line 29
- await testRunner.AndAsync("First player has at least one piece that can be moved", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
+ await testRunner.AndAsync("The game has started", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
 #line hidden
 #line 30
-    await testRunner.WhenAsync("the player rolls the die", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
+ await testRunner.AndAsync("First player has at least one piece that can be moved", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
 #line hidden
 #line 31
-    await testRunner.ThenAsync("the response should contain a dice roll of 4", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
+    await testRunner.WhenAsync("the player rolls the die", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
 #line hidden
 #line 32
-    await testRunner.AndAsync("the response should contain a non-empty list of valid pieces", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
+    await testRunner.ThenAsync("the response should contain a dice roll of 4", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
 #line hidden
 #line 33
+    await testRunner.AndAsync("the response should contain a non-empty list of valid pieces", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
+#line hidden
+#line 34
     await testRunner.AndAsync("canReroll should be \"false\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
+#line hidden
+            }
+            await this.ScenarioCleanupAsync();
+        }
+        
+        [Xunit.SkippableFactAttribute(DisplayName="Player rolls a 6 and is allowed to reroll")]
+        [Xunit.TraitAttribute("FeatureTitle", "LudoController")]
+        [Xunit.TraitAttribute("Description", "Player rolls a 6 and is allowed to reroll")]
+        public async System.Threading.Tasks.Task PlayerRollsA6AndIsAllowedToReroll()
+        {
+            string[] tagsOfScenario = ((string[])(null));
+            System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Player rolls a 6 and is allowed to reroll", null, tagsOfScenario, argumentsOfScenario, featureTags);
+#line 36
+this.ScenarioInitialize(scenarioInfo);
+#line hidden
+            if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
+            {
+                testRunner.SkipScenario();
+            }
+            else
+            {
+                await this.ScenarioStartAsync();
+#line 37
+  await testRunner.GivenAsync("I have 4 players", ((string)(null)), ((global::Reqnroll.Table)(null)), "Given ");
+#line hidden
+#line 38
+  await testRunner.AndAsync("The board size is 52", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
+#line hidden
+#line 39
+  await testRunner.AndAsync("the dice should always roll 6", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
+#line hidden
+#line 40
+  await testRunner.AndAsync("The dice should first roll for player order", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
+#line hidden
+#line 41
+  await testRunner.AndAsync("The game backend is initialized", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
+#line hidden
+#line 42
+  await testRunner.AndAsync("The game has started", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
+#line hidden
+#line 43
+  await testRunner.WhenAsync("the player rolls the die", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
+#line hidden
+#line 44
+  await testRunner.ThenAsync("the response should contain a dice roll of 6", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
+#line hidden
+#line 45
+  await testRunner.AndAsync("the response should contain a non-empty list of valid pieces", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
+#line hidden
+#line 46
+  await testRunner.AndAsync("canReroll should be \"true\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
+#line hidden
+            }
+            await this.ScenarioCleanupAsync();
+        }
+        
+        [Xunit.SkippableFactAttribute(DisplayName="Player is allowed multiple attempts to roll a 6 to enter a piece")]
+        [Xunit.TraitAttribute("FeatureTitle", "LudoController")]
+        [Xunit.TraitAttribute("Description", "Player is allowed multiple attempts to roll a 6 to enter a piece")]
+        public async System.Threading.Tasks.Task PlayerIsAllowedMultipleAttemptsToRollA6ToEnterAPiece()
+        {
+            string[] tagsOfScenario = ((string[])(null));
+            System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Player is allowed multiple attempts to roll a 6 to enter a piece", null, tagsOfScenario, argumentsOfScenario, featureTags);
+#line 48
+this.ScenarioInitialize(scenarioInfo);
+#line hidden
+            if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
+            {
+                testRunner.SkipScenario();
+            }
+            else
+            {
+                await this.ScenarioStartAsync();
+#line 49
+  await testRunner.GivenAsync("I have 4 players", ((string)(null)), ((global::Reqnroll.Table)(null)), "Given ");
+#line hidden
+#line 50
+  await testRunner.AndAsync("The board size is 52", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
+#line hidden
+#line 51
+  await testRunner.AndAsync("The dice rolls are 2, 5, 3", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
+#line hidden
+#line 52
+  await testRunner.AndAsync("The dice should first roll for player order", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
+#line hidden
+#line 53
+  await testRunner.AndAsync("The game backend is initialized", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
+#line hidden
+#line 54
+  await testRunner.AndAsync("The game has started", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
+#line hidden
+#line 55
+  await testRunner.WhenAsync("the player rolls the die 3 times", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
+#line hidden
+                global::Reqnroll.Table table1 = new global::Reqnroll.Table(new string[] {
+                            "roll",
+                            "canReroll"});
+                table1.AddRow(new string[] {
+                            "2",
+                            "true"});
+                table1.AddRow(new string[] {
+                            "5",
+                            "true"});
+                table1.AddRow(new string[] {
+                            "3",
+                            "false"});
+#line 56
+  await testRunner.ThenAsync("the responses should be:", ((string)(null)), table1, "Then ");
+#line hidden
+            }
+            await this.ScenarioCleanupAsync();
+        }
+        
+        [Xunit.SkippableFactAttribute(DisplayName="Player moves a valid piece and turn passes to the next player")]
+        [Xunit.TraitAttribute("FeatureTitle", "LudoController")]
+        [Xunit.TraitAttribute("Description", "Player moves a valid piece and turn passes to the next player")]
+        public async System.Threading.Tasks.Task PlayerMovesAValidPieceAndTurnPassesToTheNextPlayer()
+        {
+            string[] tagsOfScenario = ((string[])(null));
+            System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Player moves a valid piece and turn passes to the next player", null, tagsOfScenario, argumentsOfScenario, featureTags);
+#line 62
+this.ScenarioInitialize(scenarioInfo);
+#line hidden
+            if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
+            {
+                testRunner.SkipScenario();
+            }
+            else
+            {
+                await this.ScenarioStartAsync();
+#line 63
+  await testRunner.GivenAsync("I have 4 players", ((string)(null)), ((global::Reqnroll.Table)(null)), "Given ");
+#line hidden
+#line 64
+  await testRunner.AndAsync("The board size is 52", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
+#line hidden
+#line 65
+  await testRunner.AndAsync("The dice rolls are 3", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
+#line hidden
+#line 66
+  await testRunner.AndAsync("The dice should first roll for player order", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
+#line hidden
+#line 67
+  await testRunner.AndAsync("The game backend is initialized", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
+#line hidden
+#line 68
+  await testRunner.AndAsync("The game has started", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
+#line hidden
+#line 69
+  await testRunner.AndAsync("Current player has a piece on the board at position 5", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
+#line hidden
+#line 70
+  await testRunner.WhenAsync("the player rolls the die", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
+#line hidden
+#line 71
+  await testRunner.AndAsync("the player moves the first valid piece", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
+#line hidden
+#line 72
+  await testRunner.ThenAsync("the response should contain updated piece states", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
+#line hidden
+#line 73
+  await testRunner.AndAsync("the response should include the next player\'s ID", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();

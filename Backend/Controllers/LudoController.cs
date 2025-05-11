@@ -32,10 +32,7 @@ namespace Backend.Controllers
 				int diceroll = diceService.Roll();
 				gameManager.Roll(diceroll);
 				var validPieces = gameManager.GetMovablePieces();
-
-				var canRollAgain = false;
-				if (validPieces.Count == 0)
-					canRollAgain = gameManager.CanRollAgain();
+				var canRollAgain = gameManager.CanRollAgain();
 
 				var resultValue = new RollDieAndFindValidMovesResponseDTO 
 				{ 
