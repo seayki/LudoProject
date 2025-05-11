@@ -1,4 +1,5 @@
-﻿using Common.Enums;
+﻿using Common.DTOs.ResponseDTOs;
+using Common.Enums;
 using Frontend.ControllerPattern;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -88,11 +89,10 @@ namespace Frontend.ComponentPattern
 
                 if(timeElapsed>=rollTime)
                 {
-                    int randNumber = random.Next(0, numberSpriteNames.Count);
+                 
+                 
 
-                    // SEND RAND0M NUMBER TO BACKEND
-
-                    APIFindValidMoves(randNumber+1);
+                    APIFindValidMoves();
 
 
                     //TEMPORARY GET back a list of moveable pieces
@@ -103,13 +103,7 @@ namespace Frontend.ComponentPattern
                     //}).ToList();
                     //TEMPORARY
 
-                    
-
-                    animator.StopAnimationAndSetSprite(numberSprites[randNumber]);
-
-
-                    timeElapsed = 0;
-                    animationStarted = false;
+                
                 }
 
 
@@ -117,18 +111,26 @@ namespace Frontend.ComponentPattern
         }
 
 
-        public void APIFindValidMoves(int diceRoll)
+        public void APIFindValidMoves()
         {
 
             GameWorld.Instance.asyncTaskManager.EnqueueTask(async () =>
             {
                 try
                 {
-                    await GameWorld.Instance.apiService.GetAsync<List<Guid>>("https://localhost:7221/api/Ludo/FindValidMoves?diceroll=" + diceRoll.ToString(),
+                    await GameWorld.Instance.apiService.GetAsync<RollDieAndFindValidMovesResponseDTO>("https://localhost:7221/api/Ludo/RollDieAndFindValidMoves",
                     onSuccess: (responseObj) =>
                     {
-                        
-                        GameWorld.Instance.MakePiecesMoveable(responseObj);
+                       
+                        GameWorld.Instance.MakePiecesMoveable(responseObj.validPieces);
+
+
+
+                        animator.StopAnimationAndSetSprite(numberSprites[responseObj.diceroll-1]);
+
+
+                        timeElapsed = 0;
+                        animationStarted = false;
 
                     },
                     onError: (error) =>

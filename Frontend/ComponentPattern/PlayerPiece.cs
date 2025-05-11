@@ -1,4 +1,5 @@
 ﻿using Common.DTOs;
+using Common.DTOs.ResponseDTOs;
 using Common.Enums;
 using Frontend.ControllerPattern;
 using Frontend.FactoryPattern;
@@ -203,11 +204,11 @@ namespace Frontend.ComponentPattern
             {
                 try
                 {
-                    var result = GameWorld.Instance.apiService.GetAsync<List<PieceDTO>>("https://localhost:7221/api/Ludo/MoveSelectedPiece?pieceID=" + pieceID.ToString(),
+                    var result = GameWorld.Instance.apiService.GetAsync<MoveSelectedPieceResponseDTO> ("https://localhost:7221/api/Ludo/MoveSelectedPieceAndNextTurn?pieceID=" + pieceID.ToString(),
                     onSuccess: (responseObj) =>
                     {
 
-                        GameWorld.Instance.UpdatePieces(responseObj);
+                        GameWorld.Instance.UpdatePieces(responseObj.affectedPieces);
 
 
                         if (moveToColorZone == false)
@@ -224,9 +225,9 @@ namespace Frontend.ComponentPattern
 
                         //SEND NEXT TURN TO BACKEND AND UPDATE WHOS TURN IT IS BASED ON A PLAYER GUID
 
-                        APINextTurn();
-                       
-                        
+                        GameWorld.Instance.UpdateCurrentPlayer(responseObj.nextPlayerID);
+
+
 
                     },
                     onError: (error) =>
