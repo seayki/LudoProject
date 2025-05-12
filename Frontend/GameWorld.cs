@@ -374,7 +374,7 @@ namespace Frontend
 
 
                 List<GameObject> colorTileGameObjects = new List<GameObject>();
-                Vector2 startColorPos = tiles[10 + i * 12].Transform.Position;
+                Vector2 startColorPos = tiles[(tiles.Count-2 + i * 12)%tiles.Count].Transform.Position;
                 GameObject go=new GameObject();
 
                 ColourEnum actualColor = ColourEnum.None; // Temporary variable to track the actual color used
@@ -388,25 +388,28 @@ namespace Frontend
                     switch (i)
                     {
                         case 0:
-                            actualColor = ColourEnums[1];
+                            actualColor = ColourEnums[i];
                             go = TileFactory.Instance.Create(actualColor, Content);
-                            go.Transform.Position = new Vector2(startColorPos.X, startColorPos.Y + tileSpacing + tileSpacing * j);
+                            go.Transform.Position = new Vector2(startColorPos.X + tileSpacing + tileSpacing * j, startColorPos.Y);
+                           
                             break;
 
                         case 1:
-                            actualColor = ColourEnums[2];
+                            actualColor = ColourEnums[i];
                             go = TileFactory.Instance.Create(actualColor, Content);
-                            go.Transform.Position = new Vector2(startColorPos.X - tileSpacing - tileSpacing * j, startColorPos.Y);
+                            go.Transform.Position = new Vector2(startColorPos.X, startColorPos.Y + tileSpacing + tileSpacing * j);
+
                             break;
                         case 2:
-                            actualColor = ColourEnums[3];
+                            actualColor = ColourEnums[i];
                             go = TileFactory.Instance.Create(actualColor, Content);
-                            go.Transform.Position = new Vector2(startColorPos.X, startColorPos.Y - tileSpacing - tileSpacing * j);
+                            go.Transform.Position = new Vector2(startColorPos.X - tileSpacing - tileSpacing * j, startColorPos.Y);
+
                             break;
                         case 3:
-                            actualColor = ColourEnums[0];
+                            actualColor = ColourEnums[i];
                             go = TileFactory.Instance.Create(actualColor, Content);
-                            go.Transform.Position = new Vector2(startColorPos.X + tileSpacing + tileSpacing * j, startColorPos.Y);
+                            go.Transform.Position = new Vector2(startColorPos.X, startColorPos.Y - tileSpacing - tileSpacing * j);
                             break;
 
 
@@ -435,7 +438,7 @@ namespace Frontend
             List<Vector2> startpositions = new List<Vector2>() {new Vector2(112,225),new Vector2(760,225), new Vector2(760, 740),new Vector2(112,740), };
 
 
-            Debug.Write(ColourEnums.Count);
+  
             for (int i = 0; i < ColourEnums.Count; i++)
             {
                 
