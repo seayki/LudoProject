@@ -757,12 +757,12 @@ namespace Frontend
                 foreach (var go in playerPieces[item.Colour])
                 {
                     PlayerPiece p =(PlayerPiece) go.GetComponent<PlayerPiece>();
-                    Debug.WriteLine($"Checking piece with ID: {p.pieceID}, comparing to: {item.ID}");
+                   
                     if ( p.pieceID==item.ID)
                     {
 
                         p.UpdatePiece(item);
-                        Debug.WriteLine("Updated Piece");
+                       
                     }
                 }
                
@@ -822,7 +822,7 @@ namespace Frontend
         {
             destroyedPieces.Add(go);
 
-            Debug.WriteLine(destroyedPieces.Count);
+          
         }
 
         public void Cleanup()

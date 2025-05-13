@@ -122,7 +122,7 @@ namespace Frontend
 
                     foreach (ColourEnum item in GameWorld.Instance.playerColors.Values)
                     {
-                        Debug.Write(item);
+                      
                         switch (item)
                         {
                             case ColourEnum.None:
