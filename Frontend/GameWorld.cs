@@ -490,7 +490,8 @@ namespace Frontend
 
             for (int i = 0; i < 3; i++)
             {
-                int playerAmt = 2 + i;
+                //temporarily 4 since the logic for other amount of players has to be re-planned to work so frontend and backend works together. 
+                int playerAmt = 4;
                 Button playerAmountBtn = new Button((playerAmt).ToString(), new SetPlayerAmountButton(playerAmt), new Vector2(750 + 100 * i, 200), new Vector2(1, 1));
 
 
