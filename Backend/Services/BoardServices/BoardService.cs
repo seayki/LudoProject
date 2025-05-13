@@ -168,10 +168,5 @@ namespace Backend.Services.BoardServices
             }
             return tilesToCross;
         }
-
-        public Task<PosIndex> GetTileEndPos(PosIndex piecePosIndex, ColourEnum pieceColour, int diceRoll)
-        {
-            throw new NotImplementedException();
-        }
     }
 }

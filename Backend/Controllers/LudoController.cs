@@ -69,7 +69,6 @@ namespace Backend.Controllers
 									  IsInPlay = p.IsInPlay,
 									  IsFinished = p.IsFinished,
 									  Colour=p.Colour
-									 
 								  }).ToList();
 
 				var resultValue = new MoveSelectedPieceResponseDTO

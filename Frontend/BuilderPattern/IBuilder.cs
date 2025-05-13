@@ -9,7 +9,5 @@ namespace Frontend.BuilderPattern
     internal interface IBuilder
     {
         public GameObject BuildGameObject();
-
-       
     }
 }
