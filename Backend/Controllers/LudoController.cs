@@ -64,12 +64,34 @@ namespace Backend.Controllers
 									  ID = p.ID,
 									  PosIndex = p.PosIndex,
 									  IsInPlay = p.IsInPlay,
-									  IsFinished = p.IsFinished
+									  IsFinished = p.IsFinished,
+									  Colour=p.Colour
 								  }).ToList();
 
 				var resultValue = new MoveSelectedPieceResponseDTO
 				{
 					affectedPieces = affectedPiecesDTOs,
+					nextPlayerID = nextPlayerID
+				};
+
+				return new OkObjectResult(resultValue);
+			}
+			catch (Exception ex)
+			{
+				logger.LogError(ex, "Error");
+				return new BadRequestObjectResult("An exception occurred, please check logs");
+			}
+		}
+
+		[HttpGet("EndTurn")]
+		public async Task<IActionResult> EndTurn(Guid pieceID)
+		{
+			try
+			{
+				var nextPlayerID = gameManager.NextTurn();
+
+				var resultValue = new EndTurnResponseDTO
+				{
 					nextPlayerID = nextPlayerID
 				};
 
@@ -99,9 +121,11 @@ namespace Backend.Controllers
                                       select new PieceDTO()
                                       {
                                           ID = piece.ID,
+                                          Colour = piece.Colour,
                                           PosIndex = piece.PosIndex,
                                           IsInPlay = piece.IsInPlay,
-                                          IsFinished = piece.IsFinished
+                                          IsFinished = piece.IsFinished,
+										 
                                       }).ToList()
                                   };
 
