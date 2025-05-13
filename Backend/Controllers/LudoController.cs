@@ -67,7 +67,8 @@ namespace Backend.Controllers
 									  ID = p.ID,
 									  PosIndex = p.PosIndex,
 									  IsInPlay = p.IsInPlay,
-									  IsFinished = p.IsFinished
+									  IsFinished = p.IsFinished,
+									  Colour=p.Colour
 								  }).ToList();
 
 				var resultValue = new MoveSelectedPieceResponseDTO
@@ -123,9 +124,11 @@ namespace Backend.Controllers
                                       select new PieceDTO()
                                       {
                                           ID = piece.ID,
+                                          Colour = piece.Colour,
                                           PosIndex = piece.PosIndex,
                                           IsInPlay = piece.IsInPlay,
-                                          IsFinished = piece.IsFinished
+                                          IsFinished = piece.IsFinished,
+										 
                                       }).ToList()
                                   };
 
