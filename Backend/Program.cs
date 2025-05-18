@@ -14,7 +14,7 @@ using Backend.Services.PlayerServices.Interfaces;
 
 public class Program
 {
-    private static void Main(string[] args)
+    public static void Main(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
 

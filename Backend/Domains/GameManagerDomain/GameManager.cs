@@ -78,6 +78,11 @@ namespace Backend.Domains.GameManagerDomain
         // Step 7 End turn
         public Guid NextTurn()
         {
+            if (CanRollAgain())
+            {
+                return CurrentPlayer.Id;
+            }
+
             // Move on to the next player and reset the roll
             int index = Players.IndexOf(CurrentPlayer);
             do
@@ -91,6 +96,12 @@ namespace Backend.Domains.GameManagerDomain
             this.CurrentPlayer.LastRoll = 0;
 
             return CurrentPlayer.Id;
+        }
+
+        // Support method, currently used during reqnroll
+        public Player GetCurrentPlayer()
+        {
+            return CurrentPlayer;
         }
     } 
 }

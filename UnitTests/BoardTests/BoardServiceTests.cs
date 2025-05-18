@@ -1,4 +1,5 @@
 ﻿using Backend.Domains.BoardDomain;
+using Backend.Domains.PieceDomain;
 using Backend.Services.BoardServices;
 using Backend.Services.BoardServices.Interfaces;
 using Common.Enums;
@@ -16,7 +17,7 @@ namespace UnitTests.BoardTests
         public void Schould_get_one_posIndex_for_the_colour_start_tile(ColourEnum colour)
         {
             //Arange
-            var board = new Board(52, 6, new List<ColourEnum>() { ColourEnum.Red, ColourEnum.Blue, ColourEnum.Green, ColourEnum.Yellow });
+            var board = new Board(52, 6, new List<ColourEnum>() { ColourEnum.Red, ColourEnum.Blue, ColourEnum.Green, ColourEnum.Yellow }, new List<Piece>());
             IBoardService boardService = new BoardService();
 
             //Act
