@@ -4,6 +4,7 @@ using Backend.Services.BoardServices.Interfaces;
 using Backend.Services.DiceServices;
 using Backend.Services.DiceServices.Interfaces;
 using Backend.Services.GameManagerService;
+using Backend.Services.GameRulesService;
 using Backend.Services.GameSetupService;
 using Backend.Services.GameSetupService.Interfaces;
 using Backend.Services.PieceService;
@@ -30,6 +31,7 @@ public class Program
         builder.Services.AddSingleton<IGameManagerService, GameManager>();
         builder.Services.AddSingleton<IBoardService, BoardService>();
         builder.Services.AddSingleton<IGameSetupService, GameSetupService>();
+        builder.Services.AddSingleton<IGameRulesService, GameRulesService>();
 
         var app = builder.Build();
 
