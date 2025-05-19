@@ -29,6 +29,7 @@ namespace Backend.Domains.GameManagerDomain
         {
             this.gameSetupService = gameSetupService;
             this.playerService = playerService;
+            this.gameRulesService = gameRulesService;
         }
 
         // Step 1 Create board

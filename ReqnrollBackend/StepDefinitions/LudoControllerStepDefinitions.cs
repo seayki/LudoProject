@@ -125,7 +125,7 @@ namespace ReqnrollBackend.StepDefinitions
 		[Given("The game has started")]
 		public void GivenTheGameHasStarted()
 		{
-			_gameManager.CreateNewGame(_playerNumber, _boardSize, 6);
+			_controller.StartGame(_playerNumber, _boardSize);
 		}
 
 		[Given("First player has at least one piece that can be moved")]
